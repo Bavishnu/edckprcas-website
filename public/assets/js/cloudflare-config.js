@@ -2,7 +2,7 @@
 (() => {
   const localHosts = new Set(['localhost', '127.0.0.1']);
   const isLocalAuthoring = localHosts.has(window.location.hostname);
-  const configuredMediaBase = '__EDCKPRCAS_MEDIA_BASE_URL__';
+  const configuredMediaBase = __EDCKPRCAS_MEDIA_BASE_URL__;
   window.EDCKPRCAS_CONFIG = Object.freeze({
     // Local uploads are served by the local Node server; Pages uploads use the
     // same hostname because media is bundled into dist/uploads/.
