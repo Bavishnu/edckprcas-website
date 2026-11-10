@@ -1,3 +1,8 @@
 name = "edckprcas-website"
 compatibility_date = "2026-11-06"
 pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "edckprcas-online-cms"
+database_id = "0c24a43f-b781-479c-b777-8c0c18e48fe4"
