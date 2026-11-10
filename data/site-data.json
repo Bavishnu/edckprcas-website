@@ -1,0 +1,1068 @@
+{
+  "site": {
+    "brand": "EDCKPRCAS",
+    "name": "EDCKPRCAS",
+    "shortName": "EDCKPRCAS",
+    "established": "2020",
+    "email": "edc@kprcas.ac.in",
+    "phone": "",
+    "address": "Coimbatore, Tamil Nadu, India",
+    "website": "https://edckprcas.co.in",
+    "linkedin": "",
+    "instagram": "",
+    "youtube": "",
+    "facebook": "",
+    "logoImage": "/uploads/edckprcas-official-logo.png"
+  },
+  "home": {
+    "eyebrow": "ESTABLISHED 2020 · EDCKPRCAS",
+    "title": "Think Entrepreneur! Become Entrepreneur!!",
+    "description": "The EDCKPRCAS helps students build entrepreneurial capability through team formation, practical programmes, mentor interactions, competitions and student-led ventures.",
+    "primaryLabel": "Explore student ventures",
+    "primaryUrl": "startups.html",
+    "secondaryLabel": "Discover the EDC",
+    "secondaryUrl": "about.html",
+    "heroImage": "",
+    "introEyebrow": "The EDC at KPRCAS",
+    "introTitle": "Entrepreneurship learned through practice.",
+    "introText": "Students explore real needs, build complementary teams, learn from practitioners and test ideas through structured experiences and student-led activity.",
+    "featureTitle": "Build the confidence to take an idea forward.",
+    "featureText": "Take part in workshops, founder conversations, entrepreneurship challenges and guided experimentation through the EDCKPRCAS.",
+    "featureImage": "",
+    "ctaTitle": "Have an idea worth spreading?",
+    "ctaText": "Share a problem worth solving, an early concept or a question with the EDCKPRCAS.",
+    "stats": [
+      {
+        "value": "2020",
+        "label": "EDC established"
+      },
+      {
+        "value": "9",
+        "label": "Active student-led enterprises"
+      },
+      {
+        "value": "14th",
+        "label": "National position · NEC Finals 2024"
+      },
+      {
+        "value": "9th",
+        "label": "Western Entrepreneurship Challenge 2025"
+      }
+    ],
+    "ecosystemWall": [
+      {
+        "label": "KPRCAS",
+        "sub": "Institutional community",
+        "mark": "KPR",
+        "image": ""
+      },
+      {
+        "label": "EDC",
+        "sub": "Entrepreneurship Development Cell",
+        "mark": "EDC",
+        "image": ""
+      },
+      {
+        "label": "NEC",
+        "sub": "National Entrepreneurship Challenge",
+        "mark": "NEC",
+        "image": ""
+      },
+      {
+        "label": "TEAM ROAR",
+        "sub": "Student team · 2025",
+        "mark": "ROAR",
+        "image": ""
+      },
+      {
+        "label": "FRUITACY",
+        "sub": "Student venture",
+        "mark": "FRUITACY",
+        "image": ""
+      },
+      {
+        "label": "STUDENT FOUNDERS",
+        "sub": "Ideas, teams and enterprise",
+        "mark": "FOUNDERS",
+        "image": ""
+      },
+      {
+        "label": "MENTOR NETWORK",
+        "sub": "Guidance and expertise",
+        "mark": "MENTORS",
+        "image": ""
+      },
+      {
+        "label": "CAMPUS PROGRAMMES",
+        "sub": "Workshops and challenges",
+        "mark": "PROGRAMMES",
+        "image": ""
+      },
+      {
+        "label": "INDUSTRY CONNECT",
+        "sub": "External perspectives",
+        "mark": "INDUSTRY",
+        "image": ""
+      },
+      {
+        "label": "STUDENT TEAMS",
+        "sub": "Cross-disciplinary collaboration",
+        "mark": "TEAMS",
+        "image": ""
+      }
+    ],
+    "frictionPoints": [
+      {
+        "title": "Understand the problem",
+        "text": "Speak with people, observe real contexts and describe the need before selecting a solution.",
+        "symbol": "01",
+        "image": ""
+      },
+      {
+        "title": "Form a committed team",
+        "text": "Bring together complementary strengths and agree on responsibilities, shared goals and ways of working.",
+        "symbol": "02",
+        "image": ""
+      },
+      {
+        "title": "Learn from practitioners",
+        "text": "Use mentor conversations and industry perspectives to challenge assumptions and improve decisions.",
+        "symbol": "03",
+        "image": ""
+      },
+      {
+        "title": "Build and test a prototype",
+        "text": "Create a working first version, test it with relevant users and document what needs to change.",
+        "symbol": "04",
+        "image": ""
+      },
+      {
+        "title": "Understand the market",
+        "text": "Explore customer needs, alternatives, pricing and possible routes to reach the people who may use the solution.",
+        "symbol": "05",
+        "image": ""
+      },
+      {
+        "title": "Plan the next milestone",
+        "text": "Summarise evidence, define ownership and agree on a realistic next step for the venture.",
+        "symbol": "06",
+        "image": ""
+      }
+    ],
+    "journey": [
+      {
+        "phase": "01",
+        "title": "Identify a problem",
+        "text": "Observe a real need, speak with people who experience it and describe the problem clearly.",
+        "output": "A focused problem statement and early observations.",
+        "image": ""
+      },
+      {
+        "phase": "02",
+        "title": "Build a team",
+        "text": "Bring together complementary strengths, agree on a shared purpose and define responsibilities.",
+        "output": "A committed team with clear ownership.",
+        "image": ""
+      },
+      {
+        "phase": "03",
+        "title": "Shape the idea",
+        "text": "Explore possible approaches, identify the intended users and decide what needs to be tested first.",
+        "output": "A clear concept and a testable assumption.",
+        "image": ""
+      },
+      {
+        "phase": "04",
+        "title": "Create a prototype",
+        "text": "Build a simple first version and use small experiments to learn what works and what needs improvement.",
+        "output": "A demonstrable prototype and learning notes.",
+        "image": ""
+      },
+      {
+        "phase": "05",
+        "title": "Validate with users",
+        "text": "Gather feedback from relevant users and practitioners, then refine the solution using evidence.",
+        "output": "User feedback and a more grounded solution.",
+        "image": ""
+      },
+      {
+        "phase": "06",
+        "title": "Present the next step",
+        "text": "Summarise the problem, team, prototype, feedback and next milestones in a clear presentation.",
+        "output": "A practical plan for continued development.",
+        "image": ""
+      }
+    ],
+    "finalTitle": "Think Entrepreneur! Become Entrepreneur!!",
+    "finalText": "Explore the people, programmes, ventures and outcomes of EDCKPRCAS.",
+    "finalButtonLabel": "Explore the EDC",
+    "finalButtonUrl": "about.html",
+    "anthemEyebrow": "EDC-KPRCAS anthem",
+    "anthemTitle": "The EDC community in motion",
+    "anthemDescription": "A video space for the official Entrepreneurship Development Cell anthem.",
+    "anthemVideoUrl": "",
+    "anthemPoster": "",
+    "statsTitle": "EDC at a glance",
+    "statsDescription": "Selected institutional milestones and student outcomes.",
+    "ecosystemEyebrow": "The EDC ecosystem",
+    "ecosystemTitle": "People, programmes and student enterprise.",
+    "ecosystemDescription": "An active campus community connecting students, mentors, programmes, industry perspectives and student ventures.",
+    "focusEyebrow": "How student enterprise develops",
+    "focusTitle": "A practical process, from first question to next milestone.",
+    "focusDescription": "The EDC encourages students to work through the key steps involved in developing an idea and a committed team.",
+    "pathwayEyebrow": "The EDC pathway",
+    "pathwayTitle": "From an idea to a tested next step.",
+    "pathwayDescription": "A set of practical steps that student teams can adapt to their idea, context and pace.",
+    "comparisonEyebrow": "The value of structured support",
+    "comparisonTitle": "Move from individual interest to shared progress.",
+    "comparisonDescription": "The EDC encourages student teams to work with clear goals, useful feedback and evidence from real contexts.",
+    "comparisonLeftTitle": "Starting with an idea",
+    "comparisonLeftPoints": [
+      {
+        "text": "The problem may still be broad or unclear."
+      },
+      {
+        "text": "Roles and responsibilities may not yet be defined."
+      },
+      {
+        "text": "Assumptions may not have been tested with users."
+      },
+      {
+        "text": "The next milestone may need clarification."
+      }
+    ],
+    "comparisonRightTitle": "Developing through the EDC",
+    "comparisonRightPoints": [
+      {
+        "text": "A problem is explored with people who experience it."
+      },
+      {
+        "text": "A team agrees on roles, ownership and priorities."
+      },
+      {
+        "text": "Mentors and users help challenge assumptions."
+      },
+      {
+        "text": "Experiments create evidence for the next decision."
+      }
+    ],
+    "workEyebrow": "Explore EDC activities",
+    "workTitle": "People, programmes and student ventures.",
+    "workDescription": "Explore the work and opportunities that contribute to entrepreneurship development at KPRCAS.",
+    "blogEyebrow": "EDC stories and perspectives",
+    "blogTitle": "Ideas, insights and practical learning.",
+    "blogDescription": "Read perspectives on problem discovery, teamwork, innovation and student enterprise.",
+    "messagesEyebrow": "Leadership perspectives",
+    "messagesTitle": "Messages from institutional leadership.",
+    "messagesDescription": "Perspectives from the leaders who support entrepreneurship development at KPRCAS.",
+    "diagramEyebrow": "EDC ecosystem map",
+    "diagramTitle": "Students, mentors, programmes and ventures.",
+    "diagramText": "A practical campus ecosystem for learning, collaboration and student enterprise.",
+    "diagramLinkLabel": "About the EDC",
+    "diagramLinkUrl": "about.html",
+    "wallFootLabel": "EDCKPRCAS",
+    "wallFootLinkLabel": "View people and teams",
+    "wallFootLinkUrl": "people.html",
+    "journeyOutputLabel": "WHAT THIS STEP CREATES",
+    "journeyHint": "Scroll up or down to move between steps",
+    "journeyExitLabel": "Continue below",
+    "comparisonLeftLabel": "EARLY EXPLORATION",
+    "comparisonRightLabel": "SUPPORTED DEVELOPMENT",
+    "comparisonLinkLabel": "Explore the EDC approach",
+    "comparisonLinkUrl": "about.html",
+    "anthemPlaceholderTitle": "EDCKPRCAS Anthem",
+    "anthemPlaceholderText": "Add the official EDCKPRCAS anthem YouTube link in the Home page Content Manager.",
+    "featureEyebrow": "Student participation",
+    "featureButtonLabel": "Explore programmes",
+    "featureButtonUrl": "events.html",
+    "workCards": [
+      {
+        "number": "01",
+        "eyebrow": "Programmes",
+        "category": "Events",
+        "title": "Events and learning programmes.",
+        "text": "Workshops, founder conversations, challenges and practical learning opportunities.",
+        "buttonLabel": "Explore programmes",
+        "url": "events.html",
+        "image": ""
+      },
+      {
+        "number": "02",
+        "eyebrow": "Student enterprise",
+        "category": "Ventures",
+        "title": "Student-led ventures.",
+        "text": "Meet the student ventures, teams and ideas progressing through the EDC.",
+        "buttonLabel": "Meet student ventures",
+        "url": "startups.html",
+        "image": ""
+      },
+      {
+        "number": "03",
+        "eyebrow": "Guidance",
+        "category": "Mentors",
+        "title": "Mentor connections.",
+        "text": "Learn from people who can guide teams, challenge ideas and support decisions.",
+        "buttonLabel": "Explore mentor network",
+        "url": "mentors.html",
+        "image": ""
+      }
+    ],
+    "blogLinkLabel": "Read all insights",
+    "blogLinkUrl": "blogs.html",
+    "messagesLinkLabel": "All messages",
+    "messagesLinkUrl": "messages.html",
+    "ctaEyebrow": "EDCKPRCAS",
+    "ctaButtonLabel": "Start an enquiry",
+    "ctaButtonUrl": "contact.html",
+    "stakeholderEyebrow": "OUR STAKEHOLDERS",
+    "stakeholderTitle": "Our stakeholders",
+    "stakeholderDescription": "Organisations and institutions connected with student entrepreneurship and EDC activities.",
+    "stakeholders": []
+  },
+  "about": {
+    "eyebrow": "Who we are",
+    "title": "A platform for builders, not just business plans.",
+    "description": "The Entrepreneurship Development Cell at KPRCAS makes entrepreneurship a practical, collaborative and accessible part of the student experience.",
+    "storyTitle": "Entrepreneurship as a campus-wide capability.",
+    "story": "Established in 2020, the Entrepreneurship Development Cell has grown as a student-led platform for exposure, experimentation and enterprise. It creates opportunities for students to learn by doing, collaborate across disciplines, connect with mentors and translate real-world problems into purposeful solutions.",
+    "mission": "Build an entrepreneurial mindset through practical experiences, strong teams, access to mentors and a supportive innovation ecosystem.",
+    "vision": "Enable a generation of confident, responsible creators who build relevant solutions and contribute to society and the economy.",
+    "principles": [
+      {
+        "title": "People before pitch decks",
+        "text": "We begin with curiosity, ownership, teamwork and the ability to learn from real problems.",
+        "image": ""
+      },
+      {
+        "title": "Progress through practice",
+        "text": "Workshops, challenges, pilots and feedback turn ideas into evidence and experience.",
+        "image": ""
+      },
+      {
+        "title": "Open, connected ecosystem",
+        "text": "Students, faculty, founders, mentors and industry partners learn and build together.",
+        "image": ""
+      }
+    ],
+    "journey": [
+      {
+        "year": "2020",
+        "title": "The beginning",
+        "text": "Entrepreneurship Development Cell established at KPRCAS.",
+        "image": ""
+      },
+      {
+        "year": "2024",
+        "title": "National participation",
+        "text": "A student team represented the institution at the National Entrepreneurship Challenge finals at IIT Bombay and secured 14th position nationally.",
+        "image": ""
+      },
+      {
+        "year": "2025",
+        "title": "Venture activity",
+        "text": "Student-led enterprise activity included product launches, market discovery and participation in entrepreneurship challenges.",
+        "image": ""
+      },
+      {
+        "year": "2026",
+        "title": "A stronger team culture",
+        "text": "A continued focus on team formation, mentor connections and meaningful student-led outcomes.",
+        "image": ""
+      }
+    ],
+    "storyImage": "",
+    "missionImage": "",
+    "visionImage": "",
+    "storyEyebrow": "Our story",
+    "principlesEyebrow": "What guides us",
+    "principlesTitle": "A few principles. One shared ambition.",
+    "journeyEyebrow": "Our journey",
+    "journeyTitle": "Built over time. Strengthened by people."
+  },
+  "impact": {
+    "eyebrow": "Impact so far",
+    "title": "Progress you can build on.",
+    "description": "The EDC’s work is reflected in student-led enterprise, national participation, venture activity and practical learning opportunities.",
+    "stats": [
+      {
+        "value": "2020",
+        "label": "Year established",
+        "note": "Entrepreneurship Development Cell at KPRCAS"
+      },
+      {
+        "value": "9",
+        "label": "Active student-led enterprises",
+        "note": "Student venture activity connected with the EDC"
+      },
+      {
+        "value": "14th",
+        "label": "National NEC Finals position",
+        "note": "Student team achievement · 2024"
+      },
+      {
+        "value": "9th",
+        "label": "Western Entrepreneurship Challenge",
+        "note": "Team ROAR · 2025"
+      }
+    ],
+    "statement": "Impact is not a single headline number. It is the confidence to begin, the discipline to test and the resilience to keep building.",
+    "milestones": [
+      {
+        "year": "2024",
+        "title": "National entrepreneurship exposure",
+        "text": "A student team represented KPRCAS at the National Entrepreneurship Challenge finals at IIT Bombay and secured 14th position nationally.",
+        "image": ""
+      },
+      {
+        "year": "2025",
+        "title": "Venture launches and market learning",
+        "text": "Student venture activity included the Fruitacy launch, market discovery and Team ROAR’s 9th position in the Western Entrepreneurship Challenge.",
+        "image": ""
+      },
+      {
+        "year": "2026",
+        "title": "Building entrepreneurial capability",
+        "text": "Programmes and founder conversations continued to strengthen student participation, team formation and practical learning.",
+        "image": ""
+      }
+    ],
+    "statementImage": "",
+    "milestonesEyebrow": "Milestones",
+    "milestonesTitle": "The journey behind the numbers."
+  },
+  "contact": {
+    "eyebrow": "Reach us",
+    "title": "Good conversations can start here.",
+    "description": "Have a question, a collaboration idea, a venture to share or a programme to explore? Send a note and the team can take it forward.",
+    "formTitle": "Tell us what you are working on.",
+    "responseNote": "The EDC team will use the information you share to route your enquiry appropriately.",
+    "directionsUrl": "",
+    "enquiryChoices": [
+      {
+        "label": "Student / student team",
+        "description": "I have an idea or want to build a team"
+      },
+      {
+        "label": "Mentor / industry expert",
+        "description": "I would like to share experience"
+      },
+      {
+        "label": "Institution / industry partner",
+        "description": "I want to explore a collaboration"
+      },
+      {
+        "label": "Programme / event enquiry",
+        "description": "I want to know about an EDC programme"
+      },
+      {
+        "label": "General enquiry",
+        "description": "I have another question"
+      }
+    ],
+    "goals": [
+      {
+        "label": "Explore an idea",
+        "description": "Understand a problem and shape an idea"
+      },
+      {
+        "label": "Build a team",
+        "description": "Find collaborators and complementary skills"
+      },
+      {
+        "label": "Join a programme",
+        "description": "Take part in a workshop, challenge or event"
+      },
+      {
+        "label": "Find a mentor",
+        "description": "Connect with relevant experience"
+      },
+      {
+        "label": "Collaborate",
+        "description": "Explore a project, session or partnership"
+      }
+    ],
+    "contactImage": "",
+    "contactPanelEyebrow": "Start a conversation",
+    "contactPanelTitle": "Let’s find the right next step.",
+    "contactPanelText": "Connect with the Entrepreneurship Development Cell for student ideas, programmes, mentorship, partnerships or general information.",
+    "formIntro": "A few quick choices help us direct your enquiry to the right conversation.",
+    "step1Title": "What brings you here?",
+    "step1Note": "Select the option closest to your situation.",
+    "step2Title": "What would you like to explore?",
+    "step2Note": "Choose the outcome you have in mind.",
+    "step3Title": "How can we reach you?",
+    "step3Note": "Share a few details and a short note.",
+    "nameLabel": "Full name",
+    "emailLabel": "Email address",
+    "subjectLabel": "Subject (optional)",
+    "messageLabel": "Your message",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "you@example.com",
+    "subjectPlaceholder": "A short subject",
+    "messagePlaceholder": "Tell us a little about your idea, question or collaboration…",
+    "continueLabel": "Continue",
+    "submitLabel": "Send enquiry",
+    "backLabel": "Back",
+    "privacyNote": "Your enquiry will be emailed to edc@kprcas.ac.in. Please do not include sensitive personal information.",
+    "reviewHint": "You can review your details before sending.",
+    "locationLabel": "Location",
+    "emailDetailLabel": "Email",
+    "phoneDetailLabel": "Phone"
+  },
+  "people": [],
+  "events": [
+    {
+      "id": "event-1",
+      "title": "Founders’ Summit 2026 — Voices of the Grassroots",
+      "date": "2026-08-21",
+      "category": "Founders’ Summit",
+      "status": "Completed",
+      "location": "KPRCAS, Coimbatore",
+      "summary": "A World Entrepreneurship Day special edition bringing grassroots founder perspectives, practical insights and ecosystem conversations to campus.",
+      "image": "",
+      "link": ""
+    },
+    {
+      "id": "event-2",
+      "title": "Illuminate — Entrepreneurship Mindset Workshop",
+      "date": "2026-09-30",
+      "category": "Workshop",
+      "status": "Completed",
+      "location": "KPRCAS, Coimbatore",
+      "summary": "A collaborative workshop designed to help students move from job-seeking mindsets towards creating value, opportunities and ventures.",
+      "image": "",
+      "link": ""
+    },
+    {
+      "id": "event-3",
+      "title": "National Entrepreneurship Challenge — Campus Launch",
+      "date": "2025-07-21",
+      "category": "Challenge",
+      "status": "Completed",
+      "location": "KPRCAS, Coimbatore",
+      "summary": "The launch of the institution’s participation in the National Entrepreneurship Challenge organised by E-Cell, IIT Bombay.",
+      "image": "",
+      "link": ""
+    }
+  ],
+  "startups": [
+    {
+      "id": "startup-fruitacy",
+      "name": "Fruitacy",
+      "sector": "Food & consumer",
+      "stage": "Student venture · Launched 2025",
+      "founders": "",
+      "year": "2025",
+      "summary": "A student-led venture launched at KPRCAS in June 2025. Its profile can be expanded with approved founder details, product information and verified milestones.",
+      "image": "",
+      "website": ""
+    }
+  ],
+  "messages": [],
+  "gallery": [],
+  "blogs": [
+    {
+      "id": "blog-1",
+      "title": "Why the strongest startup idea begins with a real problem",
+      "category": "Entrepreneurship",
+      "author": "EDC Editorial Desk",
+      "date": "2026-10-12",
+      "readTime": "5 min read",
+      "excerpt": "A useful idea does more than sound exciting. It responds to a problem people recognise and are willing to solve.",
+      "image": "",
+      "body": "Begin with observation, not assumptions. Talk to people who experience the problem, map the workarounds they already use and understand what a better outcome would mean to them.\n\nA first solution is a hypothesis. A good team tests that hypothesis in small, low-cost ways, learns from the evidence and improves its approach.\n\nThe discipline of asking better questions is often more valuable than rushing towards a polished pitch. Build the habit of learning before scaling."
+    },
+    {
+      "id": "blog-2",
+      "title": "Team formation is a founder skill",
+      "category": "Leadership",
+      "author": "EDC Editorial Desk",
+      "date": "2026-09-18",
+      "readTime": "4 min read",
+      "excerpt": "A committed team creates the capacity to turn ambition into sustained execution.",
+      "image": "",
+      "body": "A venture needs more than a collection of enthusiastic people. It needs shared intent, clear responsibilities, complementary strengths and an honest way to make decisions.\n\nStart with a small experiment together. Notice how people communicate, handle uncertainty and follow through. Define ownership early, revisit roles as the idea develops and build trust through consistent action.\n\nA good team is not found fully formed. It is built deliberately."
+    },
+    {
+      "id": "blog-3",
+      "title": "From prototype to pilot: what should a team learn?",
+      "category": "Innovation",
+      "author": "EDC Editorial Desk",
+      "date": "2026-08-06",
+      "readTime": "6 min read",
+      "excerpt": "A pilot is not just a demonstration. It is a structured opportunity to gather evidence.",
+      "image": "",
+      "body": "A prototype helps a team make an idea tangible. A pilot helps the team understand whether the solution works in a real context.\n\nDefine what you need to learn before you begin. Choose a small group of relevant users, decide how you will observe outcomes and document both positive and negative signals.\n\nUse the findings to improve the product, rethink the customer or decide whether to continue. Evidence is progress."
+    }
+  ],
+  "social": [],
+  "mentors": [],
+  "reports": [],
+  "opportunities": [],
+  "pagePanels": [
+    {
+      "page": "about",
+      "eyebrow": "ABOUT THE EDC",
+      "title": "Explore the EDC in action",
+      "text": "See the programmes, people and student ventures that put entrepreneurship into practice.",
+      "image": "",
+      "buttonLabel": "Explore programmes",
+      "buttonUrl": "events.html"
+    },
+    {
+      "page": "people",
+      "eyebrow": "PEOPLE & TEAMS",
+      "title": "Meet the student teams",
+      "text": "Explore the EDC teams across the academic years and the people who contribute to their work.",
+      "image": "",
+      "buttonLabel": "View team years",
+      "buttonUrl": "team.html?year=2026-2027"
+    },
+    {
+      "page": "events",
+      "eyebrow": "PROGRAMMES",
+      "title": "Find a way to participate",
+      "text": "Explore the opportunities to learn, contribute and take part in EDC activities.",
+      "image": "",
+      "buttonLabel": "View opportunities",
+      "buttonUrl": "opportunities.html"
+    },
+    {
+      "page": "startups",
+      "eyebrow": "STUDENT VENTURES",
+      "title": "Share your venture journey",
+      "text": "Connect with the EDC to share a student venture, ask for guidance or explore the next milestone.",
+      "image": "",
+      "buttonLabel": "Start an enquiry",
+      "buttonUrl": "contact.html"
+    },
+    {
+      "page": "impact",
+      "eyebrow": "IMPACT & RECORDS",
+      "title": "Explore the documented outcomes",
+      "text": "Review the achievements, milestones and institutional progress recorded by the EDC.",
+      "image": "",
+      "buttonLabel": "View annual reports",
+      "buttonUrl": "annual-reports.html"
+    },
+    {
+      "page": "messages",
+      "eyebrow": "LEADERSHIP",
+      "title": "Explore the EDC community",
+      "text": "Learn about the people, purpose and programmes behind entrepreneurship development at KPRCAS.",
+      "image": "",
+      "buttonLabel": "About the EDC",
+      "buttonUrl": "about.html"
+    },
+    {
+      "page": "gallery",
+      "eyebrow": "EDC IN ACTION",
+      "title": "Explore the programme archive",
+      "text": "Discover the events and programmes behind the photographs.",
+      "image": "",
+      "buttonLabel": "View programmes",
+      "buttonUrl": "events.html"
+    },
+    {
+      "page": "blogs",
+      "eyebrow": "PRACTICAL LEARNING",
+      "title": "Explore ways to participate",
+      "text": "Turn an insight into a conversation, a team or a practical next step.",
+      "image": "",
+      "buttonLabel": "See opportunities",
+      "buttonUrl": "opportunities.html"
+    },
+    {
+      "page": "social-media",
+      "eyebrow": "EDC UPDATES",
+      "title": "Explore EDC programmes",
+      "text": "Discover the workshops, activities and opportunities featured across EDC channels.",
+      "image": "",
+      "buttonLabel": "View programmes",
+      "buttonUrl": "events.html"
+    },
+    {
+      "page": "mentors",
+      "eyebrow": "MENTOR NETWORK",
+      "title": "Contribute your experience",
+      "text": "Share your expertise with student teams through a conversation with the EDC.",
+      "image": "",
+      "buttonLabel": "Contact the EDC",
+      "buttonUrl": "contact.html"
+    },
+    {
+      "page": "annual-reports",
+      "eyebrow": "DOCUMENTED PROGRESS",
+      "title": "Explore EDC impact",
+      "text": "Review the key milestones and outcomes recorded by the Entrepreneurship Development Cell.",
+      "image": "",
+      "buttonLabel": "View impact",
+      "buttonUrl": "impact.html"
+    },
+    {
+      "page": "contact",
+      "eyebrow": "EDCKPRCAS",
+      "title": "Contact the EDC team",
+      "text": "Use the enquiry form to contact EDCKPRCAS about student ideas, programmes, mentors or institutional collaboration.",
+      "image": "",
+      "buttonLabel": "",
+      "buttonUrl": ""
+    },
+    {
+      "page": "opportunities",
+      "eyebrow": "PARTICIPATION",
+      "title": "Explore ways to participate",
+      "text": "Ask the EDC about student participation, mentorship or institutional collaboration.",
+      "image": "",
+      "buttonLabel": "Contact the EDC",
+      "buttonUrl": "contact.html"
+    },
+    {
+      "page": "achievements",
+      "eyebrow": "EDC ACHIEVEMENTS",
+      "title": "Progress built by students and teams.",
+      "text": "Explore the programmes, people and milestones that have shaped the EDC journey.",
+      "image": "",
+      "buttonLabel": "View impact",
+      "buttonUrl": "impact.html"
+    }
+  ],
+  "pageIntros": [
+    {
+      "page": "about",
+      "eyebrow": "The EDC",
+      "title": "About the Entrepreneurship Development Cell",
+      "description": "Understand the purpose, people and programmes that support entrepreneurship development at KPRCAS.",
+      "number": "02",
+      "image": ""
+    },
+    {
+      "page": "people",
+      "eyebrow": "People",
+      "title": "People and student teams",
+      "description": "Explore the EDC leadership community and student teams across three academic years.",
+      "number": "03",
+      "image": ""
+    },
+    {
+      "page": "events",
+      "eyebrow": "Programmes",
+      "title": "Events and entrepreneurship programmes",
+      "description": "Explore EDC workshops, founder conversations, challenges, competitions and other learning experiences.",
+      "number": "04",
+      "image": ""
+    },
+    {
+      "page": "startups",
+      "eyebrow": "Student ventures",
+      "title": "Student-led ventures at KPRCAS",
+      "description": "Discover the teams and student enterprises that are developing ideas into practical solutions.",
+      "number": "05",
+      "image": ""
+    },
+    {
+      "page": "impact",
+      "eyebrow": "Impact",
+      "title": "The progress and outcomes of the EDC",
+      "description": "Review participation, milestones and outcomes documented through EDC activities.",
+      "number": "06",
+      "image": ""
+    },
+    {
+      "page": "messages",
+      "eyebrow": "Messages from heads",
+      "title": "Perspectives from institutional leadership",
+      "description": "Read messages and guidance from the leaders supporting entrepreneurship development at KPRCAS.",
+      "number": "07",
+      "image": ""
+    },
+    {
+      "page": "gallery",
+      "eyebrow": "Gallery",
+      "title": "EDC programmes and campus moments",
+      "description": "Explore photographs documenting student teams, workshops, events and venture activities.",
+      "number": "08",
+      "image": ""
+    },
+    {
+      "page": "blogs",
+      "eyebrow": "Blogs",
+      "title": "Ideas, insights and practical learning",
+      "description": "Read perspectives on problem discovery, teamwork, innovation, student enterprise and venture development.",
+      "number": "09",
+      "image": ""
+    },
+    {
+      "page": "social",
+      "eyebrow": "Social media",
+      "title": "Updates from the EDCKPRCAS",
+      "description": "Find announcements, programme highlights and updates from the official EDC channels.",
+      "number": "10",
+      "image": ""
+    },
+    {
+      "page": "mentors",
+      "eyebrow": "Mentors",
+      "title": "The EDC mentor network",
+      "description": "Meet the founders, professionals and specialists who share experience and guidance with student teams.",
+      "number": "11",
+      "image": ""
+    },
+    {
+      "page": "reports",
+      "eyebrow": "Annual reports",
+      "title": "Annual reports and records",
+      "description": "Access the approved annual reports and year-wise records published by the EDC.",
+      "number": "12",
+      "image": ""
+    },
+    {
+      "page": "contact",
+      "eyebrow": "Reach us",
+      "title": "Contact the Entrepreneurship Development Cell",
+      "description": "Share an enquiry about student programmes, ventures, mentorship, events or institutional collaboration.",
+      "number": "13",
+      "image": ""
+    },
+    {
+      "page": "opportunities",
+      "eyebrow": "Opportunities",
+      "title": "Ways to participate in the EDC",
+      "description": "Explore opportunities for students, mentors and partners to take part in entrepreneurship development activities.",
+      "number": "14",
+      "image": ""
+    },
+    {
+      "page": "achievements",
+      "eyebrow": "Achievements",
+      "title": "Recognition earned through student initiative.",
+      "description": "A record of EDC teams, student ventures and institutional participation across entrepreneurship challenges and programmes.",
+      "number": "15",
+      "image": ""
+    }
+  ],
+  "navigation": {
+    "topLinePrefix": "Established",
+    "mainAbout": "About",
+    "mainPeople": "People",
+    "mainProgrammes": "Programmes",
+    "mainVentures": "Ventures",
+    "mainImpact": "Impact",
+    "exploreLabel": "Explore",
+    "reachOutLabel": "Reach out",
+    "megaTitle": "Explore EDCKPRCAS",
+    "megaNote": "",
+    "megaLinks": [
+      {
+        "group": "THE EDC",
+        "groupNote": "Purpose, people and leadership",
+        "label": "About the EDC",
+        "url": "about.html"
+      },
+      {
+        "group": "THE EDC",
+        "groupNote": "Purpose, people and leadership",
+        "label": "People behind the work",
+        "url": "people.html"
+      },
+      {
+        "group": "THE EDC",
+        "groupNote": "Purpose, people and leadership",
+        "label": "Messages from heads",
+        "url": "messages.html"
+      },
+      {
+        "group": "PROGRAMMES & VENTURES",
+        "groupNote": "Learn, build and participate",
+        "label": "Events & programmes",
+        "url": "events.html"
+      },
+      {
+        "group": "PROGRAMMES & VENTURES",
+        "groupNote": "Learn, build and participate",
+        "label": "Student ventures",
+        "url": "startups.html"
+      },
+      {
+        "group": "PROGRAMMES & VENTURES",
+        "groupNote": "Learn, build and participate",
+        "label": "Opportunities",
+        "url": "opportunities.html"
+      },
+      {
+        "group": "KNOWLEDGE & IMPACT",
+        "groupNote": "Stories, evidence and records",
+        "label": "Impact so far",
+        "url": "impact.html"
+      },
+      {
+        "group": "KNOWLEDGE & IMPACT",
+        "groupNote": "Stories, evidence and records",
+        "label": "Achievements",
+        "url": "achievements.html"
+      },
+      {
+        "group": "KNOWLEDGE & IMPACT",
+        "groupNote": "Stories, evidence and records",
+        "label": "Blogs & insights",
+        "url": "blogs.html"
+      },
+      {
+        "group": "KNOWLEDGE & IMPACT",
+        "groupNote": "Stories, evidence and records",
+        "label": "Annual reports",
+        "url": "annual-reports.html"
+      },
+      {
+        "group": "COMMUNITY",
+        "groupNote": "People and moments around the EDC",
+        "label": "Mentor network",
+        "url": "mentors.html"
+      },
+      {
+        "group": "COMMUNITY",
+        "groupNote": "People and moments around the EDC",
+        "label": "Gallery",
+        "url": "gallery.html"
+      },
+      {
+        "group": "COMMUNITY",
+        "groupNote": "People and moments around the EDC",
+        "label": "Social media",
+        "url": "social-media.html"
+      },
+      {
+        "group": "COMMUNITY",
+        "groupNote": "People and moments around the EDC",
+        "label": "Reach us",
+        "url": "contact.html"
+      }
+    ],
+    "megaFooterLine": "",
+    "megaFooterCta": "",
+    "footerBrandLine": "EDCKPRCAS",
+    "footerGroups": [
+      {
+        "heading": "The EDC",
+        "label": "About the EDC",
+        "url": "about.html"
+      },
+      {
+        "heading": "The EDC",
+        "label": "People",
+        "url": "people.html"
+      },
+      {
+        "heading": "The EDC",
+        "label": "Messages from heads",
+        "url": "messages.html"
+      },
+      {
+        "heading": "The EDC",
+        "label": "Impact so far",
+        "url": "impact.html"
+      },
+      {
+        "heading": "Programmes & ventures",
+        "label": "Events & programmes",
+        "url": "events.html"
+      },
+      {
+        "heading": "Programmes & ventures",
+        "label": "Student ventures",
+        "url": "startups.html"
+      },
+      {
+        "heading": "Programmes & ventures",
+        "label": "Opportunities",
+        "url": "opportunities.html"
+      },
+      {
+        "heading": "Programmes & ventures",
+        "label": "Mentor network",
+        "url": "mentors.html"
+      },
+      {
+        "heading": "Stories & contact",
+        "label": "Achievements",
+        "url": "achievements.html"
+      },
+      {
+        "heading": "Stories & contact",
+        "label": "Gallery",
+        "url": "gallery.html"
+      },
+      {
+        "heading": "Stories & contact",
+        "label": "Blogs",
+        "url": "blogs.html"
+      },
+      {
+        "heading": "Stories & contact",
+        "label": "Social media",
+        "url": "social-media.html"
+      },
+      {
+        "heading": "Stories & contact",
+        "label": "Annual reports",
+        "url": "annual-reports.html"
+      },
+      {
+        "heading": "Stories & contact",
+        "label": "Reach us ↗",
+        "url": "contact.html"
+      }
+    ],
+    "copyrightPrefix": "©",
+    "copyrightSuffix": "Entrepreneurship Development Cell",
+    "topLineBrand": "EDCKPRCAS",
+    "mainSocial": "Social media",
+    "mainGallery": "Gallery"
+  },
+  "teams": [
+    {
+      "id": "team-2024-2025",
+      "year": "2024–2025",
+      "yearKey": "2024-2025",
+      "title": "EDC Student Team 2024–25",
+      "description": "A student team year focused on campus entrepreneurship activity, team participation and national-level exposure.",
+      "image": ""
+    },
+    {
+      "id": "team-2025-2026",
+      "year": "2025–2026",
+      "yearKey": "2025-2026",
+      "title": "EDC Student Team 2025–26",
+      "description": "A student team year featuring venture activity, entrepreneurship challenges and collaborative campus programmes.",
+      "image": ""
+    },
+    {
+      "id": "team-2026-2027",
+      "year": "2026–2027",
+      "yearKey": "2026-2027",
+      "title": "EDC Student Team 2026–27",
+      "description": "The current student team year, with opportunities to contribute to programmes, student ventures and the EDC community.",
+      "image": ""
+    }
+  ],
+  "achievements": [
+    {
+      "id": "nec-finals-2024",
+      "title": "National Entrepreneurship Challenge Finals",
+      "year": "2024",
+      "category": "National recognition",
+      "distinction": "14th position nationally",
+      "description": "The EDC student team represented KPRCAS at the National Entrepreneurship Challenge Finals hosted by IIT Bombay and secured 14th position nationally.",
+      "image": ""
+    },
+    {
+      "id": "western-entrepreneurship-challenge-2025",
+      "title": "Western Entrepreneurship Challenge",
+      "year": "2025",
+      "category": "Student team recognition",
+      "distinction": "9th position",
+      "description": "Team ROAR secured 9th position in the Western Entrepreneurship Challenge 2025.",
+      "image": ""
+    }
+  ]
+}

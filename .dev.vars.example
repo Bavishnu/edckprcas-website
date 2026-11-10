@@ -1,0 +1,5 @@
+# For local Wrangler Pages Function testing only. Copy to .dev.vars; never commit it.
+RESEND_API_KEY=PASTE_YOUR_RESEND_API_KEY_HERE
+MAIL_FROM=EDCKPRCAS Website <website@send.kprcas.ac.in>
+MAIL_TO=edc@kprcas.ac.in
+ALLOWED_ORIGINS=http://localhost:3000,https://edckprcas-website.pages.dev

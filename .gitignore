@@ -1,0 +1,19 @@
+# Secrets / local settings — never commit these files
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# Local administrator credentials, private enquiries and launcher cache
+# Keep data/site-data.json tracked: it is the website content source.
+data/admin-auth.json
+data/inquiries.json
+NODE_PATH.txt
+
+# Build/tool output
+# public/uploads is intentionally tracked: Pages serves these files directly.
+dist/
+.wrangler/
+node_modules/

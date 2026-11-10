@@ -1,0 +1,17 @@
+{
+  "name": "edckprcas-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EDCKPRCAS institutional website; no-R2 Cloudflare Pages deployment with Resend contact email.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node scripts/build-cloudflare.js",
+    "test:email": "node scripts/test-email.js",
+    "start": "node server.js",
+    "test:cloudflare": "node scripts/cloudflare-smoke-test.js",
+    "test:pages-function": "node scripts/test-pages-function.cjs",
+    "test:online-cms": "node scripts/test-online-cms-function.cjs"
+  }
+}
