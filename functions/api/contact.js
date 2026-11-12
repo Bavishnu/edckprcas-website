@@ -14,7 +14,7 @@ function allowedOrigin(request, env) {
       .filter(Boolean);
     if (configured.length) return configured.includes(normalized);
     const host = new URL(normalized).hostname.toLowerCase();
-    return host.endsWith(".pages.dev") || host === "edckprcas.co.in" || host === "www.edckprcas.co.in";
+    return host.endsWith(".pages.dev") || host === "edckprcas.co.in" || host === "www.edckprcas.co.in" || host === "edc.kprcas.ac.in";
   } catch { return false; }
 }
 
