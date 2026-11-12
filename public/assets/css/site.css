@@ -1058,3 +1058,32 @@ body{font-size:16px;line-height:1.7;color:#182b49}
 
 /* Anti-spam honeypot: invisible to visitors, available to simple bots. */
 .form-trap{position:absolute!important;left:-10000px!important;top:auto!important;width:1px!important;height:1px!important;overflow:hidden!important}
+
+
+/* EDCKPRCAS targeted refinements — November 2026 */
+/* Keep the two editorial actions on the right edge of their homepage sections. */
+.home-diagram-copy{display:flex;flex-direction:column;align-items:stretch;min-width:0}
+.home-diagram-copy .text-link{align-self:flex-end;margin-top:6px}
+.home-insights-link{display:flex;justify-content:flex-end;width:100%;margin-top:26px}
+.home-insights-link .text-link{margin-left:auto}
+.edc-hero-copy .hero-actions{align-self:flex-end;justify-content:flex-end}
+
+/* Academic-year teams use the same clear card language as the mentor directory. */
+.team-year-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:stretch}
+.team-year-card{display:flex;flex-direction:column;min-width:0;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:4px;box-shadow:0 10px 30px rgba(16,42,86,.045);transition:transform .28s var(--ease),box-shadow .28s,border-color .28s}
+.team-year-card:hover{transform:translateY(-5px);border-color:#cbd8e5;box-shadow:var(--shadow)}
+.team-year-image{height:auto;aspect-ratio:16/9;min-height:0;overflow:hidden;background:linear-gradient(135deg,#102a56,#0b2e6d 65%,#08764f);display:grid;place-items:stretch}
+.team-year-image>img{width:100%;height:100%;object-fit:cover}
+.team-year-art{position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:10px;padding:26px 30px;overflow:hidden;color:#fff;background:radial-gradient(circle at 90% 5%,rgba(0,168,107,.32),transparent 42%),linear-gradient(135deg,#102a56,#0b2e6d 72%,#064a3b)}
+.team-year-art:after{content:"";position:absolute;z-index:-1;width:220px;height:220px;right:-78px;bottom:-150px;border:1px solid rgba(255,255,255,.22);border-radius:50%;box-shadow:0 0 0 28px rgba(255,255,255,.045),0 0 0 56px rgba(255,255,255,.035)}
+.team-year-art>span{font-size:9px;font-weight:800;letter-spacing:.17em;color:#9be4c9}
+.team-year-art>strong{font:800 clamp(26px,3vw,38px)/1 var(--display);letter-spacing:-.055em;color:#fff}
+.team-year-art>small{font-size:9px;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.66)}
+.team-year-copy{display:flex;flex:1;flex-direction:column;align-items:flex-start;padding:23px 24px 24px}
+.team-year-copy h3{margin:9px 0 10px;color:var(--navy);font:800 21px/1.2 var(--display);letter-spacing:-.04em}
+.team-year-copy p{margin:0 0 18px;color:var(--body);font-size:13px;line-height:1.75}
+.team-year-link{margin-top:auto;color:var(--blue)}
+.people-profile-grid .profile-card{height:100%}
+
+@media(max-width:900px){.team-year-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}}
+@media(max-width:700px){.edc-hero-copy .hero-actions{align-self:stretch;justify-content:flex-end}.home-diagram-copy .text-link{align-self:flex-end}.home-insights-link{justify-content:flex-end}.team-year-grid{grid-template-columns:1fr;gap:16px}.team-year-image{aspect-ratio:16/8}.team-year-copy{padding:20px}.team-year-art{padding:22px}.team-year-art>strong{font-size:32px}}
