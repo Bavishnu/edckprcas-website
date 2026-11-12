@@ -213,11 +213,12 @@
     typeLoop(tagline, 'Think Entrepreneur! Become Entrepreneur!!', 64, 30, 1500, 1000);
   }
 
-  function pageHero(kicker, title, description, number) {
+  function pageHero(kicker, title, description, number, showIntroImage = true) {
     const pageIntro = (data.pageIntros || []).find(item => item.page === page);
     kicker = pageIntro?.eyebrow || kicker; title = pageIntro?.title || title;
     description = pageIntro?.description || description;
-    return `<section class="page-hero"><div class="wrap page-hero-inner"><div class="page-hero-copy"><div class="eyebrow"><span class="eyebrow-rule"></span>${esc(kicker)}</div><h1>${esc(title)}</h1><p>${esc(description)}</p><div class="breadcrumb"><a href="index.html">Home</a><span> / </span>${esc(title)}</div></div><div class="page-hero-art">${pageIntro?.image ? `<div class="page-hero-photo">${img(pageIntro.image,title)}</div>` : ''}${pageDiagramSvg(page)}</div></div></section>`;
+    const introPhoto = showIntroImage && pageIntro?.image ? `<div class="page-hero-photo">${img(pageIntro.image,title)}</div>` : '';
+    return `<section class="page-hero"><div class="wrap page-hero-inner"><div class="page-hero-copy"><div class="eyebrow"><span class="eyebrow-rule"></span>${esc(kicker)}</div><h1>${esc(title)}</h1><p>${esc(description)}</p><div class="breadcrumb"><a href="index.html">Home</a><span> / </span>${esc(title)}</div></div><div class="page-hero-art">${introPhoto}${pageDiagramSvg(page)}</div></div></section>`;
   }
   function sectionHead(kicker, title, description = '') {
     return `<div class="section-head"><div><div class="eyebrow">${esc(kicker)}</div><h2>${esc(title)}</h2></div>${description ? `<p>${esc(description)}</p>` : ''}</div>`;
@@ -263,6 +264,11 @@
 
   function homePage() {
     const h = data.home || {};
+    const stats = h.stats || [];
+    const statsDescription = String(h.statsDescription || '').trim();
+    const statsDescriptionMarkup = statsDescription && statsDescription.toLowerCase() !== 'our impacts'
+      ? `<p>${esc(statsDescription)}</p>`
+      : '';
     const wall = h.ecosystemWall || [];
     const frictions = h.frictionPoints || [];
     const journey = h.journey || [];
@@ -276,8 +282,9 @@
         <h1 class="edc-hero-title" data-scramble-slow><span>${textOr(h.title,'Think Entrepreneur! Become Entrepreneur!!')}</span></h1>
         <div class="edc-hero-copy"><p>${textOr(h.description,'The EDCKPRCAS helps students build entrepreneurial capability through programmes, teams, mentor interactions and student-led ventures.')}</p><div class="hero-actions"><a class="btn" href="${esc(safeUrl(h.primaryUrl) || 'startups.html')}">${textOr(h.primaryLabel,'Explore student ventures')} <span class="btn-arrow" aria-hidden="true">↗</span></a><a class="btn btn-outline" href="${esc(safeUrl(h.secondaryUrl) || 'about.html')}">${textOr(h.secondaryLabel,'Discover the EDC')} <span class="btn-arrow" aria-hidden="true">↗</span></a></div></div>
       </div>
-      <div class="home-diagram reveal"><div class="home-diagram-copy"><div class="eyebrow">${textOr(h.diagramEyebrow,'EDC ecosystem map')}</div><h2>${textOr(h.diagramTitle,'Students, mentors, programmes and ventures.')}</h2><p>${textOr(h.diagramText,'A practical campus ecosystem for learning, collaboration and student enterprise.')}</p><a class="text-link" href="${esc(safeUrl(h.diagramLinkUrl)||'about.html')}">${textOr(h.diagramLinkLabel,'About the EDC')} <span class="btn-arrow" aria-hidden="true">↗</span></a></div><div class="home-diagram-art">${h.heroImage ? `<div class="home-diagram-photo">${img(h.heroImage,'KPRCAS EDC student community')}</div>` : ecosystemDiagramSvg()}</div></div>
+      <div class="home-diagram reveal"><div class="home-diagram-copy"><div class="eyebrow">${textOr(h.diagramEyebrow,'EDC ecosystem map')}</div><h2>${textOr(h.diagramTitle,'Students, mentors, programmes and ventures.')}</h2><p>${textOr(h.diagramText,'A practical campus ecosystem for learning, collaboration and student enterprise.')}</p></div><div class="home-diagram-art">${h.heroImage ? `<div class="home-diagram-photo">${img(h.heroImage,'KPRCAS EDC student community')}</div>` : ecosystemDiagramSvg()}</div><div class="home-diagram-cta"><a class="text-link" href="${esc(safeUrl(h.diagramLinkUrl)||'about.html')}">${textOr(h.diagramLinkLabel,'About the EDC')} <span class="btn-arrow" aria-hidden="true">↗</span></a></div></div>
     </div></section>
+    <section class="stat-band edc-stat-band"><div class="wrap"><div class="stat-band-heading"><span class="eyebrow eyebrow-light">${textOr(h.statsTitle,'EDC at a glance')}</span>${statsDescriptionMarkup}</div><div class="stat-grid">${stats.map((x,i)=>`<div class="stat-item reveal reveal-delay-${Math.min(i,3)}"><div class="stat-value" data-count-value="${esc(x.value)}">${esc(x.value)}</div><div class="stat-label">${esc(x.label)}</div></div>`).join('')}</div></div></section>
     <section class="section edc-wall-section"><div class="wrap"><div class="edc-wall-head"><div><div class="eyebrow">${textOr(h.ecosystemEyebrow,'The EDC ecosystem')}</div><h2>${textOr(h.ecosystemTitle,'People, programmes and student enterprise.')}</h2></div><p>${textOr(h.ecosystemDescription,'An active campus community connecting students, mentors, programmes, industry perspectives and student ventures.')}</p></div><div class="edc-logo-wall" role="list">${wall.map((item,i)=>`<div class="wall-tile ${item.image?'has-image':''} reveal reveal-delay-${i%4}" role="listitem">${item.image ? `<div class="wall-tile-image">${img(item.image,item.label)}</div>` : `<span class="wall-mark">${esc(item.mark || String(item.label||'EDC').slice(0,3))}</span>`}<b>${esc(item.label)}</b><small>${esc(item.sub || '')}</small></div>`).join('')}</div><div class="wall-foot"><span>${textOr(h.wallFootLabel,'EDCKPRCAS')}</span></div></div></section>
     <section class="section stakeholders-section"><div class="wrap"><div class="stakeholders-head"><div><div class="eyebrow">${textOr(h.stakeholderEyebrow,'OUR STAKEHOLDERS')}</div><h2>${textOr(h.stakeholderTitle,'Our stakeholders')}</h2></div><p>${textOr(h.stakeholderDescription,'Organisations and institutions connected with student entrepreneurship and EDC activities.')}</p></div></div>${(h.stakeholders||[]).filter(item=>item.logo).length ? `<div class="stakeholder-marquee" aria-label="EDC stakeholders"><div class="stakeholder-track">${[...(h.stakeholders||[]).filter(item=>item.logo),...(h.stakeholders||[]).filter(item=>item.logo)].map(item=>`<div class="stakeholder-logo" title="${esc(item.name||'EDC stakeholder')}">${img(item.logo,item.name||'EDC stakeholder')}</div>`).join('')}</div></div>` : `<div class="wrap"><div class="stakeholder-empty">Stakeholder logos will appear here after they are uploaded in the Home page CMS.</div></div>`}</section>
     <section class="section section-dark edc-friction-section"><div class="wrap"><div class="section-head"><div><div class="eyebrow eyebrow-light">${textOr(h.focusEyebrow,'How student enterprise develops')}</div><h2>${textOr(h.focusTitle,'A practical process, from first question to next milestone.')}</h2></div><p>${textOr(h.focusDescription,'The EDC encourages students to work through the key steps involved in developing an idea and a committed team.')}</p></div><div class="friction-grid">${frictions.map((f,i)=>`<article class="friction-card reveal reveal-delay-${i%3}"><div class="friction-card-image">${f.image ? img(f.image,f.title) : `<div class="media-placeholder"><span>EDC ACTIVITY</span></div>`}</div><span class="friction-number">${esc(f.symbol || String(i+1).padStart(2,'0'))}</span><div class="friction-motif" aria-hidden="true">${String(i+1).padStart(2,'0')}</div><h3>${esc(f.title)}</h3><p>${esc(f.text)}</p><span class="friction-line"></span></article>`).join('')}</div></div></section>
@@ -308,25 +315,33 @@
     const link = mentor ? item.linkedin : item.linkedin;
     return `<article class="card profile-card reveal reveal-delay-${Math.min(i%3,3)}"><div class="card-image">${item.image ? img(item.image,item.name) : `<div class="media-placeholder"><span>${mentor?'MENTOR PORTRAIT':'EDC PROFILE'}</span></div>`}</div><div class="card-body"><div class="card-meta"><span>${esc(meta || (mentor?'Mentor network':'Team'))}</span><span class="card-tag">${mentor?'Mentor':'People'}</span></div><h3>${esc(item.name)}</h3><div class="profile-role">${esc(role)}</div><p>${esc(item.bio)}</p><div class="profile-links">${link ? `<a href="${esc(safeUrl(link))}" target="_blank" rel="noopener">LinkedIn ↗</a>` : ''}${item.email ? `<a href="mailto:${esc(item.email)}">Email ↗</a>` : ''}</div></div></article>`;
   }
+  function normalizeAcademicYear(value) {
+    const digits = String(value || '').replace(/\D/g, '');
+    return digits.length === 8 ? `${digits.slice(0,4)}-${digits.slice(4)}` : String(value || '').trim().toLowerCase();
+  }
+
   function peoplePage() {
-    const teams = data.teams || [];
-    const profiles = data.people || [];
-    const leadership = profiles.filter(person => !person.teamYear);
-    return `${pageHero('People and student teams','The people who contribute to EDC activity.','Meet the people, student teams and collaborators who build the KPRCAS entrepreneurship ecosystem.','02')}
-      <section class="section people-directory-section"><div class="wrap">${sectionHead('Leadership and coordinators','People behind the work.','Profiles are presented in the same card format as the mentor directory.')}
-      ${leadership.length ? `<div class="card-grid people-profile-grid">${leadership.map((person,i)=>profileCard(person,i)).join('')}</div>` : `<div class="empty-state">People profiles will appear here when approved leadership and coordinator details are added through the Content Manager.</div>`}</div></section>
-      <section class="section section-soft"><div class="wrap">${sectionHead('Student teams by academic year','Three academic years. One EDC community.','Choose an academic year to view its team roster, roles and approved photographs.')}
-      ${teams.length ? `<div class="team-year-grid">${teams.map((team,i)=>`<a class="team-year-card reveal reveal-delay-${i%3}" href="team.html?year=${encodeURIComponent(team.yearKey||'')}" aria-label="View ${esc(team.title)}"><div class="team-year-image">${team.image ? img(team.image,team.title) : `<div class="team-year-art"><span>EDC STUDENT TEAM</span><strong>${esc(team.year || 'Academic year')}</strong><small>PEOPLE · ROLES · ACTIVITIES</small></div>`}</div><div class="team-year-copy"><span class="eyebrow">ACADEMIC YEAR</span><h3>${esc(team.title)}</h3><p>${esc(team.description)}</p><span class="team-year-link text-link">View team roster <span class="btn-arrow" aria-hidden="true">↗</span></span></div></a>`).join('')}</div>` : `<div class="empty-state">Academic-year teams will appear here when they are added through the Content Manager.</div>`}</div></section>`;
+    const teams = [...(data.teams || [])].sort((a,b) => normalizeAcademicYear(a.yearKey || a.year).localeCompare(normalizeAcademicYear(b.yearKey || b.year)));
+    const peopleIntro = (data.pageIntros || []).find(item => item.page === 'people');
+    const groupPhoto = peopleIntro?.image || '';
+    return `${pageHero('People and student teams','The people who contribute to EDC activity.','Meet the people, student teams and collaborators who build the KPRCAS entrepreneurship ecosystem.','02',false)}
+      <section class="section people-directory-section"><div class="wrap">${sectionHead('Leadership and community','People behind the work.','A shared photograph of the people who contribute to the EDCKPRCAS community.')}
+      ${groupPhoto ? `<figure class="people-group-photo">${img(groupPhoto,'EDCKPRCAS people behind the work — common team photograph')}</figure>` : `<div class="people-group-photo people-group-photo-empty"><div class="people-group-photo-placeholder"><span class="eyebrow">PEOPLE BEHIND THE WORK</span><strong>Common EDCKPRCAS team photograph</strong><p>Upload one shared group photograph in Content Manager → Page introductions → People → Page introduction image.</p></div></div>`}</div></section>
+      <section class="section section-soft"><div class="wrap">${sectionHead('Student teams by academic year','Three academic years. One EDC community.','Choose an academic year to open its own roster page, with individual member photographs and profiles.')}
+      ${teams.length ? `<div class="team-year-grid">${teams.map((team,i)=>`<a class="team-year-card reveal reveal-delay-${i%3}" href="team.html?year=${encodeURIComponent(team.yearKey || normalizeAcademicYear(team.year))}" aria-label="View ${esc(team.title || team.year)} team roster"><div class="team-year-image">${team.image ? img(team.image,`${team.year || team.title} team photograph`) : `<div class="team-year-art"><span>EDC STUDENT TEAM</span><strong>${esc(team.year || 'Academic year')}</strong><small>MEMBERS · ROLES · ACTIVITIES</small></div>`}</div><div class="team-year-copy"><span class="eyebrow">ACADEMIC YEAR</span><h3>${esc(team.title || `EDC Student Team ${team.year || ''}`)}</h3><p>${esc(team.description || 'Open this academic-year roster to view individual team member profiles.')}</p><span class="team-year-link text-link">View team roster <span class="btn-arrow" aria-hidden="true">↗</span></span></div></a>`).join('')}</div>` : `<div class="empty-state">Academic-year teams will appear here when they are added through the Content Manager.</div>`}</div></section>`;
   }
 
   function teamYearPage() {
-    const yearKey = new URLSearchParams(location.search).get('year') || '2026-2027';
-    const team = (data.teams || []).find(t => t.yearKey === yearKey);
+    const requestedYear = new URLSearchParams(location.search).get('year') || '2026-2027';
+    const requestedKey = normalizeAcademicYear(requestedYear);
+    const team = (data.teams || []).find(t => normalizeAcademicYear(t.yearKey || t.year) === requestedKey);
     if (!team) return `${pageHero('Student teams','Academic-year team not found.','Choose an academic year from the People page.','03')}<section class="section"><div class="wrap"><a class="btn" href="people.html">Back to People <span class="btn-arrow">↗</span></a></div></section>`;
-    const members = (data.people || []).filter(p => p.teamYear === yearKey || p.teamYear === team.year);
-    return `${pageHero(team.year,team.title,team.description,'03')}
-      <section class="section"><div class="wrap">${sectionHead('Team roster',`EDC student team · ${team.year}`,'Profiles and responsibilities for this academic year.')}
-      ${members.length ? `<div class="card-grid">${members.map((p,i)=>profileCard(p,i)).join('')}</div>` : `<div class="team-roster-empty"><div class="eyebrow">${esc(team.year)}</div><h2>Team profiles will appear here.</h2><p>The roster for this academic year can be published by adding members in Admin → People and selecting this academic year.</p></div>`}</div></section>`;
+    const members = (data.people || []).filter(person => normalizeAcademicYear(person.teamYear) === requestedKey).sort((a,b) => String(a.name || '').localeCompare(String(b.name || '')));
+    const rosterHeading = `EDC student team · ${team.year || requestedYear}`;
+    return `${pageHero(team.year,team.title || `EDC Student Team ${team.year || ''}`,team.description || 'Meet the individual members and their roles in this academic-year team.','03')}
+      <section class="section team-roster-section"><div class="wrap"><div class="team-roster-topline"><div>${sectionHead('Individual team members',rosterHeading,'Each card contains one member photograph, name, role and concise profile details.')}</div><a class="text-link team-roster-back" href="people.html">All academic years <span class="btn-arrow" aria-hidden="true">↗</span></a></div>
+      ${team.image ? `<figure class="team-roster-group-photo">${img(team.image,`${team.year} EDC student team group photograph`)}</figure>` : ''}
+      ${members.length ? `<div class="card-grid team-member-grid">${members.map((person,i)=>`<div class="team-member-card">${profileCard(person,i)}</div>`).join('')}</div>` : `<div class="team-roster-empty"><div class="eyebrow">${esc(team.year)}</div><h2>Team profiles will appear here.</h2><p>Add each student separately in Content Manager → People. Upload the member’s own portrait and set Academic year to <strong>${esc(team.yearKey || requestedKey)}</strong>. The profile will then appear on this roster page.</p><a class="btn btn-outline" href="people.html">Back to academic years <span class="btn-arrow">↗</span></a></div>`}</div></section>`;
   }
 
   function eventRow(e,i) {
