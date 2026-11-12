@@ -61,6 +61,69 @@ function xml(value) {
   return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 }
 
+
+function escapeHtmlAttribute(value) {
+  return String(value ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function injectStaticSeo(outputDirectory, base, siteData) {
+  const logoUrl = `${base}/uploads/edckprcas-official-logo.png`;
+  const htmlFiles = [];
+  function collect(directory) {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const file = path.join(directory, entry.name);
+      if (entry.isDirectory()) collect(file);
+      else if (entry.isFile() && entry.name.toLowerCase().endsWith('.html')) htmlFiles.push(file);
+    }
+  }
+  collect(outputDirectory);
+  let injectedCount = 0;
+  for (const file of htmlFiles) {
+    const relative = path.relative(outputDirectory, file).split(path.sep).join('/');
+    if (relative.startsWith('content-manager/') || relative.startsWith('admin/')) continue;
+    const canonical = relative === 'index.html' ? `${base}/` : `${base}/${relative}`;
+    let html = fs.readFileSync(file, 'utf8');
+    const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+    let title = (titleMatch?.[1] || 'EDCKPRCAS | Entrepreneurship Development Cell').replace(/<[^>]+>/g, '').trim();
+    const descriptionMatch = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i);
+    let description = descriptionMatch?.[1] || 'Entrepreneurship Development Cell at KPRCAS, Coimbatore.';
+    if (relative === 'index.html') {
+      title = 'EDCKPRCAS | Entrepreneurship Development Cell at KPRCAS, Coimbatore';
+      description = 'EDCKPRCAS is the Entrepreneurship Development Cell at KPRCAS, Coimbatore, supporting student entrepreneurship, innovation, startup development, mentoring and campus programmes.';
+      html = html.replace(/<title[^>]*>[\s\S]*?<\/title>/i, `<title>${escapeHtmlAttribute(title)}</title>`);
+      html = html.replace(/<meta\s+name=["']description["']\s+content=["'][^"']*["'][^>]*>/i, `<meta name="description" content="${escapeHtmlAttribute(description)}">`);
+    }
+    const staticMeta = [
+      `<link rel="canonical" href="${escapeHtmlAttribute(canonical)}">`,
+      `<meta property="og:title" content="${escapeHtmlAttribute(title)}">`,
+      `<meta property="og:description" content="${escapeHtmlAttribute(description)}">`,
+      '<meta property="og:type" content="website">',
+      `<meta property="og:url" content="${escapeHtmlAttribute(canonical)}">`,
+      `<meta property="og:image" content="${escapeHtmlAttribute(logoUrl)}">`,
+      '<meta property="og:image:alt" content="Official EDCKPRCAS logo">',
+      '<meta name="twitter:card" content="summary_large_image">',
+      `<meta name="twitter:title" content="${escapeHtmlAttribute(title)}">`,
+      `<meta name="twitter:description" content="${escapeHtmlAttribute(description)}">`,
+      `<meta name="twitter:image" content="${escapeHtmlAttribute(logoUrl)}">`
+    ].join('\n  ');
+    // Source HTML is copied fresh for each build, so a single static metadata block is safe.
+    html = html.replace(/<\/head>/i, `  ${staticMeta}\n</head>`);
+    if (relative === 'index.html') {
+      const schema = {
+        '@context': 'https://schema.org',
+        '@graph': [
+          { '@type': 'WebSite', '@id': `${base}/#website`, url: `${base}/`, name: 'EDCKPRCAS', alternateName: ['KPRCAS EDC', 'Entrepreneurship Development Cell at KPRCAS'] },
+          { '@type': 'EducationalOrganization', '@id': `${base}/#organization`, name: 'EDCKPRCAS', alternateName: ['KPRCAS EDC', 'Entrepreneurship Development Cell at KPRCAS'], url: `${base}/`, description, email: siteData.site.email || 'edc@kprcas.ac.in', logo: logoUrl, address: { '@type': 'PostalAddress', addressLocality: 'Coimbatore', addressRegion: 'Tamil Nadu', addressCountry: 'IN' } }
+        ]
+      };
+      const schemaTag = `<script type="application/ld+json" id="edc-static-seo-schema">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`;
+      html = html.replace(/<\/head>/i, `  ${schemaTag}\n</head>`);
+    }
+    fs.writeFileSync(file, html, 'utf8');
+    injectedCount += 1;
+  }
+  console.log(`Static SEO metadata added to ${injectedCount} public HTML pages (canonical, Open Graph, Twitter, organization schema).`);
+}
+
 function main() {
   loadLocalEnv();
   if (!fs.existsSync(DATA)) throw new Error('data/site-data.json was not found. Run this from the project root.');
@@ -81,6 +144,7 @@ function main() {
 
   fs.rmSync(OUT, { recursive: true, force: true });
   copyTree(PUBLIC, OUT);
+  injectStaticSeo(OUT, base, siteData);
 
   const logo = path.join(OUT, 'uploads', 'edckprcas-official-logo.png');
   if (!fs.existsSync(logo)) throw new Error('The official EDC logo is missing from public/uploads. Restore it before building.');
