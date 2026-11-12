@@ -43,6 +43,11 @@
     if (Number.isNaN(d.getTime())) return { day: '—', month: 'DATE', year: '' };
     return { day: d.getDate(), month: d.toLocaleString('en', { month: 'short' }).toUpperCase(), year: d.getFullYear() };
   };
+  const localDateKey = date => `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+  const parseLocalDate = value => {
+    const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return match ? new Date(Number(match[1]), Number(match[2])-1, Number(match[3])) : null;
+  };
   const blogPublicationTime = item => {
     if (!item?.publishAt) return null;
     const value = String(item.publishAt);
@@ -74,6 +79,7 @@
   }
   let data = null;
   let activeBook = null;
+  let eventCalendarState = null;
 
   const navItems = [
     ['about.html','About','about'], ['people.html','People','people'], ['events.html','Programmes','events'],
@@ -348,17 +354,73 @@
     const link = safeUrl(e.link);
     const picture = e.image ? img(e.image,e.title) : `<div class="media-placeholder"><span>EDC PROGRAMME</span></div>`;
     const date = e.date ? dateParts(e.date) : null;
-    return `<article class="event-card reveal reveal-delay-${i%3}"><div class="event-card-image">${picture}</div><div class="event-card-copy"><div class="card-meta"><span>${esc(e.category||'EDC programme')}</span><span class="card-tag">${esc(e.status||'Programme')}</span></div><h3>${esc(e.title)}</h3><p>${esc(e.summary)}</p><div class="event-card-foot"><span>${date ? `${date.day} ${date.month} ${date.year}` : ''}${e.location ? ` · ${esc(e.location)}` : ''}</span>${link ? `<a class="text-link" href="${esc(link)}" target="_blank" rel="noopener">Programme details <span class="btn-arrow">↗</span></a>` : ''}</div></div></article>`;
+    const parsedEventDate = parseLocalDate(e.date);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const isPastEvent = parsedEventDate && parsedEventDate < today;
+    const storedStatus = String(e.status || '').trim();
+    const status = /completed|closed|cancelled/i.test(storedStatus) ? storedStatus : (isPastEvent ? 'Past event' : (storedStatus || 'Programme'));
+    return `<article class="event-card reveal reveal-delay-${i%3}"><div class="event-card-image">${picture}</div><div class="event-card-copy"><div class="card-meta"><span>${esc(e.category||'EDC programme')}</span><span class="card-tag">${esc(status)}</span></div><h3>${esc(e.title)}</h3><p>${esc(e.summary)}</p><div class="event-card-foot"><span>${date ? `${date.day} ${date.month} ${date.year}` : ''}${e.location ? ` · ${esc(e.location)}` : ''}</span>${link ? `<a class="text-link" href="${esc(link)}" target="_blank" rel="noopener">Programme details <span class="btn-arrow">↗</span></a>` : ''}</div></div></article>`;
+  }
+  function initialiseEventCalendar(events) {
+    if (eventCalendarState) return;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const dated = (events || []).map(event => ({ event, date: parseLocalDate(event.date) })).filter(item => item.date);
+    const upcoming = dated.filter(item => item.date >= today && !/completed|closed/i.test(item.event.status || '')).sort((a,b)=>a.date-b.date);
+    const previous = dated.filter(item => item.date <= today).sort((a,b)=>b.date-a.date);
+    const fallback = [...dated].sort((a,b)=>b.date-a.date)[0];
+    const initialDate = (upcoming[0] || previous[0] || fallback)?.date || today;
+    eventCalendarState = { year: initialDate.getFullYear(), month: initialDate.getMonth(), selectedDate: localDateKey(initialDate) };
+  }
+  function selectedCalendarEventsMarkup(events) {
+    const selectedDate = eventCalendarState?.selectedDate || localDateKey(new Date());
+    const date = parseLocalDate(selectedDate) || new Date();
+    const matches = (events || []).filter(event => event.date === selectedDate).sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')));
+    const dateLabel = date.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    return `<section class="event-calendar-selection" id="calendarSelectedEvents" aria-live="polite" aria-atomic="true"><div class="event-calendar-selection-head"><div><span class="eyebrow">SELECTED DATE</span><h3>${esc(dateLabel)}</h3></div><span class="event-calendar-result-count">${matches.length} ${matches.length===1?'event':'events'}</span></div>${matches.length ? `<div class="event-calendar-results">${matches.map((event,index)=>eventRow(event,index)).join('')}</div>` : `<div class="event-calendar-empty"><span class="event-calendar-empty-icon" aria-hidden="true">✳</span><strong>No event published for this date</strong><p>Dates marked with a green indicator contain an EDC event. You can move to earlier months to explore completed programmes and the event archive.</p></div>`}</section>`;
+  }
+  function eventCalendarMarkup(events) {
+    initialiseEventCalendar(events);
+    const { year, month, selectedDate } = eventCalendarState;
+    const monthStart = new Date(year,month,1);
+    const firstWeekday = monthStart.getDay();
+    const daysInMonth = new Date(year,month+1,0).getDate();
+    const cellCount = Math.ceil((firstWeekday + daysInMonth)/7)*7;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const eventsByDate = new Map();
+    (events || []).forEach(event => {
+      if (!event.date || !parseLocalDate(event.date)) return;
+      const key = event.date;
+      if (!eventsByDate.has(key)) eventsByDate.set(key,[]);
+      eventsByDate.get(key).push(event);
+    });
+    const weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const days = Array.from({length:cellCount},(_,index)=>{
+      const date = new Date(year,month,1-firstWeekday+index);
+      const key = localDateKey(date);
+      const inMonth = date.getMonth() === month;
+      const dayEvents = eventsByDate.get(key) || [];
+      const isSelected = key === selectedDate;
+      const isToday = key === localDateKey(today);
+      const isPast = date < today;
+      const classes = ['event-calendar-day',inMonth?'':'is-outside-month',dayEvents.length?'has-events':'',isSelected?'is-selected':'',isToday?'is-today':'',isPast?'is-past':''].filter(Boolean).join(' ');
+      const dayLabel = date.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      const eventLabel = `${dayEvents.length} ${dayEvents.length===1?'event':'events'}`;
+      return `<button class="${classes}" type="button" data-calendar-date="${key}" aria-pressed="${isSelected?'true':'false'}" aria-label="${esc(dayLabel)}, ${eventLabel}" style="--calendar-stagger:${Math.min(index,41)*9}ms"><span class="event-calendar-day-number">${date.getDate()}</span>${dayEvents.length?`<span class="event-calendar-day-count">${dayEvents.length}</span><span class="event-calendar-day-dot" aria-hidden="true"></span>`:''}${isToday?'<span class="event-calendar-today-label">Today</span>':''}</button>`;
+    }).join('');
+    const monthLabel = monthStart.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+    const totalEvents = (events || []).filter(event => event.date && parseLocalDate(event.date)).length;
+    return `<div class="event-calendar-shell"><div class="event-calendar-main"><div class="event-calendar-toolbar"><div class="event-calendar-month-label"><span class="eyebrow">EVENT CALENDAR</span><h3>${esc(monthLabel)}</h3></div><div class="event-calendar-controls"><button class="event-calendar-nav" type="button" data-calendar-month="-1" aria-label="Previous month"><span aria-hidden="true">←</span></button><button class="event-calendar-nav" type="button" data-calendar-today aria-label="Go to today">Today</button><button class="event-calendar-nav" type="button" data-calendar-month="1" aria-label="Next month"><span aria-hidden="true">→</span></button></div></div><div class="event-calendar-weekdays" aria-hidden="true">${weekdays.map(day=>`<span>${day}</span>`).join('')}</div><div class="event-calendar-grid" aria-label="${esc(monthLabel)}">${days}</div><div class="event-calendar-legend"><span><i class="legend-dot legend-dot-event"></i>Published event</span><span><i class="legend-dot legend-dot-past"></i>Past date</span><span class="event-calendar-total">${totalEvents} dated ${totalEvents===1?'event':'events'}</span></div></div>${selectedCalendarEventsMarkup(events)}</div>`;
   }
   function eventsPage() {
     const events = data.events || [];
     const categories = ['All',...new Set(events.map(e=>e.category).filter(Boolean))];
     const now = new Date(); now.setHours(0,0,0,0);
-    const upcoming = events.filter(e => e.date && new Date(`${e.date}T00:00:00`) >= now && !/completed|closed/i.test(e.status||''));
+    const upcoming = events.filter(e => e.date && parseLocalDate(e.date) >= now && !/completed|closed/i.test(e.status||''));
     const archive = events.filter(e => !upcoming.includes(e));
+    const calendarSection = `<section class="section event-calendar-section"><div class="wrap"><div class="event-calendar-page-head"><div><span class="eyebrow">EDCKPRCAS PROGRAMME CALENDAR</span><h2>Explore events by date.</h2><p>Select any date to view its programmes. Completed events remain available on their original dates in the calendar archive.</p></div><div class="event-calendar-head-mark" aria-hidden="true"><span>EDC</span><b>CALENDAR</b></div></div><div class="event-calendar" id="eventCalendar">${eventCalendarMarkup(events)}</div></div></section>`;
     const upcomingSection = upcoming.length ? `<section class="section section-mint"><div class="wrap">${sectionHead('Upcoming programmes','Take part in what is next.')}<div class="event-card-grid">${upcoming.map((e,i)=>eventRow(e,i)).join('')}</div></div></section>` : '';
     const archiveSection = archive.length ? `<section class="section"><div class="wrap">${sectionHead('Programme archive','Learning through events and experiences.','Browse the EDC programme archive by category.')}<div class="filter-row" data-filter-container="events">${categories.map((c,i)=>`<button class="filter-chip ${i===0?'active':''}" data-filter="${esc(c)}" type="button">${esc(c)}</button>`).join('')}</div><div class="event-card-grid">${archive.map((e,i)=>`<div data-category="${esc(e.category||'')}" class="event-filter-item">${eventRow(e,i)}</div>`).join('')}</div></div></section>` : (events.length ? '' : `<section class="section"><div class="wrap">${sectionHead('Programmes','Activities will be listed here when confirmed.')}<div class="empty-state">No programme entries are currently published.</div></div></section>`);
-    return `${pageHero('Events and programmes','Experiences that build entrepreneurial capability.','Explore EDC workshops, founder conversations, challenges, competitions and other learning experiences.','03')}${upcomingSection}${archiveSection}`;
+    return `${pageHero('Events and programmes','Experiences that build entrepreneurial capability.','Explore EDC workshops, founder conversations, challenges, competitions and other learning experiences.','03')}${calendarSection}${upcomingSection}${archiveSection}`;
   }
 
   function startupCard(s,i) {
@@ -730,6 +792,26 @@
   function wirePageActions() {
     const menu = $('#mobileNav');
     document.addEventListener('click', e => {
+      const calendarRoot = e.target.closest('#eventCalendar');
+      const monthControl = e.target.closest('[data-calendar-month]');
+      const todayControl = e.target.closest('[data-calendar-today]');
+      const dateControl = e.target.closest('[data-calendar-date]');
+      if (calendarRoot && (monthControl || todayControl || dateControl)) {
+        if (!eventCalendarState) initialiseEventCalendar(data?.events || []);
+        if (monthControl) {
+          const nextMonth = new Date(eventCalendarState.year,eventCalendarState.month + Number(monthControl.dataset.calendarMonth || 0),1);
+          eventCalendarState.year = nextMonth.getFullYear();
+          eventCalendarState.month = nextMonth.getMonth();
+        } else if (todayControl) {
+          const today = new Date();
+          eventCalendarState = { year:today.getFullYear(), month:today.getMonth(), selectedDate:localDateKey(today) };
+        } else if (dateControl) {
+          const selected = parseLocalDate(dateControl.dataset.calendarDate);
+          if (selected) eventCalendarState = { year:selected.getFullYear(), month:selected.getMonth(), selectedDate:localDateKey(selected) };
+        }
+        calendarRoot.innerHTML = eventCalendarMarkup(data?.events || []);
+        return;
+      }
       const nextWizard = e.target.closest('[data-contact-next]');
       const backWizard = e.target.closest('[data-contact-back]');
       if (nextWizard || backWizard) {
@@ -900,7 +982,7 @@
   }
   function updateSeo() {
     const pageNames = {home:'Home',about:'About the EDC',people:'People and student teams',events:'Events and programmes',startups:'Student ventures',impact:'EDC impact',messages:'Messages from heads',gallery:'EDC gallery',blogs:'EDC blogs',social:'EDC social media',mentors:'Mentor network',reports:'Annual reports',contact:'Reach the EDC',opportunities:'Opportunities',achievements:'Achievements','team-year':'Academic-year teams','blog-detail':'EDC article'};
-    const browserTitles = {home:'Home',about:'About',people:'People',events:'Events',startups:'Startups',impact:'Impact',messages:'Messages',gallery:'Gallery',blogs:'Blogs',social:'Social',mentors:'Mentors',reports:'Reports',contact:'Contact',opportunities:'Opportunities',achievements:'Achievements','team-year':'Team','blog-detail':'Blog'};
+    const browserTitles = {home:'Home',about:'About',people:'People',events:'Events',startups:'Startups',impact:'Impact',messages:'Messages',gallery:'Gallery',blogs:'Blogs',social:'Social Media',mentors:'Mentors',reports:'Annual Reports',contact:'Contact',opportunities:'Opportunities',achievements:'Achievements','team-year':'Team','blog-detail':'Blog'};
     const query = new URLSearchParams(location.search);
     const blogId = query.get('id');
     const yearKey = query.get('year');
@@ -912,7 +994,7 @@
     const base = String(data.site?.website || document.querySelector('meta[name="site-url"]')?.content || location.origin).replace(/\/$/,'');
     const queryString = page==='blog-detail' && blogId ? `?id=${encodeURIComponent(blogId)}` : page==='team-year' && yearKey ? `?year=${encodeURIComponent(yearKey)}` : '';
     const canonical = `${base}${location.pathname}${queryString}`;
-    const seoTitle = page === 'home' ? 'EDCKPRCAS | Entrepreneurship Development Cell at KPRCAS, Coimbatore' : page === 'people' ? 'EDCKPRCAS | People and Student Teams at KPRCAS' : `${title} | EDCKPRCAS at KPRCAS`;
+    const seoTitle = `EDCKPRCAS | ${browserTitles[page] || 'Home'}`;
     document.title = seoTitle;
     setMeta('description',description || 'Entrepreneurship Development Cell at KPRCAS, Coimbatore.');
     setMeta('robots','index,follow,max-image-preview:large');
@@ -922,7 +1004,7 @@
     const resolvedSocialImage = socialImage ? assetUrl(socialImage) : '';
     const imageUrl = resolvedSocialImage ? (/^https:\/\//i.test(resolvedSocialImage) ? resolvedSocialImage : new URL(resolvedSocialImage,base).href) : '';
     if(imageUrl) { setMeta('og:image',imageUrl,true); setMeta('og:image:alt',title,true); }
-    setMeta('twitter:card',imageUrl?'summary_large_image':'summary'); setMeta('twitter:title',`EDCKPRCAS | ${title}`); setMeta('twitter:description',description);
+    setMeta('twitter:card',imageUrl?'summary_large_image':'summary'); setMeta('twitter:title',seoTitle); setMeta('twitter:description',description);
     if(imageUrl) setMeta('twitter:image',imageUrl);
     const organization = { '@context':'https://schema.org','@type':'EducationalOrganization','name':'EDCKPRCAS','alternateName':'KPRCAS Entrepreneurship Development Cell','url':base,'email':data.site?.email || 'edc@kprcas.ac.in','address':{'@type':'PostalAddress','addressLocality':'Coimbatore','addressRegion':'Tamil Nadu','addressCountry':'IN'}};
     const schema = article ? {
