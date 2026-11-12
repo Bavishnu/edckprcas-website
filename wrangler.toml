@@ -1,6 +1,10 @@
+
 name = "edckprcas-website"
 compatibility_date = "2026-11-06"
 pages_build_output_dir = "./dist"
+
+[vars]
+ALLOWED_ORIGINS = "https://new.edckprcas.co.in,https://edckprcas-website.pages.dev,https://edckprcas.co.in,https://www.edckprcas.co.in,https://edc.kprcas.ac.in"
 
 [[d1_databases]]
 binding = "DB"
