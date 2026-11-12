@@ -12,7 +12,6 @@ a{color:inherit;text-decoration:none}button,input,textarea,select{font:inherit}b
 /* Home hero */
 .home-hero{padding:36px 0 80px;background:linear-gradient(180deg,#f5f7fa 0%,#fff 94%);overflow:hidden}.hero-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:50px;align-items:center;min-height:565px}.hero-copy{padding:34px 0}.hero-kicker{display:flex;align-items:center;gap:11px}.hero-kicker:before{content:"";width:32px;height:2px;background:var(--green)}.hero-title{font:800 clamp(48px,6.2vw,82px)/.99 var(--display);letter-spacing:-.085em;color:var(--navy);margin:25px 0 22px;max-width:650px}.hero-title .accent{display:block;font-family:var(--display);font-weight:500;font-style:normal;letter-spacing:-.06em;color:var(--green)}.hero-desc{max-width:470px;font-size:15px;line-height:1.85;color:var(--body);margin:0 0 27px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap}.hero-note{display:flex;align-items:center;gap:12px;margin-top:40px;color:var(--muted);font-size:10px}.hero-note strong{color:var(--blue);font-size:11px}.hero-note i{width:34px;height:1px;background:var(--green)}.hero-visual{position:relative;min-height:520px;border-radius:4px 4px 4px 70px;overflow:hidden;background:linear-gradient(145deg,#dfeaf2,#c7d9ec 53%,#c6e6dc);isolation:isolate}.hero-visual:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,46,109,.12),transparent 55%),linear-gradient(0deg,rgba(11,46,109,.3),transparent 55%);z-index:1}.hero-visual img{position:absolute;width:100%;height:100%;object-fit:cover;inset:0;mix-blend-mode:normal;filter:saturate(.78)}.hero-visual:after{content:"";position:absolute;inset:18px;border:1px solid rgba(255,255,255,.35);z-index:2;pointer-events:none}.hero-stamp{position:absolute;z-index:3;right:25px;top:25px;background:var(--green);color:#fff;padding:16px 18px;min-width:112px;text-align:center;box-shadow:0 12px 35px rgba(0,0,0,.12)}.hero-stamp b{display:block;font:800 24px/1 var(--display);letter-spacing:-.07em}.hero-stamp span{display:block;margin-top:6px;font-size:8px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}.hero-caption{position:absolute;z-index:3;left:32px;bottom:32px;color:#fff;max-width:280px}.hero-caption small{display:block;font-size:9px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;color:#a4e8cb;margin-bottom:8px}.hero-caption b{font:700 25px/1.12 var(--display);letter-spacing:-.05em}.hero-index{position:absolute;z-index:3;right:35px;bottom:30px;color:rgba(255,255,255,.75);font-size:9px;letter-spacing:.15em;font-weight:800}.hero-shape{position:absolute;width:190px;height:190px;border:1px solid rgba(255,255,255,.23);border-radius:50%;right:-80px;bottom:-60px;z-index:2}
 /* stats */
-}
 .stat-band{padding:40px 0 52px;background:var(--navy);color:#fff}.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}.stat-item{padding:5px 20px;border-left:1px solid rgba(255,255,255,.2)}.stat-item:first-child{border-left:0}.stat-value{font:800 clamp(32px,4vw,50px)/1 var(--display);letter-spacing:-.075em;color:#fff}.stat-label{font-size:10px;line-height:1.45;color:rgba(255,255,255,.63);margin-top:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
 /* General grids/cards */
 .intro-grid{display:grid;grid-template-columns:.7fr 1.3fr;gap:70px;align-items:start}.intro-aside{padding-top:10px}.intro-aside .eyebrow{margin-bottom:16px}.intro-aside .big-mark{font:800 92px/.9 var(--display);letter-spacing:-.1em;color:var(--blue);opacity:.1}.intro-content h2{font:800 clamp(34px,4.8vw,59px)/1.04 var(--display);letter-spacing:-.07em;margin:0 0 20px;color:var(--navy)}.intro-content p{max-width:720px;color:var(--body);line-height:1.9;margin:0 0 25px}.feature-band{display:grid;grid-template-columns:1.05fr .95fr;min-height:420px;background:var(--navy);color:#fff;border-radius:4px;overflow:hidden}.feature-band-image{position:relative;min-height:360px;background:#d4e1ef}.feature-band-image img{position:absolute;width:100%;height:100%;object-fit:cover;inset:0}.feature-band-copy{padding:clamp(30px,5vw,65px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center}.feature-band-copy h2{font:800 clamp(34px,4.2vw,53px)/1.03 var(--display);letter-spacing:-.065em;margin:18px 0}.feature-band-copy p{color:rgba(255,255,255,.68);font-size:13px;line-height:1.85;max-width:420px;margin:0 0 25px}.feature-band-copy .eyebrow{color:#8de0bd}
@@ -1063,7 +1062,9 @@ body{font-size:16px;line-height:1.7;color:#182b49}
 /* EDCKPRCAS targeted refinements — November 2026 */
 /* Keep the two editorial actions on the right edge of their homepage sections. */
 .home-diagram-copy{display:flex;flex-direction:column;align-items:stretch;min-width:0}
-.home-diagram-copy .text-link{align-self:flex-end;margin-top:6px}
+/* The About link sits at the far-right edge of the complete ecosystem card, not under the left copy column. */
+.home-diagram-cta{grid-column:1/-1;display:flex;justify-content:flex-end;align-items:center;width:100%;margin-top:-8px}
+.home-diagram-cta .text-link{margin-left:auto;align-self:center}
 .home-insights-link{display:flex;justify-content:flex-end;width:100%;margin-top:26px}
 .home-insights-link .text-link{margin-left:auto}
 .edc-hero-copy .hero-actions{align-self:flex-end;justify-content:flex-end}
@@ -1086,4 +1087,29 @@ body{font-size:16px;line-height:1.7;color:#182b49}
 .people-profile-grid .profile-card{height:100%}
 
 @media(max-width:900px){.team-year-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}}
-@media(max-width:700px){.edc-hero-copy .hero-actions{align-self:stretch;justify-content:flex-end}.home-diagram-copy .text-link{align-self:flex-end}.home-insights-link{justify-content:flex-end}.team-year-grid{grid-template-columns:1fr;gap:16px}.team-year-image{aspect-ratio:16/8}.team-year-copy{padding:20px}.team-year-art{padding:22px}.team-year-art>strong{font-size:32px}}
+@media(max-width:700px){.edc-hero-copy .hero-actions{align-self:stretch;justify-content:flex-end}.home-diagram-cta{justify-content:flex-end;margin-top:0}.home-insights-link{justify-content:flex-end}.team-year-grid{grid-template-columns:1fr;gap:16px}.team-year-image{aspect-ratio:16/8}.team-year-copy{padding:20px}.team-year-art{padding:22px}.team-year-art>strong{font-size:32px}}
+
+/* People landing page: one shared community photograph. */
+.people-group-photo{width:100%;max-width:1120px;margin:0 auto;overflow:hidden;border:1px solid var(--line);background:var(--paper);border-radius:4px;aspect-ratio:16/7}
+.people-group-photo>img{width:100%;height:100%;object-fit:cover;object-position:center}
+.people-group-photo-empty{display:grid;place-items:center;background:linear-gradient(135deg,#f2f6fa,#e7f4ef)}
+.people-group-photo-placeholder{max-width:560px;padding:38px;text-align:center}
+.people-group-photo-placeholder strong{display:block;margin:12px 0;color:var(--navy);font:800 clamp(22px,3vw,34px)/1.2 var(--display)}
+.people-group-photo-placeholder p{margin:0;color:var(--body);font-size:13px;line-height:1.75}
+/* Each academic year opens its own roster view; member portraits use mentor-style profile cards. */
+.team-roster-topline{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:26px}
+.team-roster-topline .section-head{flex:1;margin-bottom:0}
+.team-roster-back{flex:none;margin-bottom:9px}
+.team-roster-group-photo{width:100%;max-height:390px;margin:0 0 30px;overflow:hidden;border:1px solid var(--line);background:var(--paper)}
+.team-roster-group-photo img{width:100%;height:100%;max-height:390px;object-fit:cover}
+.team-member-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:stretch}
+.team-member-grid>.team-member-card{min-width:0;height:100%}
+.team-member-card>.profile-card{height:100%;display:flex;flex-direction:column}
+.team-member-card .profile-card .card-image{aspect-ratio:4/5;background:linear-gradient(135deg,#e8eef5,#dff4ec)}
+.team-member-card .profile-card .card-body{display:flex;flex:1;flex-direction:column;align-items:flex-start}
+.team-member-card .profile-card .profile-links{margin-top:auto;padding-top:14px}
+.team-member-card .profile-card .card-body p{margin-bottom:14px}
+.team-roster-empty{max-width:900px;margin:0 auto}
+.team-roster-empty .btn{margin-top:18px}
+@media(max-width:900px){.team-member-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.people-group-photo{aspect-ratio:16/8}}
+@media(max-width:700px){.people-group-photo{aspect-ratio:4/3}.people-group-photo-placeholder{padding:22px}.team-roster-topline{align-items:flex-start;flex-direction:column}.team-roster-back{margin:0 0 18px}.team-member-grid{grid-template-columns:1fr;gap:16px}.team-member-card .profile-card .card-image{aspect-ratio:4/3}.team-roster-group-photo{margin-bottom:20px}}
