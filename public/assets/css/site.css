@@ -1169,7 +1169,7 @@ body{font-size:16px;line-height:1.7;color:#182b49}
 .event-calendar-results .event-card-image{min-height:145px}
 .event-calendar-results .event-card-copy{padding:15px}
 .event-calendar-results .event-card-copy h3{font-size:17px!important;margin:6px 0}
-.event-calendar-results .event-card-copy p{display:-webkit-box;-webkit-line-clamp:3;line-clamp: 3;-webkit-box-orient:vertical;overflow:hidden;font-size:12px!important;line-height:1.55!important;margin:0 0 10px}
+.event-calendar-results .event-card-copy p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:12px!important;line-height:1.55!important;margin:0 0 10px}
 .event-calendar-results .event-card-foot{font-size:10px!important;padding-top:8px}
 .event-calendar-empty{display:flex;min-height:230px;flex-direction:column;align-items:center;justify-content:center;padding:25px;text-align:center}
 .event-calendar-empty-icon{display:grid;place-items:center;width:43px;height:43px;margin-bottom:13px;border:1px solid rgba(0,168,107,.25);border-radius:50%;background:#e8f8ef;color:#00a86b;font-size:22px;animation:eventCalendarPulse 2.8s ease-in-out infinite}
@@ -1183,3 +1183,22 @@ body{font-size:16px;line-height:1.7;color:#182b49}
 @media(max-width:1050px){.event-calendar-shell{grid-template-columns:1fr}.event-calendar-selection{min-height:230px}.event-calendar-results{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.event-calendar-page-head{align-items:flex-start;flex-direction:column}.event-calendar-head-mark{display:none}.event-calendar-shell{padding:13px;gap:15px}.event-calendar-main{padding:6px 1px 4px}.event-calendar-toolbar{align-items:center}.event-calendar-month-label h3{font-size:25px}.event-calendar-nav{min-width:34px;height:35px;padding:0 8px}.event-calendar-weekdays,.event-calendar-grid{gap:4px}.event-calendar-weekdays span{font-size:8px;letter-spacing:.04em}.event-calendar-day{min-height:49px;padding:8px 6px;font-size:12px}.event-calendar-day-count{top:5px;right:4px;min-width:15px;height:15px;font-size:8px}.event-calendar-day-dot{left:7px;bottom:6px;width:5px;height:5px}.event-calendar-today-label{right:4px;bottom:4px;font-size:6px}.event-calendar-legend{gap:9px;font-size:9px}.event-calendar-total{margin-left:0}.event-calendar-selection{padding:15px}.event-calendar-results{grid-template-columns:1fr}.event-calendar-results .event-card{grid-template-columns:105px 1fr;min-height:140px}.event-calendar-results .event-card-image{min-height:140px}.event-calendar-results .event-card-copy{padding:12px}.event-calendar-results .event-card-copy h3{font-size:15px!important}}
 @media(prefers-reduced-motion:reduce){.event-calendar-shell,.event-calendar-day,.event-calendar-selection,.event-calendar-empty-icon,.event-calendar-results .event-card{animation:none!important;transition:none!important}.event-calendar-day:hover,.event-calendar-day:focus-visible{transform:none}}
+
+/* 13 Nov 2026 — Uploaded ecosystem logos should appear without grid/frame lines.
+   Keep the EDCKPRCAS wall footer label visible; it is intentionally independent
+   of the optional wall link/content. */
+.edc-logo-wall:has(> .wall-tile.has-image) {
+  border: 0 !important;
+}
+.edc-logo-wall:has(> .wall-tile.has-image) > .wall-tile {
+  border-color: transparent !important;
+}
+.edc-wall-section .wall-foot,
+.edc-wall-section .wall-foot > span {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.edc-wall-section .wall-foot > span {
+  display: inline-block !important;
+}
