@@ -1,3 +1,4 @@
+
 (() => {
   'use strict';
   const root = document.getElementById('admin-root');
@@ -168,20 +169,24 @@
       title:'Heading / title', description:'Supporting paragraph', eyebrow:'Small section label', image:'Image',
       storyImage:'EDC story image', missionImage:'Mission image', visionImage:'Vision image', statementImage:'Impact statement image', contactImage:'Reach Us image',
       footerBrandLine:'Footer institutional description', megaNote:'Mega-menu description', megaTitle:'Mega-menu heading',
-      journeyHint:'Journey scroll instruction', journeyExitLabel:'Journey exit button label', journeyOutputLabel:'Journey output label', stakeholderEyebrow:'Stakeholders section label', stakeholderTitle:'Stakeholders heading', stakeholderDescription:'Stakeholders supporting text', stakeholders:'Stakeholder logos', topLineBrand:'Top strip brand label'
+      journeyHint:'Journey scroll instruction', journeyExitLabel:'Journey exit button label', journeyOutputLabel:'Journey output label', visualMode:'Pathway visual display', stakeholderEyebrow:'Stakeholders section label', stakeholderTitle:'Stakeholders heading', stakeholderDescription:'Stakeholders supporting text', stakeholders:'Stakeholder logos', topLineBrand:'Top strip brand label'
     };
     return labels[key] || String(key).replace(/([a-z])([A-Z])/g,'$1 $2').replace(/^./,c=>c.toUpperCase());
   }
   function renderArrayRow(keys, values={}, index=0) {
     const fields = keys.map(key => {
       const value = values?.[key] ?? '';
+      const isVisualMode = key === 'visualMode';
+      const selectedVisualMode = String(value || 'orb');
       const isImage = /image|photo|cover|poster|logo|thumbnail/i.test(key);
       const isPdf = /pdf|document|file/i.test(key) && !isImage;
-      const control = isImage || isPdf
-        ? uploadFieldMarkup(key,value,isPdf?'pdf':'image','array-')
-        : arrayLongKeys.has(key.toLowerCase())
-          ? `<textarea data-array-key="${esc(key)}" placeholder="${esc(prettyFieldName(key))}">${esc(value)}</textarea>`
-          : `<input data-array-key="${esc(key)}" type="text" value="${esc(value)}" placeholder="${esc(prettyFieldName(key))}">`;
+      const control = isVisualMode
+        ? `<select data-array-key="visualMode"><option value="orb" ${selectedVisualMode === 'orb' ? 'selected' : ''}>Original rings + step number</option><option value="image" ${selectedVisualMode === 'image' ? 'selected' : ''}>Uploaded image</option></select><div class="field-hint">Recommended: keep the original orbital rings and numbered centre. Choose Uploaded image only when you want the uploaded file to replace that graphic.</div>`
+        : isImage || isPdf
+          ? uploadFieldMarkup(key,value,isPdf?'pdf':'image','array-')
+          : arrayLongKeys.has(key.toLowerCase())
+            ? `<textarea data-array-key="${esc(key)}" placeholder="${esc(prettyFieldName(key))}">${esc(value)}</textarea>`
+            : `<input data-array-key="${esc(key)}" type="text" value="${esc(value)}" placeholder="${esc(prettyFieldName(key))}">`;
       return `<div class="admin-field ${arrayLongKeys.has(key.toLowerCase())||isImage||isPdf?'full':''}">${isImage||isPdf?'':`<label>${esc(prettyFieldName(key))}</label>`}${control}</div>`;
     }).join('');
     return `<div class="array-record"><div class="array-record-head"><b>Entry ${index+1}</b><button type="button" class="danger-btn" data-array-remove>Remove entry</button></div><div class="form-grid">${fields}</div></div>`;
@@ -193,7 +198,11 @@
       journey:['phase','title','text','output','image'], principles:['title','text','image'], milestones:['year','title','text','image'], workCards:['number','eyebrow','category','title','text','buttonLabel','url','image'],
       comparisonLeftPoints:['text'], comparisonRightPoints:['text'], enquiryChoices:['label','description'], goals:['label','description']
     };
-    const keys = Object.keys(rows[0] || {}).length ? Object.keys(rows[0]) : (defaults[fieldKey] || ['title','text']);
+    let keys = Object.keys(rows[0] || {}).length ? Object.keys(rows[0]) : (defaults[fieldKey] || ['title','text']);
+    if (fieldKey === 'journey') {
+      // Add the visual selector to existing D1 records too; missing values default to the original rings.
+      keys = [...keys.filter(key => key !== 'visualMode' && key !== 'image'), 'visualMode', 'image'];
+    }
     const records = rows.map((row,i)=>renderArrayRow(keys,row,i)).join('') || renderArrayRow(keys,{},0);
     return `<div class="admin-field full array-editor" data-array-editor="${esc(fieldKey)}" data-array-keys="${esc(JSON.stringify(keys))}"><div class="array-editor-head"><div><label>${esc(prettyFieldName(fieldKey))}</label><span class="field-hint">Add, edit or remove individual entries below.</span></div><button class="ghost-btn" type="button" data-array-add>+ Add entry</button></div><div class="array-records">${records}</div></div>`;
   }
