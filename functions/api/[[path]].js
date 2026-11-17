@@ -129,20 +129,61 @@ async function uploadMedia(request, env) {
   return json({ ok: true, url: `/api/media/${filename}`, filename }, 201);
 }
 
-async function serveMedia(filename, env) {
+function responseWithCacheStatus(response, statusHeader, statusValue) {
+  const headers = new Headers(response.headers);
+  headers.set(statusHeader, statusValue);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
+async function serveMedia(filename, context) {
+  const { request, env } = context;
   if (!/^[a-zA-Z0-9._-]{1,180}$/.test(filename) || filename.includes("..")) return new Response("Not found", { status: 404 });
+
+  // CMS uploads receive a timestamp + random identifier in safeFilename(), so a
+  // media URL is immutable. Check the local Cloudflare edge cache before D1.
+  const requestUrl = new URL(request.url);
+  const cacheKey = new Request(`${requestUrl.origin}${requestUrl.pathname}`, { method: "GET" });
+  let edgeCache = null;
+  try {
+    if (typeof caches !== "undefined") edgeCache = caches.default;
+    const cached = edgeCache ? await edgeCache.match(cacheKey) : null;
+    if (cached) return responseWithCacheStatus(cached, "x-edc-media-cache", "HIT");
+  } catch (error) {
+    // Cache API failures must never make public media unavailable; fall back to D1.
+    console.warn("EDCKPRCAS media cache lookup failed", error?.message || error);
+  }
+
   const media = await readMedia(env, filename);
   if (!media) return new Response("Not found", { status: 404 });
-  return new Response(media.bytes, {
+  const etag = `"${(await sha256Hex(`${filename}:${media.fileSize}`)).slice(0, 32)}"`;
+  const response = new Response(media.bytes, {
     status: 200,
     headers: {
       "content-type": media.mimeType,
       "content-length": String(media.fileSize),
-      "cache-control": "public, max-age=3600",
+      // The media URL is unique per upload; long-lived immutable caching is safe.
+      "cache-control": "public, max-age=31536000, immutable",
+      "etag": etag,
+      "x-edc-media-cache": "MISS",
       "x-content-type-options": "nosniff",
       "content-disposition": `inline; filename="${filename.replace(/[^a-zA-Z0-9._-]/g, "_")}"`
     }
   });
+
+  if (edgeCache) {
+    try {
+      const pending = edgeCache.put(cacheKey, response.clone());
+      if (typeof context.waitUntil === "function") context.waitUntil(pending);
+      else await pending;
+    } catch (error) {
+      console.warn("EDCKPRCAS media cache write failed", error?.message || error);
+    }
+  }
+  return response;
 }
 
 function decodeHtml(value) {
@@ -191,14 +232,41 @@ async function socialPreview(request) {
   return json({ ok: true, url: image, filename: "Social media thumbnail", title: metaValue(text, "og:title") || metaValue(text, "twitter:title") || "Social media post" }, 201);
 }
 
-async function publicContent(env, request) {
+async function publicContent(env, request, context, cacheable = false) {
+  const requestUrl = new URL(request.url);
+  const cacheKey = new Request(`${requestUrl.origin}/api/content`, { method: "GET" });
+  let edgeCache = null;
+  if (cacheable) {
+    try {
+      if (typeof caches !== "undefined") edgeCache = caches.default;
+      const cached = edgeCache ? await edgeCache.match(cacheKey) : null;
+      if (cached) return responseWithCacheStatus(cached, "x-edc-content-cache", "HIT");
+    } catch (error) {
+      console.warn("EDCKPRCAS content cache lookup failed", error?.message || error);
+    }
+  }
+
   const row = await env.DB.prepare("SELECT content_json, updated_at FROM cms_content WHERE id = 1").first();
   if (!row) return json({ error: "Website content has not been initialized. Run the initial D1 seed step." }, 503);
   let content;
   try { content = JSON.parse(row.content_json); }
   catch { return json({ error: "The stored website content is invalid. Restore a valid CMS backup." }, 500); }
-  if (content.site && request?.url) content.site.website = new URL(request.url).origin;
-  return json(content, 200, { "last-modified": row.updated_at || "" });
+  if (content.site && request?.url) content.site.website = requestUrl.origin;
+
+  const response = json(content, 200, {
+    "last-modified": row.updated_at || "",
+    ...(cacheable ? { "cache-control": "public, max-age=30, s-maxage=60", "x-edc-content-cache": "MISS" } : {})
+  });
+  if (cacheable && edgeCache) {
+    try {
+      const pending = edgeCache.put(cacheKey, response.clone());
+      if (typeof context?.waitUntil === "function") context.waitUntil(pending);
+      else await pending;
+    } catch (error) {
+      console.warn("EDCKPRCAS content cache write failed", error?.message || error);
+    }
+  }
+  return response;
 }
 
 async function updateContent(request, env) {
@@ -216,6 +284,16 @@ async function updateContent(request, env) {
   await env.DB.prepare(
     "INSERT INTO cms_content (id, content_json, updated_at) VALUES (1, ?, ?) ON CONFLICT(id) DO UPDATE SET content_json = excluded.content_json, updated_at = excluded.updated_at"
   ).bind(contentJson, now).run();
+  // Clear the current data-centre's public content copy immediately. Other
+  // locations naturally expire after the short 60-second edge TTL.
+  try {
+    if (typeof caches !== "undefined") {
+      const requestUrl = new URL(request.url);
+      await caches.default.delete(new Request(`${requestUrl.origin}/api/content`, { method: "GET" }));
+    }
+  } catch (error) {
+    console.warn("EDCKPRCAS content cache invalidation failed", error?.message || error);
+  }
   return json({ ok: true, savedAt: now });
 }
 
@@ -231,7 +309,7 @@ export async function onRequest(context) {
       await env.DB.prepare("SELECT 1 AS ok").first();
       return json({ ok: true, name: "EDCKPRCAS Online Content Manager", storage: "Cloudflare D1" });
     }
-    if (path === "/api/content" && method === "GET") return publicContent(env, request);
+    if (path === "/api/content" && method === "GET") return publicContent(env, request, context, true);
     if (path === "/api/auth/status" && method === "GET") {
       const admin = await env.DB.prepare("SELECT username FROM cms_admin WHERE id = 1").first();
       const session = admin ? await getSession(request, env) : null;
@@ -242,14 +320,14 @@ export async function onRequest(context) {
     if (path === "/api/admin/logout" && method === "POST") return logoutAdmin(request, env);
 
     const mediaMatch = path.match(/^\/api\/media\/([^/]+)$/);
-    if (mediaMatch && method === "GET") return serveMedia(decodeURIComponent(mediaMatch[1]), env);
+    if (mediaMatch && method === "GET") return serveMedia(decodeURIComponent(mediaMatch[1]), context);
 
     const auth = await requireAdmin(request, env);
     if (auth.error) return auth.error;
     const { session } = auth;
 
     if (path === "/api/admin/whoami" && method === "GET") return json({ username: session.username });
-    if (path === "/api/admin/data" && method === "GET") return publicContent(env, request);
+    if (path === "/api/admin/data" && method === "GET") return publicContent(env, request, context, false);
     if (path === "/api/admin/data" && method === "PUT") return updateContent(request, env);
     if (path === "/api/admin/password" && method === "POST") return changePassword(request, env, session);
     if (path === "/api/admin/upload" && method === "POST") return uploadMedia(request, env);
