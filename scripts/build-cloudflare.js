@@ -2,6 +2,7 @@
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC = path.join(ROOT, 'public');
 const OUT = path.join(ROOT, 'dist');
@@ -100,6 +101,7 @@ function injectStaticSeo(outputDirectory, base, siteData) {
       `<meta property="og:url" content="${escapeHtmlAttribute(canonical)}">`,
       `<meta property="og:image" content="${escapeHtmlAttribute(logoUrl)}">`,
       '<meta property="og:image:alt" content="Official EDCKPRCAS logo">',
+      '<meta name="robots" content="index,follow,max-image-preview:large">',
       '<meta name="twitter:card" content="summary_large_image">',
       `<meta name="twitter:title" content="${escapeHtmlAttribute(title)}">`,
       `<meta name="twitter:description" content="${escapeHtmlAttribute(description)}">`,
@@ -122,6 +124,110 @@ function injectStaticSeo(outputDirectory, base, siteData) {
     injectedCount += 1;
   }
   console.log(`Static SEO metadata added to ${injectedCount} public HTML pages (canonical, Open Graph, Twitter, organization schema).`);
+}
+
+function optimizeHtmlDelivery(outputDirectory) {
+  const htmlFiles = [];
+  function collect(directory) {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const file = path.join(directory, entry.name);
+      if (entry.isDirectory()) collect(file);
+      else if (entry.isFile() && entry.name.toLowerCase().endsWith('.html')) htmlFiles.push(file);
+    }
+  }
+  collect(outputDirectory);
+
+  const assetVersion = relativePath => {
+    const fullPath = path.join(outputDirectory, relativePath);
+    if (!fs.existsSync(fullPath)) throw new Error(`Required performance asset is missing: ${relativePath}`);
+    return crypto.createHash('sha256').update(fs.readFileSync(fullPath)).digest('hex').slice(0, 12);
+  };
+  const cssVersion = assetVersion('assets/css/site.css');
+  const configVersion = assetVersion('assets/js/cloudflare-config.js');
+  const siteVersion = assetVersion('assets/js/site.js');
+
+  const motionBootstrap = `<script>
+(() => {
+  const desktopMotion = window.matchMedia('(min-width: 761px) and (prefers-reduced-motion: no-preference)').matches;
+  if (!desktopMotion) {
+    window.__EDCKPRCAS_MOTION_READY = Promise.resolve(false);
+    return;
+  }
+  const preconnect = document.createElement('link');
+  preconnect.rel = 'preconnect';
+  preconnect.href = 'https://cdn.jsdelivr.net';
+  preconnect.crossOrigin = 'anonymous';
+  document.head.appendChild(preconnect);
+
+  const isHome = location.pathname === '/' || location.pathname.toLowerCase().endsWith('/index.html');
+  const sources = [
+    'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js',
+    'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js'
+  ];
+  if (isHome) sources.push('https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/Observer.min.js');
+
+  const loadScript = src => new Promise(resolve => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = false;
+    let settled = false;
+    const finish = loaded => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timer);
+      if (!loaded) script.remove();
+      resolve(loaded);
+    };
+    const timer = window.setTimeout(() => finish(false), 2500);
+    script.onload = () => finish(true);
+    script.onerror = () => finish(false);
+    document.head.appendChild(script);
+  });
+
+  window.__EDCKPRCAS_MOTION_READY = sources.reduce(
+    (ready, src) => ready.then(loaded => loaded ? loadScript(src) : false),
+    Promise.resolve(true)
+  ).then(loaded => Boolean(loaded && window.gsap && window.ScrollTrigger))
+    .catch(() => false);
+})();
+</script>`;
+
+  let optimized = 0;
+  for (const file of htmlFiles) {
+    const relative = path.relative(outputDirectory, file).split(path.sep).join('/');
+    if (relative.startsWith('content-manager/') || relative.startsWith('admin/')) continue;
+    let html = fs.readFileSync(file, 'utf8');
+
+    // One variable font file per family serves the required 400–800 weights.
+    html = html.replace(
+      /https:\/\/fonts\.googleapis\.com\/css2\?family=DM\+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap/g,
+      'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..800&family=Manrope:wght@400..800&display=swap'
+    );
+
+    // Do not block the content renderer on GSAP downloads. Mobile and reduced-
+    // motion visits use the native fallback and do not download these libraries.
+    html = html.replace(/\s*<script\b[^>]*src=["'][^"']*\/gsap@3\.15\.0\/dist\/(?:gsap|ScrollTrigger|Observer)\.min\.js["'][^>]*>\s*<\/script>/gi, '');
+
+    if (!html.includes('window.__EDCKPRCAS_MOTION_READY')) {
+      const configTag = /<script\b(?=[^>]*src=["']\/assets\/js\/cloudflare-config\.js["'])[^>]*>\s*<\/script>/i;
+      if (configTag.test(html)) {
+        html = html.replace(configTag, `${motionBootstrap}\n<script src="/assets/js/cloudflare-config.js" defer></script>`);
+      } else {
+        const siteTag = /<script\b(?=[^>]*src=["'](?:\/)?assets\/js\/site\.js["'])[^>]*>\s*<\/script>/i;
+        if (siteTag.test(html)) html = html.replace(siteTag, `${motionBootstrap}\n$&`);
+      }
+    }
+
+    // Fingerprint local CSS/JS URLs so the static assets can be cached as
+    // immutable for a year without serving stale code after a new deployment.
+    html = html.replace(/href=(["'])(\/)?assets\/css\/site\.css(?:\?[^"']*)?\1/i, `href="$2assets/css/site.css?v=${cssVersion}"`);
+    html = html.replace(/src=(["'])\/assets\/js\/cloudflare-config\.js(?:\?[^"']*)?\1/i, `src="/assets/js/cloudflare-config.js?v=${configVersion}"`);
+    html = html.replace(/src=(["'])(\/)?assets\/js\/site\.js(?:\?[^"']*)?\1/i, `src="$2assets/js/site.js?v=${siteVersion}"`);
+
+    fs.writeFileSync(file, html, 'utf8');
+    optimized += 1;
+  }
+  console.log(`Optimized HTML delivery on ${optimized} public pages (variable fonts; desktop-only optional motion libraries).`);
 }
 
 function main() {
@@ -156,6 +262,8 @@ function main() {
   if (!configSource.includes('__EDCKPRCAS_MEDIA_BASE_URL__')) throw new Error('Media URL token is missing from cloudflare-config.js.');
   fs.writeFileSync(configFile, configSource.replace('__EDCKPRCAS_MEDIA_BASE_URL__', JSON.stringify(mediaBase)), 'utf8');
 
+  optimizeHtmlDelivery(OUT);
+
   const publishedData = { ...siteData, site: { ...siteData.site, website: base } };
   fs.mkdirSync(path.join(OUT, 'data'), { recursive: true });
   fs.writeFileSync(path.join(OUT, 'data', 'site-data.json'), JSON.stringify(publishedData, null, 2), 'utf8');
@@ -170,7 +278,30 @@ function main() {
   }).forEach(item => urls.push(`<url><loc>${xml(`${base}/blog.html?id=${encodeURIComponent(item.id)}`)}</loc></url>`));
   fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /content-manager/\nDisallow: /admin/\nSitemap: ${base}/sitemap.xml\n`, 'utf8');
   fs.writeFileSync(path.join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.join('')}</urlset>`, 'utf8');
-  fs.writeFileSync(path.join(OUT, '_headers'), `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n/data/site-data.json\n  Cache-Control: no-store\n/content-manager/*\n  Cache-Control: no-store\n/admin/*\n  Cache-Control: no-store\n/assets/js/admin.js\n  Cache-Control: no-store\n/favicon-theme.svg\n  Cache-Control: no-cache\n/uploads/*\n  Cache-Control: public, max-age=86400\n`, 'utf8');
+  fs.writeFileSync(path.join(OUT, '_headers'), `/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+/data/site-data.json
+  Cache-Control: no-store
+/content-manager/*
+  Cache-Control: no-store
+/admin/*
+  Cache-Control: no-store
+/assets/js/admin.js
+  Cache-Control: no-store
+/assets/js/site.js
+  Cache-Control: public, max-age=31536000, immutable
+/assets/js/cloudflare-config.js
+  Cache-Control: public, max-age=31536000, immutable
+/assets/css/site.css
+  Cache-Control: public, max-age=31536000, immutable
+/favicon-theme.svg
+  Cache-Control: no-cache
+/uploads/*
+  Cache-Control: public, max-age=86400
+`, 'utf8');
 
   // Only API paths invoke Pages Functions. All public HTML, CSS, JS and media
   // are served as static assets and do not consume Function requests.
