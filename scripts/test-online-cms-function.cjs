@@ -24,6 +24,8 @@ class MemoryD1 {
     this.inquiries = new Map();
     this.mediaFiles = new Map();
     this.mediaChunks = new Map();
+    this.contentReads = 0;
+    this.mediaReads = 0;
   }
   prepare(sql) {
     const db = this;
@@ -51,7 +53,7 @@ class MemoryD1 {
       return row && row.expires_at > v[1] ? { username: row.username, expires_at: row.expires_at } : null;
     }
     if (sql.includes('SELECT attempts, locked_until')) return this.loginAttempts.get(v[0]) || null;
-    if (sql.includes('SELECT content_json, updated_at')) return this.content ? { ...this.content } : null;
+    if (sql.includes('SELECT content_json, updated_at')) { this.contentReads += 1; return this.content ? { ...this.content } : null; }
     if (sql.includes('SELECT COALESCE(SUM(file_size)')) {
       const total_size = [...this.mediaFiles.values()].reduce((sum, f) => sum + f.file_size, 0);
       return { total_size };
@@ -63,6 +65,7 @@ class MemoryD1 {
       return { results: [...this.inquiries.values()].sort((a,b) => b.received_at.localeCompare(a.received_at)).slice(0,1000).map(item => ({ id: item.id, name: item.name, email: item.email, subject: item.subject, message: item.message, receivedAt: item.received_at, status: item.status, emailSent: item.email_sent, emailError: item.email_error })) };
     }
     if (sql.includes('FROM cms_media_files f INNER JOIN cms_media_chunks')) {
+      this.mediaReads += 1;
       const file = this.mediaFiles.get(v[0]);
       if (!file) return { results: [] };
       const chunks = [...(this.mediaChunks.get(v[0]) || new Map()).entries()].sort((a,b)=>a[0]-b[0]);
@@ -134,11 +137,31 @@ class MemoryD1 {
 }
 
 const fakeDb = new MemoryD1();
+const edgeEntries = new Map();
+const edgeCache = {
+  async match(request) {
+    const key = typeof request === 'string' ? request : request.url;
+    const entry = edgeEntries.get(key);
+    if (!entry) return undefined;
+    if (entry.expiresAt <= Date.now()) { edgeEntries.delete(key); return undefined; }
+    return entry.response.clone();
+  },
+  async put(request, response) {
+    const key = typeof request === 'string' ? request : request.url;
+    const cacheControl = response.headers.get('cache-control') || '';
+    const seconds = Number((cacheControl.match(/s-maxage=(\d+)/i) || cacheControl.match(/max-age=(\d+)/i) || [])[1] || 0);
+    edgeEntries.set(key, { response: response.clone(), expiresAt: Date.now() + seconds * 1000 });
+  },
+  async delete(request) {
+    const key = typeof request === 'string' ? request : request.url;
+    return edgeEntries.delete(key);
+  }
+};
 const sandbox = {
   module: { exports: {} }, exports: {},
   crypto: webcrypto, TextEncoder, TextDecoder, URL, Request, Response, Headers,
   Uint8Array, ArrayBuffer, Date, Math, JSON, String, Number, Object, Map, Set, RegExp,
-  console,
+  console, caches: { default: edgeCache },
   fetch: async () => new Response(JSON.stringify({ id: 'mock-email-id' }), { status: 200, headers: { 'content-type': 'application/json' } })
 };
 const allSource = `${libSource}\n${apiSource}\nmodule.exports = { onRequest };`;
@@ -185,9 +208,14 @@ function req(origin, path, method='GET', body=null, cookie='') {
 
   const starter = { site: { name: 'EDCKPRCAS', website: '' }, home: { title: 'Think Entrepreneur!' }, people: [], events: [], startups: [] };
   fakeDb.content = { content_json: JSON.stringify(starter), updated_at: new Date().toISOString() };
+  const contentReadsBeforeCache = fakeDb.contentReads;
   response = await onRequest({ request: req(origin, '/api/content'), env });
   body = await response.json();
-  assert(response.status === 200 && body.site.website === origin, 'public API returns seeded content with active site origin');
+  assert(response.status === 200 && body.site.website === origin && response.headers.get('x-edc-content-cache') === 'MISS', 'public API returns seeded content and warms the edge cache');
+  const contentReadsAfterMiss = fakeDb.contentReads;
+  response = await onRequest({ request: req(origin, '/api/content'), env });
+  body = await response.json();
+  assert(response.status === 200 && response.headers.get('x-edc-content-cache') === 'HIT' && fakeDb.contentReads === contentReadsAfterMiss && contentReadsAfterMiss === contentReadsBeforeCache + 1, 'public content cache hit avoids another D1 read');
 
   response = await onRequest({ request: req(origin, '/api/admin/data', 'GET', null, cookie), env });
   body = await response.json();
@@ -198,6 +226,9 @@ function req(origin, path, method='GET', body=null, cookie='') {
   body = await response.json();
   assert(response.status === 200 && body.ok === true, 'authenticated Content Manager can save content to D1');
   assert(JSON.parse(fakeDb.content.content_json).site.website === origin, 'CMS save stores the active custom-domain origin');
+  response = await onRequest({ request: req(origin, '/api/content'), env });
+  body = await response.json();
+  assert(response.status === 200 && response.headers.get('x-edc-content-cache') === 'MISS' && body.home.title === 'Updated by Online CMS', 'CMS content save invalidates the local public edge cache');
 
   const bytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10, 1, 2, 3]);
   response = await onRequest({ request: new Request(`${origin}/api/admin/upload?filename=sample.png`, { method: 'POST', headers: { Origin: origin, Cookie: cookie, 'Content-Type': 'image/png' }, body: bytes }), env });
@@ -206,7 +237,11 @@ function req(origin, path, method='GET', body=null, cookie='') {
 
   response = await onRequest({ request: req(origin, body.url), env });
   const received = new Uint8Array(await response.arrayBuffer());
-  assert(response.status === 200 && received.length === bytes.length && received.every((v,i)=>v===bytes[i]), 'uploaded media can be retrieved intact');
+  assert(response.status === 200 && received.length === bytes.length && received.every((v,i)=>v===bytes[i]) && response.headers.get('x-edc-media-cache') === 'MISS', 'uploaded media can be retrieved intact and cached on first request');
+  const mediaReadsAfterMiss = fakeDb.mediaReads;
+  response = await onRequest({ request: req(origin, body.url), env });
+  const receivedFromCache = new Uint8Array(await response.arrayBuffer());
+  assert(response.status === 200 && response.headers.get('x-edc-media-cache') === 'HIT' && fakeDb.mediaReads === mediaReadsAfterMiss && receivedFromCache.length === bytes.length, 'cached media request avoids another D1 read');
 
   const inquiryId = '9f8b01ad-9ad0-4fe1-96a6-5a7c0b121234';
   fakeDb.inquiries.set(inquiryId, { id: inquiryId, name: 'Website Visitor', email: 'visitor@example.com', subject: 'Question', message: 'Please contact me about the EDC.', received_at: new Date().toISOString(), status: 'New', email_sent: 1, email_error: null, email_id: 'mock' });
