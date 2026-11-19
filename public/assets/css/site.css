@@ -1190,3 +1190,79 @@ body[data-page="events"] #main > .section{border-top:0!important}
 .main-nav > a[href="startups.html"]::after,
 .main-nav > a[href="impact.html"]::after,
 .main-nav > a[href="events.html"]::after{display:none!important;content:none!important}
+
+/* Mobile leadership-message layout: keep identity beside portrait, let the message use the full card width. */
+@media(max-width:700px){
+  .voice-carousel-leadership .voice-slide.active{
+    display:grid!important;
+    grid-template-columns:minmax(104px,34%) minmax(0,1fr)!important;
+    grid-template-areas:
+      "photo top"
+      "photo name"
+      "photo designation"
+      "heading heading"
+      "body body"!important;
+    column-gap:14px!important;
+    row-gap:4px!important;
+    align-items:start!important;
+  }
+  .voice-carousel-leadership .voice-leader-photo{
+    grid-area:photo!important;
+    width:100%!important;
+    max-width:138px!important;
+    aspect-ratio:3/4!important;
+    max-height:none!important;
+    align-self:start!important;
+  }
+  .voice-carousel-leadership .voice-leader-copy{display:contents!important}
+  .voice-carousel-leadership .voice-slide-top{
+    grid-area:top!important;
+    display:flex!important;
+    align-self:end!important;
+    align-items:center!important;
+    gap:6px!important;
+    margin:0!important;
+    min-width:0!important;
+  }
+  .voice-carousel-leadership .voice-leader-name{
+    grid-area:name!important;
+    min-width:0!important;
+    margin:2px 0 0!important;
+    font-size:clamp(19px,5.2vw,24px)!important;
+    line-height:1.16!important;
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+    hyphens:none!important;
+  }
+  .voice-carousel-leadership .voice-leader-designation{
+    grid-area:designation!important;
+    min-width:0!important;
+    margin:0!important;
+    font-size:11px!important;
+    line-height:1.45!important;
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+  }
+  .voice-carousel-leadership .voice-message-heading{
+    grid-area:heading!important;
+    min-width:0!important;
+    margin:12px 0 0!important;
+    font-size:16px!important;
+    line-height:1.35!important;
+  }
+  .voice-carousel-leadership .voice-message-body{
+    grid-area:body!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:4px 0 0!important;
+    font-size:14px!important;
+    line-height:1.75!important;
+    text-align:left!important;
+    white-space:normal!important;
+    overflow-wrap:break-word!important;
+    word-break:normal!important;
+    hyphens:none!important;
+  }
+  .voice-carousel-leadership .voice-controls{padding-top:14px!important}
+}
