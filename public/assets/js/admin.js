@@ -9,7 +9,7 @@
   let toastTimer = null;
 
   const collections = {
-    people:{title:'People', singular:'profile', collection:'people', primary:'name', secondary:'role', fields:[['name','Full name','text'],['role','Designation / role','text'],['team','Team / department','text'],['teamYear','Academic year','teamYear'],['order','Display order (same as leadership messages; lower number appears first)','number'],['bio','Biography','textarea'],['image','Individual member portrait photo (upload one image per student)','image'],['linkedin','LinkedIn URL','url'],['email','Email address','email']]},
+    people:{title:'People', singular:'profile', collection:'people', primary:'name', secondary:'role', fields:[['name','Full name','text'],['role','Designation / role shown on the roster card','text'],['team','Affiliation / department line shown on the card','text'],['teamYear','Academic year','teamYear'],['order','Manual display order (lower number appears first)','number'],['cardTag','Small card badge label (optional)','text'],['bio','Profile biography','textarea'],['image','Individual member portrait photograph','image'],['imageAlt','Portrait alternative text (accessibility)','text'],['linkedin','LinkedIn URL','url'],['email','Email address','email']]},
     events:{title:'Events',singular:'event',collection:'events',primary:'title',secondary:'date',fields:[['title','Event title','text'],['date','Event date','date'],['category','Category','text'],['status','Status','text'],['location','Venue / location','text'],['summary','Description','textarea'],['image','Event image','image'],['link','Registration / event URL','url']]},
     startups:{title:'Startups',singular:'startup',collection:'startups',primary:'name',secondary:'sector',fields:[['name','Venture name','text'],['sector','Sector','text'],['stage','Stage / status','text'],['founders','Founder names','text'],['year','Year','text'],['summary','Venture overview','textarea'],['image','Venture image','image'],['website','Website URL','url']]},
     messages:{title:'Messages from heads',singular:'message',collection:'messages',primary:'name',secondary:'designation',fields:[['name','Name','text'],['designation','Designation','text'],['heading','Message heading','text'],['quote','Message / quote','textarea'],['image','Portrait image','image'],['order','Display order','text']]},
@@ -20,38 +20,71 @@
     reports:{title:'Annual reports',singular:'annual report',collection:'reports',primary:'title',secondary:'year',fields:[['title','Report title','text'],['year','Report year','text'],['summary','Report summary','textarea'],['cover','Cover image','image'],['pdfUrl','Annual report PDF (upload file)','pdf'],['pages','Flipbook preview pages','pages']]},
     opportunities:{title:'Opportunities',singular:'opportunity',collection:'opportunities',primary:'title',secondary:'type',fields:[['title','Opportunity title','text'],['type','Opportunity type','text'],['deadline','Deadline / timeline','text'],['status','Status','text'],['summary','Description','textarea'],['eligibility','Who can participate','textarea'],['image','Opportunity image','image'],['link','Application / information URL','url']]},
     achievements:{title:'Achievements',singular:'achievement',collection:'achievements',primary:'title',secondary:'year',fields:[['title','Achievement title','text'],['year','Year','text'],['category','Category / competition','text'],['distinction','Position / recognition','text'],['description','Achievement description','textarea'],['image','Achievement photograph','image']]},
-    pageIntros:{title:'Page introductions',singular:'page introduction',collection:'pageIntros',primary:'title',secondary:'page',fields:[['page','Page key (about, people, events, startups, impact, messages, gallery, blogs, social, mentors, reports, contact, opportunities, achievements)','text'],['eyebrow','Small label','text'],['title','Page heading','text'],['description','Supporting paragraph','textarea'],['number','Page number','text'],['image','Page image (for People: upload the common group photograph)','image']]},
-    pagePanels:{title:'Page closing panels',singular:'page panel',collection:'pagePanels',primary:'title',secondary:'page',fields:[['page','Page key (about, people, events, startups, impact, messages, gallery, blogs, social-media, mentors, annual-reports, contact, opportunities, achievements)','text'],['eyebrow','Small label','text'],['title','Heading','text'],['text','Supporting paragraph','textarea'],['image','Image','image'],['buttonLabel','Button label (leave blank to hide)','text'],['buttonUrl','Button destination (must lead to a different page)','text']]},
-    teams:{title:'Academic-year teams',singular:'team year',collection:'teams',primary:'title',secondary:'year',fields:[['year','Academic year (e.g. 2024–2025)','text'],['yearKey','URL year key (e.g. 2024-2025; keep stable once published)','text'],['heroEyebrow','Small label above the team page title','text'],['title','Team page title','text'],['description','Team page supporting description','textarea'],['image','Academic-year team photograph (shows on the year card and roster page)','image'],['cardEyebrow','Year card small label (optional)','text'],['buttonLabel','Year card button label','text'],['rosterEyebrow','Roster section small label','text'],['rosterTitle','Roster section heading','text'],['rosterDescription','Roster section supporting description','textarea'],['backButtonLabel','Back button label','text'],['backButtonUrl','Back button destination (normally people.html)','text'],['emptyRosterTitle','Empty roster heading','text'],['emptyRosterDescription','Empty roster supporting text','textarea']]}
+    pageIntros:{title:'Page introductions',singular:'page introduction',collection:'pageIntros',primary:'title',secondary:'page',fields:[['page','Page to edit','select',['home','about','people','events','startups','impact','messages','gallery','blogs','social','mentors','reports','contact','opportunities','achievements','team-year']],['eyebrow','Small label above the page title','text'],['title','Page heading','text'],['description','Supporting paragraph','textarea'],['number','Page number / index label','text'],['image','Page hero image (legacy People group photo is also supported)','image'],['imageAlt','Page hero image alternative text','text']]},
+    pagePanels:{title:'Page closing panels',singular:'page panel',collection:'pagePanels',primary:'title',secondary:'page',fields:[['page','Page to edit','select',['about','people','events','startups','impact','messages','gallery','blogs','social-media','mentors','annual-reports','contact','opportunities','achievements']],['eyebrow','Small label','text'],['title','Closing-panel heading','text'],['text','Supporting paragraph','textarea'],['image','Closing-panel image','image'],['imageAlt','Closing-panel image alternative text','text'],['buttonLabel','Button label (leave blank to hide)','text'],['buttonUrl','Button destination (must lead to a different page)','text']]},
+    teams:{title:'Academic-year team pages',description:'Each academic year has its own complete public page. Edit the People-page card, team-page hero, roster, member-card labels, photographs and individual closing panel here.',singular:'team year',collection:'teams',primary:'title',secondary:'year',fields:[
+      ['__section_identity','1. Academic-year identity and directory card','section'],
+      ['year','Academic year (e.g. 2024–2025)','text'],['yearKey','URL year key (e.g. 2024-2025; keep stable once published)','text'],['order','People-page card display order (lower number appears first)','number'],['title','Main team title (default year card and page heading)','text'],['description','Main team description (default year card and page description)','textarea'],
+      ['__section_card','2. People-page year card','section'],
+      ['cardTitle','Year-card title override','text'],['cardDescription','Year-card supporting description','textarea'],['cardImage','Year-card photograph','image'],['cardImageAlt','Year-card photograph alternative text','text'],['cardEyebrow','Year-card small label','text'],['buttonLabel','Year-card button label','text'],['cardFallbackEyebrow','Year-card image placeholder top label','text'],['cardFallbackTitle','Year-card image placeholder title','text'],['cardFallbackMeta','Year-card image placeholder supporting label','text'],['image','Legacy shared team photograph (used if separate card / roster images are blank)','image'],
+      ['__section_hero','3. Individual team-page hero','section'],
+      ['heroEyebrow','Hero small label','text'],['heroTitle','Hero heading override','text'],['heroDescription','Hero supporting description','textarea'],['heroImage','Hero photograph','image'],['heroImageAlt','Hero photograph alternative text','text'],['heroArtMode','Hero visual: uploaded image / illustration','select',['both','diagram','image','none']],
+      ['__section_roster','4. Roster section and navigation','section'],
+      ['rosterEyebrow','Roster section small label','text'],['rosterTitle','Roster section heading','text'],['rosterDescription','Roster section supporting description','textarea'],['rosterImage','Roster-page group photograph','image'],['rosterImageAlt','Roster group photograph alternative text','text'],['backButtonLabel','Return button label','text'],['backButtonUrl','Return button destination (normally people.html)','text'],
+      ['__section_members','5. Member cards and empty state','section'],
+      ['memberTagLabel','Default member-card badge for this year','text'],['memberLinkedInLabel','LinkedIn link label on this year roster','text'],['memberEmailLabel','Email link label on this year roster','text'],['emptyRosterEyebrow','Empty roster small label','text'],['emptyRosterTitle','Empty roster heading','text'],['emptyRosterDescription','Empty roster supporting text','textarea'],['emptyRosterActionText','Optional additional empty-roster instruction','text'],
+      ['__section_end','6. This academic-year page closing panel','section'],
+      ['pageEndEyebrow','Closing-panel small label','text'],['pageEndTitle','Closing-panel heading','text'],['pageEndText','Closing-panel paragraph','textarea'],['pageEndImage','Closing-panel photograph','image'],['pageEndImageAlt','Closing-panel photograph alternative text','text'],['pageEndButtonLabel','Closing-panel button label','text'],['pageEndButtonUrl','Closing-panel button destination','text'],['pageEndTone','Closing-panel colour theme','select',['navy','mint','white','soft','green']]
+    ]}
   };
   const objects = {
     site:{title:'Site identity',description:'Update the EDC name, official logo, establishment year, contact details and social links.',keys:['brand','name','shortName','established','logoImage','email','phone','address','website','linkedin','instagram','youtube','facebook']},
-    navigation:{title:'Navigation & footer copy',description:'Edit the centred establishment strip, main navigation, mega-menu links, footer columns and small navigation labels shown throughout the website.',keys:['topLinePrefix','topLineBrand','mainAbout','mainPeople','mainProgrammes','mainVentures','mainImpact','mainSocial','mainGallery','exploreLabel','reachOutLabel','megaTitle','megaNote','megaLinks','megaFooterLine','megaFooterCta','footerBrandLine','footerGroups','copyrightPrefix','copyrightSuffix']},
+    navigation:{title:'Navigation & footer copy',description:'Edit the centred establishment strip, main navigation, mega-menu links, footer columns and small navigation labels shown throughout the website.',keys:['topLinePrefix','topLineBrand','homeLabel','mainAbout','mainPeople','mainProgrammes','mainVentures','mainImpact','mainSocial','mainGallery','exploreLabel','reachOutLabel','megaTitle','megaNote','megaLinks','megaFooterLine','megaFooterCta','footerBrandLine','footerGroups','copyrightPrefix','copyrightSuffix']},
     home:{title:'Home page',description:'Edit homepage headings, supporting copy, every image slot, the anthem video, ecosystem tiles, focus cards, six practical steps, comparison content, activity cards, blog and leadership labels, page CTA and small interface labels.',keys:['eyebrow','title','description','primaryLabel','primaryUrl','secondaryLabel','secondaryUrl','heroImage','diagramEyebrow','diagramTitle','diagramText','diagramLinkLabel','diagramLinkUrl','statsTitle','statsDescription','stats','ecosystemEyebrow','ecosystemTitle','ecosystemDescription','ecosystemWall','stakeholderEyebrow','stakeholderTitle','stakeholderDescription','stakeholders','wallFootLabel','wallFootLinkLabel','wallFootLinkUrl','focusEyebrow','focusTitle','focusDescription','frictionPoints','pathwayEyebrow','pathwayTitle','pathwayDescription','journeyOutputLabel','journeyHint','journeyExitLabel','journey','comparisonEyebrow','comparisonTitle','comparisonDescription','comparisonLeftLabel','comparisonLeftTitle','comparisonLeftImage','comparisonLeftPoints','comparisonRightLabel','comparisonRightTitle','comparisonRightImage','comparisonRightPoints','comparisonLinkLabel','comparisonLinkUrl','anthemEyebrow','anthemTitle','anthemDescription','anthemVideoUrl','anthemPoster','anthemPlaceholderTitle','anthemPlaceholderText','featureEyebrow','featureTitle','featureText','featureImage','featureButtonLabel','featureButtonUrl','workEyebrow','workTitle','workDescription','workCards','blogEyebrow','blogTitle','blogDescription','blogLinkLabel','blogLinkUrl','messagesEyebrow','messagesTitle','messagesDescription','messagesLinkLabel','messagesLinkUrl','finalTitle','finalText','finalButtonLabel','finalButtonUrl','ctaEyebrow','ctaTitle','ctaText','ctaButtonLabel','ctaButtonUrl']},
     about:{title:'About page',description:'Edit the story, mission, vision, section labels, image holders, principles and institutional journey.',keys:['eyebrow','title','description','storyEyebrow','storyTitle','story','storyFootnote','storyImage','missionLabel','missionTitle','missionImage','mission','visionLabel','visionTitle','visionImage','vision','principlesEyebrow','principlesTitle','principles','journeyEyebrow','journeyTitle','journey']},
     impact:{title:'Impact page',description:'Maintain impact numbers, explanatory copy, section headings, supporting image and milestone records. Keep figures current and verifiable.',keys:['eyebrow','title','description','stats','statement','statementImage','milestonesEyebrow','milestonesTitle','milestones']},
     contact:{title:'Contact page',description:'Edit the contact image, contact panel, every enquiry step, field label, placeholder, privacy note, enquiry categories and goals.',keys:['eyebrow','title','description','contactImage','contactPanelEyebrow','contactPanelTitle','contactPanelText','formTitle','formIntro','step1Title','step1Note','step2Title','step2Note','step3Title','step3Note','nameLabel','emailLabel','subjectLabel','messageLabel','namePlaceholder','emailPlaceholder','subjectPlaceholder','messagePlaceholder','continueLabel','submitLabel','backLabel','privacyNote','reviewHint','locationLabel','emailDetailLabel','phoneDetailLabel','responseNote','directionsUrl','enquiryChoices','goals']},
-    teamDirectory:{title:'Student team directory',description:'Edit the shared People page headings and default text used by the three academic-year roster pages. Each academic-year record can override its own card and roster labels.',keys:['groupPhotoEyebrow','groupPhotoTitle','groupPhotoDescription','overviewEyebrow','overviewTitle','overviewDescription','cardEyebrow','cardButtonLabel','defaultRosterEyebrow','defaultRosterDescription','defaultBackButtonLabel','emptyRosterTitle','emptyRosterDescription']}
+    teamDirectory:{title:'People page & team-page content',description:'Edit the People page photograph and section copy, shared year-card defaults, roster defaults and member-card labels. Edit the People hero under Page introductions → people and the People closing section under Page closing panels → people. Each Academic-year team record separately controls its own card, hero visual, roster, photographs, member labels and closing panel.',keys:['groupPhotoImage','groupPhotoImageAlt','groupPhotoEyebrow','groupPhotoTitle','groupPhotoDescription','groupPhotoPlaceholderText','overviewEyebrow','overviewTitle','overviewDescription','emptyTeamsTitle','emptyTeamsDescription','cardEyebrow','cardButtonLabel','cardFallbackEyebrow','cardFallbackMeta','defaultRosterEyebrow','defaultRosterDescription','defaultBackButtonLabel','defaultBackButtonUrl','emptyRosterEyebrow','emptyRosterTitle','emptyRosterDescription','emptyRosterActionText','memberTagLabel','memberMetaFallback','memberPlaceholderLabel','memberLinkedInLabel','memberEmailLabel','missingTeamEyebrow','missingTeamTitle','missingTeamDescription','missingTeamBackLabel','missingTeamBackUrl']}
   };
   const teamDirectoryDefaults = {
+    groupPhotoImage:'',
+    groupPhotoImageAlt:'EDCKPRCAS students, leaders and collaborators together',
     groupPhotoEyebrow:'Leadership and community',
     groupPhotoTitle:'People behind the work.',
     groupPhotoDescription:'A shared photograph of the people who contribute to the EDCKPRCAS community.',
+    groupPhotoPlaceholderText:'A shared photograph of the EDCKPRCAS community will appear here.',
     overviewEyebrow:'Student teams by academic year',
     overviewTitle:'Three academic years. One EDC community.',
     overviewDescription:'Choose an academic year to open its own roster page, with individual member photographs and profiles.',
+    emptyTeamsTitle:'Student teams will appear here.',
+    emptyTeamsDescription:'Academic-year team details will be displayed here when they are added in the Content Manager.',
     cardEyebrow:'ACADEMIC YEAR',
     cardButtonLabel:'View team roster',
+    cardFallbackEyebrow:'EDC STUDENT TEAM',
+    cardFallbackMeta:'MEMBERS · ROLES · ACTIVITIES',
     defaultRosterEyebrow:'Individual team members',
     defaultRosterDescription:'Each card contains one member photograph, name, role and concise profile details.',
     defaultBackButtonLabel:'All academic years',
+    defaultBackButtonUrl:'people.html',
+    emptyRosterEyebrow:'Academic-year team',
     emptyRosterTitle:'Team profiles will appear here.',
-    emptyRosterDescription:'Add each student separately in Content Manager → People. Upload the member’s own portrait and assign the correct academic year.'
+    emptyRosterDescription:'Student profiles for this academic year have not been added yet.',
+    emptyRosterActionText:'',
+    memberTagLabel:'People',
+    memberMetaFallback:'Team',
+    memberPlaceholderLabel:'EDC PROFILE',
+    memberLinkedInLabel:'LinkedIn',
+    memberEmailLabel:'Email',
+    missingTeamEyebrow:'Student teams',
+    missingTeamTitle:'Academic-year team not found.',
+    missingTeamDescription:'Choose an academic year from the People page.',
+    missingTeamBackLabel:'Back to People',
+    missingTeamBackUrl:'people.html'
   };
 
   const moduleOrder = [
     {label:'OVERVIEW',items:[['dashboard','Dashboard','⌂']]},
-    {label:'SITE CONTENT',items:[['site','Site identity','S'],['navigation','Navigation & footer','N'],['home','Home page','H'],['about','About page','A'],['impact','Impact page','I'],['contact','Contact page','C'],['teamDirectory','Student teams overview','T']]},
+    {label:'SITE CONTENT',items:[['site','Site identity','S'],['navigation','Navigation & footer','N'],['home','Home page','H'],['about','About page','A'],['impact','Impact page','I'],['contact','Contact page','C'],['teamDirectory','People & team page content','T']]},
     {label:'PUBLISH & MANAGE',items:[['people','People','P'],['teams','Academic-year teams','T'],['events','Events','E'],['startups','Startups','V'],['messages','Messages from heads','M'],['gallery','Gallery','G'],['blogs','Blogs','B'],['social','Social media','↗'],['mentors','Mentors','+'],['reports','Annual reports','R'],['opportunities','Opportunities','O'],['achievements','Achievements','A'],['pageIntros','Page introductions','I'],['pagePanels','Page closing panels','C'],['inquiries','Enquiry inbox','✉']]},
     {label:'ACCOUNT',items:[['security','Security','◇']]}
   ];
@@ -149,6 +182,7 @@
   }
   function fieldInput(field, value, prefix='') {
     const [key,label,type] = field; const name=`${prefix}${key}`;
+    if (type==='section') return `<div class="admin-field full admin-form-section"><h4>${esc(label)}</h4></div>`;
     const full = ['bio','summary','quote','caption','excerpt','body','eligibility','pages','mission','vision','story','description','introText','featureText','statement','responseNote','text'].includes(key) || type==='textarea' || type==='pages';
     if (type==='pages') return `<div class="admin-field full"><label for="${name}">${label}</label><textarea id="${name}" data-field="${key}" data-type="pages" placeholder="Separate each flipbook page using a line with ===PAGE===">${esc(Array.isArray(value)?value.join('\n\n===PAGE===\n\n'):value||'')}</textarea><div class="field-hint">Use ===PAGE=== on a separate line to split pages in the digital report reader.</div></div>`;
     if (type==='image' || type==='pdf') return uploadFieldMarkup(key,value,type);
@@ -160,7 +194,7 @@
       if(value && !options.some(option=>normalizeYear(option.value)===selected)) options.unshift({value:String(value),label:`${value} (existing value)`});
       return `<div class="admin-field"><label for="${name}">${label}</label><select id="${name}" data-field="${key}"><option value="">Not assigned to an academic year</option>${options.map(option=>`<option value="${esc(option.value)}" ${normalizeYear(option.value)===selected?'selected':''}>${esc(option.label)}</option>`).join('')}</select><div class="field-hint">Choose the matching Academic-year team record. This controls which roster page displays this student.</div></div>`;
     }
-    if (type==='select') { const options=field[3]||[]; return `<div class="admin-field"><label for="${name}">${label}</label><select id="${name}" data-field="${key}">${options.map(option=>`<option value="${esc(option)}" ${String(value||'')===String(option)?'selected':''}>${esc(option)}</option>`).join('')}</select></div>`; }
+    if (type==='select') { const options=[...(field[3]||[])]; const needsChoice=key==='page'; if(needsChoice && value && !options.includes(String(value))) options.unshift(String(value)); return `<div class="admin-field"><label for="${name}">${label}</label><select id="${name}" data-field="${key}" ${needsChoice?'required':''}>${needsChoice?`<option value="" ${value?'':'selected'} disabled>Choose a page…</option>`:''}${options.map(option=>{const optionLabel=option==='team-year'?'Legacy shared team-year intro (individual pages now use Academic-year team records)':option.replace(/-/g,' ').replace(/^./,c=>c.toUpperCase());return `<option value="${esc(option)}" ${String(value||'')===String(option)?'selected':''}>${esc(optionLabel)}</option>`;}).join('')}</select></div>`; }
     const tag = full ? 'textarea' : 'input'; const inputType = type==='date'?'date':type==='datetime-local'?'datetime-local':type==='url'?'url':type==='email'?'email':type==='number'?'number':'text';
     if(tag==='textarea') return `<div class="admin-field full"><label for="${name}">${label}</label><textarea id="${name}" data-field="${key}" placeholder="${esc(label)}">${esc(value||'')}</textarea></div>`;
     const hint = type==='datetime-local' ? '<div class="field-hint">Use your local time. A Scheduled article remains private until this date and time; the website publishes it automatically when the time arrives.</div>' : (current==='people' && key==='order' ? '<div class="field-hint">Optional. Enter 1, 2, 3… to control the designation-based roster sequence, just like leadership messages. Leave blank to preserve the existing Content Manager order. Assign an order to every member when using a custom sequence.</div>' : '');
@@ -178,9 +212,9 @@
   }
   function renderCollection(key) {
     const config=collections[key]; const rows=content[config.collection]||[]; const selected=currentIndex>=0?rows[currentIndex]:null;
-    const fields=config.fields.map(f=>fieldInput(f, f[0]==='status' ? (selected ? (selected.status||'Published') : 'Draft') : (selected?.[f[0]]||''))).join('');
-    const moduleDescription=current==='teams'?'Edit each academic-year page, its headings, descriptions, team photograph, roster text and return button. The three year records remain separate and independently editable.':current==='people'?'Add one record per student. Upload each member portrait and choose the matching academic year so the profile appears on the correct roster page.':'Add, edit or remove records that appear on the public '+config.title.toLowerCase()+' page.';
-    const formGuidance=current==='teams'?'The team photograph appears on the academic-year card and again on that year’s roster page. Individual student photographs are uploaded separately under People.':current==='people'?'Use a square or portrait JPG, PNG or WEBP image for each student. The selected Academic year controls the roster page where this profile appears.':'';
+    const fields=config.fields.map(f=>{let value=selected?.[f[0]]??'';if(current==='teams' && selected && (f[0]==='cardImage'||f[0]==='rosterImage') && !value)value=selected.image||'';if(f[0]==='status')value=selected?(selected.status||'Published'):'Draft';return fieldInput(f,value);}).join('');
+    const moduleDescription=current==='teams'?'Each academic year is an independent page. Edit its hero, year card, photographs, roster headings, buttons, empty state and display order here.':current==='people'?'Each student is an independent profile. Edit every visible card field, upload the portrait, assign the academic year and set a manual display order to match the designation hierarchy.':'Add, edit or remove records that appear on the public '+config.title.toLowerCase()+' page.';
+    const formGuidance=current==='teams'?'Separate card, hero and roster photographs are supported. If the separate card or roster image is blank, the legacy shared photograph is used. Team-card and roster copy can be set independently.':current==='people'?'Use a square or portrait JPG, PNG or WEBP image for each student. The selected Academic year controls the roster page where this profile appears. Assign a display number to control order; otherwise the existing Content Manager order is retained.':'';
     return `<div class="content-head"><div><h2>${config.title}</h2><p>${esc(moduleDescription)}</p></div><button class="primary-btn" id="newRecord">+ Add ${config.singular}</button></div>
       <div class="editor-layout"><section class="list-panel"><div class="list-header"><h3>${rows.length} ${config.title.toLowerCase()}</h3><span class="small muted">Select to edit</span></div><div class="record-list">${rows.length?rows.map((row,i)=>`<div class="record-row ${i===currentIndex?'selected':''}"><div class="record-name"><b>${esc(row[config.primary]||'Untitled')}</b><span>${esc(row[config.secondary]||'No secondary detail')}</span></div><div class="record-actions"><button type="button" data-edit="${i}">Edit</button><button type="button" data-delete="${i}">×</button></div></div>`).join(''):'<div class="empty-state">No records yet. Use “Add” to create the first one.</div>'}</div></section>
       <section class="form-panel"><h3>${selected?'Edit':'Create'} ${config.singular}</h3><p>Fields marked by their purpose are shown on the public website. Leave optional fields blank when they do not apply.${current==='blogs'?' Set status to Scheduled and choose a date/time to publish automatically. Draft articles stay private.':''} ${esc(formGuidance)}</p><form id="recordForm"><div class="form-grid">${fields}</div><div class="form-actions"><button class="danger-btn" type="button" id="cancelEdit">Cancel</button><div class="form-actions-right"><button class="primary-btn" id="saveRecord" type="submit">Save ${config.singular} ↗</button></div></div><div class="save-status" id="formStatus"></div></form></section></div>`;
@@ -196,7 +230,7 @@
       title:'Heading / title', description:'Supporting paragraph', eyebrow:'Small section label', image:'Image',
       storyImage:'EDC story image', missionImage:'Mission image', visionImage:'Vision image', statementImage:'Impact statement image', contactImage:'Reach Us image',
       footerBrandLine:'Footer institutional description', megaNote:'Mega-menu description', megaTitle:'Mega-menu heading',
-      journeyHint:'Journey scroll instruction', journeyExitLabel:'Journey exit button label', journeyOutputLabel:'Journey output label', visualMode:'Pathway visual display', stakeholderEyebrow:'Stakeholders section label', stakeholderTitle:'Stakeholders heading', stakeholderDescription:'Stakeholders supporting text', stakeholders:'Stakeholder logos', topLineBrand:'Top strip brand label', groupPhotoEyebrow:'People photograph section label', groupPhotoTitle:'People photograph section heading', groupPhotoDescription:'People photograph supporting text', overviewEyebrow:'Academic-year overview section label', overviewTitle:'Academic-year overview heading', overviewDescription:'Academic-year overview supporting text', cardEyebrow:'Academic-year card label', cardButtonLabel:'Academic-year card button label', defaultRosterEyebrow:'Default roster section label', defaultRosterDescription:'Default roster supporting text', defaultBackButtonLabel:'Default return button label', emptyRosterTitle:'Empty roster heading', emptyRosterDescription:'Empty roster supporting text', heroEyebrow:'Team page eyebrow label', rosterEyebrow:'Roster section eyebrow label', rosterTitle:'Roster section heading', rosterDescription:'Roster section supporting text', backButtonLabel:'Return button label', backButtonUrl:'Return button destination', buttonLabel:'Year card button label'
+      journeyHint:'Journey scroll instruction', journeyExitLabel:'Journey exit button label', journeyOutputLabel:'Journey output label', visualMode:'Pathway visual display', stakeholderEyebrow:'Stakeholders section label', stakeholderTitle:'Stakeholders heading', stakeholderDescription:'Stakeholders supporting text', stakeholders:'Stakeholder logos', topLineBrand:'Top strip brand label', homeLabel:'Breadcrumb Home label', groupPhotoImage:'People group photograph', groupPhotoImageAlt:'People group photograph alternative text', groupPhotoEyebrow:'People photograph section label', groupPhotoTitle:'People photograph section heading', groupPhotoDescription:'People photograph supporting text', groupPhotoPlaceholderText:'People photograph placeholder message', overviewEyebrow:'Academic-year overview section label', overviewTitle:'Academic-year overview heading', overviewDescription:'Academic-year overview supporting text', emptyTeamsTitle:'Empty academic-year list heading', emptyTeamsDescription:'Empty academic-year list supporting text', cardEyebrow:'Academic-year card label', cardButtonLabel:'Academic-year card button label', cardFallbackEyebrow:'Year-card image placeholder label', cardFallbackMeta:'Year-card image placeholder caption', defaultRosterEyebrow:'Default roster section label', defaultRosterDescription:'Default roster supporting text', defaultBackButtonLabel:'Default return button label', defaultBackButtonUrl:'Default return button destination', emptyRosterEyebrow:'Empty roster small label', emptyRosterTitle:'Empty roster heading', emptyRosterDescription:'Empty roster supporting text', emptyRosterActionText:'Extra empty-roster instruction', memberTagLabel:'Default member badge label', memberMetaFallback:'Default member affiliation', memberPlaceholderLabel:'Default missing member-photo label', memberLinkedInLabel:'Member LinkedIn link label', memberEmailLabel:'Member email link label', missingTeamEyebrow:'Missing-team page small label', missingTeamTitle:'Missing-team page heading', missingTeamDescription:'Missing-team page description', missingTeamBackLabel:'Missing-team back button label', missingTeamBackUrl:'Missing-team back button URL', pageEndEyebrow:'Team closing-panel small label', pageEndTitle:'Team closing-panel heading', pageEndText:'Team closing-panel paragraph', pageEndImage:'Team closing-panel photograph', pageEndImageAlt:'Team closing-panel image alternative text', pageEndButtonLabel:'Team closing-panel button label', pageEndButtonUrl:'Team closing-panel button URL', pageEndTone:'Team closing-panel colour theme', heroEyebrow:'Team-page hero eyebrow label', heroTitle:'Team-page hero heading override', heroDescription:'Team-page hero description override', heroImage:'Team-page hero image', heroImageAlt:'Team-page hero image alternative text', heroArtMode:'Team-page hero visual display', cardTitle:'Year-card title override', cardDescription:'Year-card description override', cardImage:'Year-card photograph', cardImageAlt:'Year-card photograph alternative text', cardFallbackTitle:'Year-card placeholder title', order:'Display order', rosterEyebrow:'Roster section eyebrow label', rosterTitle:'Roster section heading', rosterDescription:'Roster section supporting text', rosterImage:'Roster group photograph', rosterImageAlt:'Roster group photograph alternative text', memberTagLabel:'Member-card badge label', backButtonLabel:'Return button label', backButtonUrl:'Return button destination', emptyRosterEyebrow:'Empty roster small label', emptyRosterTitle:'Empty roster heading', emptyRosterDescription:'Empty roster supporting text', emptyRosterActionText:'Extra empty-roster instruction', buttonLabel:'Year-card button label', cardTag:'Member-card badge label', imageAlt:'Portrait alternative text'
     };
     return labels[key] || String(key).replace(/([a-z])([A-Z])/g,'$1 $2').replace(/^./,c=>c.toUpperCase());
   }
@@ -240,12 +274,12 @@
     about:[['Page introduction',['eyebrow','title','description']],['Institutional story',['storyEyebrow','storyTitle','story','storyFootnote','storyImage']],['Mission and vision',['missionLabel','missionTitle','missionImage','mission','visionLabel','visionTitle','visionImage','vision']],['Guiding principles',['principlesEyebrow','principlesTitle','principles']],['Institutional journey',['journeyEyebrow','journeyTitle','journey']]],
     impact:[['Page introduction',['eyebrow','title','description']],['Impact statistics',['stats']],['Impact statement',['statement','statementImage']],['Milestones',['milestonesEyebrow','milestonesTitle','milestones']]],
     contact:[['Page introduction',['eyebrow','title','description']],['Contact information panel',['contactImage','contactPanelEyebrow','contactPanelTitle','contactPanelText','locationLabel','emailDetailLabel','phoneDetailLabel','responseNote','directionsUrl']],['Enquiry form introduction',['formTitle','formIntro','privacyNote','reviewHint']],['Step 1 – Enquiry type',['step1Title','step1Note','enquiryChoices']],['Step 2 – Enquiry goal',['step2Title','step2Note','goals']],['Step 3 – Contact details',['step3Title','step3Note','nameLabel','emailLabel','subjectLabel','messageLabel','namePlaceholder','emailPlaceholder','subjectPlaceholder','messagePlaceholder','continueLabel','submitLabel','backLabel']]],
-    teamDirectory:[['People behind the work',['groupPhotoEyebrow','groupPhotoTitle','groupPhotoDescription']],['Academic-year overview',['overviewEyebrow','overviewTitle','overviewDescription','cardEyebrow','cardButtonLabel']],['Default roster-page text',['defaultRosterEyebrow','defaultRosterDescription','defaultBackButtonLabel','emptyRosterTitle','emptyRosterDescription']]]
+    teamDirectory:[['People photograph section',['groupPhotoImage','groupPhotoImageAlt','groupPhotoEyebrow','groupPhotoTitle','groupPhotoDescription','groupPhotoPlaceholderText']],['Academic-year overview on the People page',['overviewEyebrow','overviewTitle','overviewDescription','emptyTeamsTitle','emptyTeamsDescription','cardEyebrow','cardButtonLabel','cardFallbackEyebrow','cardFallbackMeta']],['Shared roster and member-card defaults',['defaultRosterEyebrow','defaultRosterDescription','defaultBackButtonLabel','defaultBackButtonUrl','emptyRosterEyebrow','emptyRosterTitle','emptyRosterDescription','emptyRosterActionText','memberTagLabel','memberMetaFallback','memberPlaceholderLabel','memberLinkedInLabel','memberEmailLabel']],['Invalid or missing academic-year page',['missingTeamEyebrow','missingTeamTitle','missingTeamDescription','missingTeamBackLabel','missingTeamBackUrl']]]
   };
   function objectFieldMarkup(fieldKey, obj) {
     const value=obj[fieldKey]; const isArray=Array.isArray(value); const isJson=value && typeof value==='object' && !isArray;
     const isPdf=/pdf|document/i.test(fieldKey); const isImage=/image|poster|photo|cover|logo/i.test(fieldKey);
-    const long=typeof value==='string' && (value.length>100 || ['description','story','mission','vision','responseNote','contactPanelText','groupPhotoDescription','overviewDescription','defaultRosterDescription','emptyRosterDescription'].includes(fieldKey));
+    const long=typeof value==='string' && (value.length>100 || ['description','story','mission','vision','responseNote','contactPanelText','groupPhotoDescription','groupPhotoPlaceholderText','overviewDescription','emptyTeamsDescription','defaultRosterDescription','emptyRosterDescription','emptyRosterActionText','missingTeamDescription','pageEndText','heroDescription','cardDescription','rosterDescription'].includes(fieldKey));
     if(isArray) return renderArrayEditor(fieldKey,value);
     if(isJson) return `<div class="admin-field full"><label for="obj-${fieldKey}">${esc(prettyFieldName(fieldKey))}</label><textarea class="json-editor" id="obj-${fieldKey}" data-object-field="${fieldKey}" data-json="true">${esc(pretty(value))}</textarea><div class="field-hint">Structured content. Keep the JSON format valid when editing this field.</div></div>`;
     if(isImage||isPdf) return uploadFieldMarkup(fieldKey,value,isPdf?'pdf':'image');
@@ -256,7 +290,7 @@
     return `<div class="admin-field"><label for="obj-${fieldKey}">${esc(prettyFieldName(fieldKey))}</label><input id="obj-${fieldKey}" type="${type}" data-object-field="${fieldKey}" value="${esc(value||'')}" placeholder="${esc(placeholder)}"><div class="field-hint">${externalUrl?'Use the full https:// address for an external profile or video.':'Use a relative page path for internal navigation; it will work on localhost and after deployment.'}</div></div>`;
   }
   function renderObject(key) {
-    const config=objects[key]; const obj=content[key]||(key==='teamDirectory'?teamDirectoryDefaults:{});
+        const obj=key==='teamDirectory'?{...teamDirectoryDefaults,...(content[key]||{})}:(content[key]||{});
     const groups=objectSectionGroups[key] || [['Website content',config.keys]];
     const used=new Set(groups.flatMap(g=>g[1]));
     const extras=config.keys.filter(k=>!used.has(k));
@@ -372,27 +406,78 @@
     $('#passwordForm')?.addEventListener('submit',changePassword);
   }
   async function saveRecord(e) {
-    e.preventDefault(); const config=collections[current]; const form=e.currentTarget; const record={};
+    e.preventDefault();
+    const config=collections[current];
+    const form=e.currentTarget;
+    const collectionKey=config.collection;
+    const rows=Array.isArray(content[collectionKey])?content[collectionKey]:[];
+    const beforeRows=rows.map(item=>({...item}));
+    const originalIndex=currentIndex;
+    const existing=originalIndex>=0?(rows[originalIndex]||{}):{};
+    // Preserve fields written by previous CMS versions or future modules.
+    const record={...existing};
+
     for(const field of config.fields){
-      const [key,,type]=field; const input=form.querySelector(`[data-field="${key}"]`); let value=input?.value??'';
+      const [key,,type]=field;
+      if(type==='section') continue;
+      const input=form.querySelector(`[data-field="${key}"]`);
+      let value=input?.value??'';
       if(type==='pages') value=value.split(/\n\s*===PAGE===\s*\n/g).map(x=>x.trim()).filter(Boolean);
-      if(current==='people' && key==='order') value=String(value).trim()==='' ? '' : Number(value);
+      if(type==='number') value=String(value).trim()===''?'':Number(value);
       if(current==='blogs' && key==='publishAt' && value){
-        const publicationDate = new Date(value);
+        const publicationDate=new Date(value);
         if(Number.isNaN(publicationDate.getTime())){showToast('Choose a valid publication date and time.',true);input?.focus();return;}
         value=publicationDate.toISOString();
       }
       if(current==='blogs' && key==='status' && String(value).toLowerCase()==='scheduled' && !form.querySelector('[data-field="publishAt"]')?.value){showToast('Choose a publication date and time for a scheduled article.',true);form.querySelector('[data-field="publishAt"]')?.focus();return;}
-      record[key]=value.trim?value.trim():value;
+      record[key]=typeof value==='string'?value.trim():value;
     }
-    if(currentIndex>=0) { record.id=content[config.collection][currentIndex].id; content[config.collection][currentIndex]=record; }
-    else { record.id='item-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7); content[config.collection]=content[config.collection]||[];content[config.collection].unshift(record);currentIndex=0; }
-    const save=$('#saveRecord');save.disabled=true;save.textContent='Saving…';
-    try{await saveData();renderModule();showToast(`${config.singular[0].toUpperCase()+config.singular.slice(1)} saved successfully.`);}catch(error){save.disabled=false;save.textContent=`Save ${config.singular} ↗`;showToast(error.message,true);}
+
+    // A single page-intro / closing-panel record per page keeps public lookup deterministic.
+    if(current==='pageIntros' || current==='pagePanels'){
+      const pageValue=String(record.page||'').trim();
+      const duplicateIndex=rows.findIndex((item,index)=>index!==originalIndex && String(item.page||'').trim()===pageValue);
+      if(duplicateIndex>=0){
+        showToast(`A ${current==='pageIntros'?'page introduction':'closing panel'} for “${pageValue}” already exists. Select that record and edit it instead of creating a duplicate.`,true);
+        return;
+      }
+    }
+
+    // Prevent two team records from sharing the same route key.
+    if(current==='teams'){
+      const normalizeYear=value=>String(value||'').replace(/[^0-9]/g,'');
+      const nextKey=normalizeYear(record.yearKey||record.year);
+      const duplicateIndex=rows.findIndex((item,index)=>index!==originalIndex && normalizeYear(item.yearKey||item.year)===nextKey);
+      if(!nextKey || nextKey.length!==8){showToast('Enter a valid academic year and URL year key, such as 2024-2025.',true);form.querySelector('[data-field="yearKey"]')?.focus();return;}
+      if(duplicateIndex>=0){showToast('A team page already exists for this academic year. Edit the existing record instead.',true);return;}
+    }
+
+    if(current==='people' && record.order!=='' && !Number.isFinite(Number(record.order))){showToast('Display order must be a valid number.',true);form.querySelector('[data-field="order"]')?.focus();return;}
+    record.id=existing.id || `item-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
+    const nextRows=[...rows];
+    if(originalIndex>=0) nextRows[originalIndex]=record;
+    else nextRows.unshift(record);
+    content[collectionKey]=nextRows;
+    currentIndex=originalIndex>=0?originalIndex:0;
+
+    const save=$('#saveRecord');
+    if(save){save.disabled=true;save.textContent='Saving…';}
+    try{
+      await saveData();
+      renderModule();
+      showToast(`${config.singular[0].toUpperCase()+config.singular.slice(1)} saved successfully.`);
+    }catch(error){
+      content[collectionKey]=beforeRows;
+      currentIndex=originalIndex;
+      renderModule();
+      showToast(error.message,true);
+    }
   }
   async function saveObject(e) {
     e.preventDefault();
-    const form=e.currentTarget; const objectKey=form.dataset.objectSection; const updated={...(content[objectKey]||{})};
+    const form=e.currentTarget; const objectKey=form.dataset.objectSection;
+    const previousObject={...(content[objectKey]||{})};
+    const updated=objectKey==='teamDirectory'?{...teamDirectoryDefaults,...previousObject}:{...previousObject};
     const button=form.querySelector('button[type="submit"]'); const status=$('.save-status',form); const original=button?.textContent||'Save section ↗';
     try{
       $$('[data-object-field]',form).forEach(input=>{
@@ -411,6 +496,7 @@
       await saveData(); if(status)status.textContent=`${form.dataset.sectionTitle} saved successfully.`;
       showToast(`${form.dataset.sectionTitle} saved successfully.`);
     }catch(error){
+      content[objectKey]=previousObject;
       showToast(error instanceof SyntaxError?'One of the JSON fields is not valid. Please correct the JSON and save again.':error.message,true);
       if(status)status.textContent=error.message;
     }finally{if(button){button.disabled=false;button.textContent=original;}}
