@@ -337,13 +337,23 @@
 
   function peoplePage() {
     const teams = [...(data.teams || [])].sort((a,b) => normalizeAcademicYear(a.yearKey || a.year).localeCompare(normalizeAcademicYear(b.yearKey || b.year)));
-    const peopleIntro = (data.pageIntros || []).find(item => item.page === 'people');
-    const groupPhoto = peopleIntro?.image || '';
-    return `${pageHero('People and student teams','The people who contribute to EDC activity.','Meet the people, student teams and collaborators who build the KPRCAS entrepreneurship ecosystem.','02',false)}
-      <section class="section people-directory-section"><div class="wrap">${sectionHead('Leadership and community','People behind the work.','A shared photograph of the people who contribute to the EDCKPRCAS community.')}
-      ${groupPhoto ? `<figure class="people-group-photo">${img(groupPhoto,'EDCKPRCAS people behind the work — common team photograph')}</figure>` : `<div class="people-group-photo people-group-photo-empty"><div class="people-group-photo-placeholder"><span class="eyebrow">PEOPLE BEHIND THE WORK</span><strong>Common EDCKPRCAS team photograph</strong><p>Upload one shared group photograph in Content Manager → Page introductions → People → Page introduction image.</p></div></div>`}</div></section>
-      <section class="section section-soft"><div class="wrap">${sectionHead('Student teams by academic year','Three academic years. One EDC community.','Choose an academic year to open its own roster page, with individual member photographs and profiles.')}
-      ${teams.length ? `<div class="team-year-grid">${teams.map((team,i)=>`<a class="team-year-card reveal reveal-delay-${i%3}" href="team.html?year=${encodeURIComponent(team.yearKey || normalizeAcademicYear(team.year))}" aria-label="View ${esc(team.title || team.year)} team roster"><div class="team-year-image">${team.image ? img(team.image,`${team.year || team.title} team photograph`) : `<div class="team-year-art"><span>EDC STUDENT TEAM</span><strong>${esc(team.year || 'Academic year')}</strong><small>MEMBERS · ROLES · ACTIVITIES</small></div>`}</div><div class="team-year-copy"><span class="eyebrow">ACADEMIC YEAR</span><h3>${esc(team.title || `EDC Student Team ${team.year || ''}`)}</h3><p>${esc(team.description || 'Open this academic-year roster to view individual team member profiles.')}</p><span class="team-year-link text-link">View team roster <span class="btn-arrow" aria-hidden="true">↗</span></span></div></a>`).join('')}</div>` : `<div class="empty-state">Academic-year teams will appear here when they are added through the Content Manager.</div>`}</div></section>`;
+    const peopleIntro = (data.pageIntros || []).find(item => item.page === 'people') || {};
+    const directory = data.teamDirectory || {};
+    const groupPhoto = peopleIntro.image || '';
+    const groupPhotoEyebrow = directory.groupPhotoEyebrow || 'Leadership and community';
+    const groupPhotoTitle = directory.groupPhotoTitle || 'People behind the work.';
+    const groupPhotoDescription = directory.groupPhotoDescription || 'A shared photograph of the people who contribute to the EDCKPRCAS community.';
+    const overviewEyebrow = directory.overviewEyebrow || 'Student teams by academic year';
+    const overviewTitle = directory.overviewTitle || 'Three academic years. One EDC community.';
+    const overviewDescription = directory.overviewDescription || 'Choose an academic year to open its own roster page, with individual member photographs and profiles.';
+    const defaultCardEyebrow = directory.cardEyebrow || 'ACADEMIC YEAR';
+    const defaultCardButton = directory.cardButtonLabel || 'View team roster';
+
+    return `${pageHero(peopleIntro.eyebrow || 'People and student teams',peopleIntro.title || 'The people who contribute to EDC activity.',peopleIntro.description || 'Meet the people, student teams and collaborators who build the KPRCAS entrepreneurship ecosystem.',peopleIntro.number || '02',false)}
+      <section class="section people-directory-section"><div class="wrap">${sectionHead(groupPhotoEyebrow,groupPhotoTitle,groupPhotoDescription)}
+      ${groupPhoto ? `<figure class="people-group-photo">${img(groupPhoto,'EDCKPRCAS people behind the work — common team photograph')}</figure>` : `<div class="people-group-photo people-group-photo-empty"><div class="people-group-photo-placeholder"><span class="eyebrow">${esc(groupPhotoEyebrow)}</span><strong>${esc(groupPhotoTitle)}</strong><p>Upload the shared photograph in Content Manager → Page introductions → People → Page image.</p></div></div>`}</div></section>
+      <section class="section section-soft"><div class="wrap">${sectionHead(overviewEyebrow,overviewTitle,overviewDescription)}
+      ${teams.length ? `<div class="team-year-grid">${teams.map((team,i)=>{const yearKey=team.yearKey || normalizeAcademicYear(team.year);const cardEyebrow=team.cardEyebrow || defaultCardEyebrow;const buttonLabel=team.buttonLabel || defaultCardButton;return `<a class="team-year-card reveal reveal-delay-${i%3}" href="team.html?year=${encodeURIComponent(yearKey)}" aria-label="View ${esc(team.title || team.year)} team roster"><div class="team-year-image">${team.image ? img(team.image,`${team.year || team.title} team photograph`) : `<div class="team-year-art"><span>EDC STUDENT TEAM</span><strong>${esc(team.year || 'Academic year')}</strong><small>MEMBERS · ROLES · ACTIVITIES</small></div>`}</div><div class="team-year-copy"><span class="eyebrow">${esc(cardEyebrow)}</span><h3>${esc(team.title || `EDC Student Team ${team.year || ''}`)}</h3><p>${esc(team.description || 'Open this academic-year roster to view individual team member profiles.')}</p><span class="team-year-link text-link">${esc(buttonLabel)} <span class="btn-arrow" aria-hidden="true">↗</span></span></div></a>`;}).join('')}</div>` : `<div class="empty-state">Academic-year teams will appear here when they are added through the Content Manager.</div>`}</div></section>`;
   }
 
   function teamYearPage() {
@@ -351,12 +361,22 @@
     const requestedKey = normalizeAcademicYear(requestedYear);
     const team = (data.teams || []).find(t => normalizeAcademicYear(t.yearKey || t.year) === requestedKey);
     if (!team) return `${pageHero('Student teams','Academic-year team not found.','Choose an academic year from the People page.','03')}<section class="section"><div class="wrap"><a class="btn" href="people.html">Back to People <span class="btn-arrow">↗</span></a></div></section>`;
-    const members = (data.people || []).filter(person => normalizeAcademicYear(person.teamYear) === requestedKey).sort((a,b) => String(a.name || '').localeCompare(String(b.name || '')));
-    const rosterHeading = `EDC student team · ${team.year || requestedYear}`;
-    return `${pageHero(team.year,team.title || `EDC Student Team ${team.year || ''}`,team.description || 'Meet the individual members and their roles in this academic-year team.','03')}
-      <section class="section team-roster-section"><div class="wrap"><div class="team-roster-topline"><div>${sectionHead('Individual team members',rosterHeading,'Each card contains one member photograph, name, role and concise profile details.')}</div><a class="text-link team-roster-back" href="people.html">All academic years <span class="btn-arrow" aria-hidden="true">↗</span></a></div>
+
+    const members = (data.people || []).filter(person => normalizeAcademicYear(person.teamYear) === requestedKey)
+      .sort((a,b) => String(a.name || '').localeCompare(String(b.name || '')));
+    const directory = data.teamDirectory || {};
+    const rosterEyebrow = team.rosterEyebrow || directory.defaultRosterEyebrow || 'Individual team members';
+    const rosterHeading = team.rosterTitle || `EDC student team · ${team.year || requestedYear}`;
+    const rosterDescription = team.rosterDescription || directory.defaultRosterDescription || 'Each card contains one member photograph, name, role and concise profile details.';
+    const backLabel = team.backButtonLabel || directory.defaultBackButtonLabel || 'All academic years';
+    const backUrl = safeUrl(team.backButtonUrl) || 'people.html';
+    const emptyTitle = team.emptyRosterTitle || directory.emptyRosterTitle || 'Team profiles will appear here.';
+    const emptyDescription = team.emptyRosterDescription || directory.emptyRosterDescription || 'Add each student separately in Content Manager → People. Upload the member’s own portrait and assign the correct academic year.';
+
+    return `${pageHero(team.heroEyebrow || team.year,team.title || `EDC Student Team ${team.year || ''}`,team.description || 'Meet the individual members and their roles in this academic-year team.','03')}
+      <section class="section team-roster-section"><div class="wrap"><div class="team-roster-topline"><div>${sectionHead(rosterEyebrow,rosterHeading,rosterDescription)}</div><a class="text-link team-roster-back" href="${esc(backUrl)}">${esc(backLabel)} <span class="btn-arrow" aria-hidden="true">↗</span></a></div>
       ${team.image ? `<figure class="team-roster-group-photo">${img(team.image,`${team.year} EDC student team group photograph`)}</figure>` : ''}
-      ${members.length ? `<div class="card-grid team-member-grid">${members.map((person,i)=>`<div class="team-member-card">${profileCard(person,i)}</div>`).join('')}</div>` : `<div class="team-roster-empty"><div class="eyebrow">${esc(team.year)}</div><h2>Team profiles will appear here.</h2><p>Add each student separately in Content Manager → People. Upload the member’s own portrait and set Academic year to <strong>${esc(team.yearKey || requestedKey)}</strong>. The profile will then appear on this roster page.</p><a class="btn btn-outline" href="people.html">Back to academic years <span class="btn-arrow">↗</span></a></div>`}</div></section>`;
+      ${members.length ? `<div class="card-grid team-member-grid">${members.map((person,i)=>`<div class="team-member-card">${profileCard(person,i)}</div>`).join('')}</div>` : `<div class="team-roster-empty"><div class="eyebrow">${esc(team.year)}</div><h2>${esc(emptyTitle)}</h2><p>${esc(emptyDescription)} Set the Academic year to <strong>${esc(team.yearKey || requestedKey)}</strong>.</p><a class="btn btn-outline" href="${esc(backUrl)}">${esc(backLabel)} <span class="btn-arrow">↗</span></a></div>`}</div></section>`;
   }
 
   function eventRow(e,i) {
