@@ -28,7 +28,7 @@
       ['__section_card','2. People-page year card','section'],
       ['cardTitle','Year-card title override','text'],['cardDescription','Year-card supporting description','textarea'],['cardImage','Year-card photograph','image'],['cardImageAlt','Year-card photograph alternative text','text'],['cardEyebrow','Year-card small label','text'],['buttonLabel','Year-card button label','text'],['cardFallbackEyebrow','Year-card image placeholder top label','text'],['cardFallbackTitle','Year-card image placeholder title','text'],['cardFallbackMeta','Year-card image placeholder supporting label','text'],['image','Legacy shared team photograph (used if separate card / roster images are blank)','image'],
       ['__section_hero','3. Individual team-page hero','section'],
-      ['heroEyebrow','Hero small label','text'],['heroTitle','Hero heading override','text'],['heroDescription','Hero supporting description','textarea'],['heroImage','Hero photograph','image'],['heroImageAlt','Hero photograph alternative text','text'],['heroArtMode','Hero visual: uploaded image / illustration','select',['both','diagram','image','none']],
+      ['heroEyebrow','Hero small label','text'],['heroTitle','Hero heading override','text'],['heroDescription','Hero supporting description','textarea'],['heroNumber','Hero page number / index label','text'],['heroImage','Hero photograph','image'],['heroImageAlt','Hero photograph alternative text','text'],['heroArtMode','Hero visual: uploaded image / illustration','select',['both','diagram','image','none']],
       ['__section_roster','4. Roster section and navigation','section'],
       ['rosterEyebrow','Roster section small label','text'],['rosterTitle','Roster section heading','text'],['rosterDescription','Roster section supporting description','textarea'],['rosterImage','Roster-page group photograph','image'],['rosterImageAlt','Roster group photograph alternative text','text'],['backButtonLabel','Return button label','text'],['backButtonUrl','Return button destination (normally people.html)','text'],
       ['__section_members','5. Member cards and empty state','section'],
@@ -230,17 +230,30 @@
       title:'Heading / title', description:'Supporting paragraph', eyebrow:'Small section label', image:'Image',
       storyImage:'EDC story image', missionImage:'Mission image', visionImage:'Vision image', statementImage:'Impact statement image', contactImage:'Reach Us image',
       footerBrandLine:'Footer institutional description', megaNote:'Mega-menu description', megaTitle:'Mega-menu heading', megaFooterCtaUrl:'Mega-menu call-to-action destination',
-      journeyHint:'Journey scroll instruction', journeyExitLabel:'Journey exit button label', journeyOutputLabel:'Journey output label', visualMode:'Pathway visual display', stakeholderEyebrow:'Stakeholders section label', stakeholderTitle:'Stakeholders heading', stakeholderDescription:'Stakeholders supporting text', stakeholders:'Stakeholder logos', topLineBrand:'Top strip brand label', homeLabel:'Breadcrumb Home label', groupPhotoImage:'People group photograph', groupPhotoImageAlt:'People group photograph alternative text', groupPhotoEyebrow:'People photograph section label', groupPhotoTitle:'People photograph section heading', groupPhotoDescription:'People photograph supporting text', groupPhotoPlaceholderText:'People photograph placeholder message', overviewEyebrow:'Academic-year overview section label', overviewTitle:'Academic-year overview heading', overviewDescription:'Academic-year overview supporting text', emptyTeamsTitle:'Empty academic-year list heading', emptyTeamsDescription:'Empty academic-year list supporting text', cardEyebrow:'Academic-year card label', cardButtonLabel:'Academic-year card button label', cardFallbackEyebrow:'Year-card image placeholder label', cardFallbackMeta:'Year-card image placeholder caption', defaultRosterEyebrow:'Default roster section label', defaultRosterDescription:'Default roster supporting text', defaultBackButtonLabel:'Default return button label', defaultBackButtonUrl:'Default return button destination', emptyRosterEyebrow:'Empty roster small label', emptyRosterTitle:'Empty roster heading', emptyRosterDescription:'Empty roster supporting text', emptyRosterActionText:'Extra empty-roster instruction', memberTagLabel:'Default member badge label', memberMetaFallback:'Default member affiliation', memberPlaceholderLabel:'Default missing member-photo label', memberLinkedInLabel:'Member LinkedIn link label', memberEmailLabel:'Member email link label', missingTeamEyebrow:'Missing-team page small label', missingTeamTitle:'Missing-team page heading', missingTeamDescription:'Missing-team page description', missingTeamBackLabel:'Missing-team back button label', missingTeamBackUrl:'Missing-team back button URL', pageEndEyebrow:'Team closing-panel small label', pageEndTitle:'Team closing-panel heading', pageEndText:'Team closing-panel paragraph', pageEndImage:'Team closing-panel photograph', pageEndImageAlt:'Team closing-panel image alternative text', pageEndButtonLabel:'Team closing-panel button label', pageEndButtonUrl:'Team closing-panel button URL', pageEndTone:'Team closing-panel colour theme', heroEyebrow:'Team-page hero eyebrow label', heroTitle:'Team-page hero heading override', heroDescription:'Team-page hero description override', heroImage:'Team-page hero image', heroImageAlt:'Team-page hero image alternative text', heroArtMode:'Team-page hero visual display', cardTitle:'Year-card title override', cardDescription:'Year-card description override', cardImage:'Year-card photograph', cardImageAlt:'Year-card photograph alternative text', cardFallbackTitle:'Year-card placeholder title', order:'Display order', rosterEyebrow:'Roster section eyebrow label', rosterTitle:'Roster section heading', rosterDescription:'Roster section supporting text', rosterImage:'Roster group photograph', rosterImageAlt:'Roster group photograph alternative text', memberTagLabel:'Member-card badge label', backButtonLabel:'Return button label', backButtonUrl:'Return button destination', emptyRosterEyebrow:'Empty roster small label', emptyRosterTitle:'Empty roster heading', emptyRosterDescription:'Empty roster supporting text', emptyRosterActionText:'Extra empty-roster instruction', buttonLabel:'Year-card button label', cardTag:'Member-card badge label', imageAlt:'Portrait alternative text'
+      journeyHint:'Journey scroll instruction', journeyExitLabel:'Journey exit button label', journeyOutputLabel:'Journey output label', visualMode:'Pathway visual display', stakeholderEyebrow:'Stakeholders section label', stakeholderTitle:'Stakeholders heading', stakeholderDescription:'Stakeholders supporting text', stakeholders:'Stakeholder logos', topLineBrand:'Top strip brand label', homeLabel:'Breadcrumb Home label', groupPhotoImage:'People group photograph', groupPhotoImageAlt:'People group photograph alternative text', groupPhotoEyebrow:'People photograph section label', groupPhotoTitle:'People photograph section heading', groupPhotoDescription:'People photograph supporting text', groupPhotoPlaceholderText:'People photograph placeholder message', overviewEyebrow:'Academic-year overview section label', overviewTitle:'Academic-year overview heading', overviewDescription:'Academic-year overview supporting text', emptyTeamsTitle:'Empty academic-year list heading', emptyTeamsDescription:'Empty academic-year list supporting text', cardEyebrow:'Academic-year card label', cardButtonLabel:'Academic-year card button label', cardFallbackEyebrow:'Year-card image placeholder label', cardFallbackMeta:'Year-card image placeholder caption', defaultRosterEyebrow:'Default roster section label', defaultRosterDescription:'Default roster supporting text', defaultBackButtonLabel:'Default return button label', defaultBackButtonUrl:'Default return button destination', emptyRosterEyebrow:'Empty roster small label', emptyRosterTitle:'Empty roster heading', emptyRosterDescription:'Empty roster supporting text', emptyRosterActionText:'Extra empty-roster instruction', memberTagLabel:'Default member badge label', memberMetaFallback:'Default member affiliation', memberPlaceholderLabel:'Default missing member-photo label', memberLinkedInLabel:'Member LinkedIn link label', memberEmailLabel:'Member email link label', missingTeamEyebrow:'Missing-team page small label', missingTeamTitle:'Missing-team page heading', missingTeamDescription:'Missing-team page description', missingTeamBackLabel:'Missing-team back button label', missingTeamBackUrl:'Missing-team back button URL', pageEndEyebrow:'Team closing-panel small label', pageEndTitle:'Team closing-panel heading', pageEndText:'Team closing-panel paragraph', pageEndImage:'Team closing-panel photograph', pageEndImageAlt:'Team closing-panel image alternative text', pageEndButtonLabel:'Team closing-panel button label', pageEndButtonUrl:'Team closing-panel button URL', pageEndTone:'Team closing-panel colour theme', heroNumber:'Team-page hero index / number', heroEyebrow:'Team-page hero eyebrow label', heroTitle:'Team-page hero heading override', heroDescription:'Team-page hero description override', heroImage:'Team-page hero image', heroImageAlt:'Team-page hero image alternative text', heroArtMode:'Team-page hero visual display', cardTitle:'Year-card title override', cardDescription:'Year-card description override', cardImage:'Year-card photograph', cardImageAlt:'Year-card photograph alternative text', cardFallbackTitle:'Year-card placeholder title', order:'Display order', rosterEyebrow:'Roster section eyebrow label', rosterTitle:'Roster section heading', rosterDescription:'Roster section supporting text', rosterImage:'Roster group photograph', rosterImageAlt:'Roster group photograph alternative text', memberTagLabel:'Member-card badge label', backButtonLabel:'Return button label', backButtonUrl:'Return button destination', emptyRosterEyebrow:'Empty roster small label', emptyRosterTitle:'Empty roster heading', emptyRosterDescription:'Empty roster supporting text', emptyRosterActionText:'Extra empty-roster instruction', buttonLabel:'Year-card button label', cardTag:'Member-card badge label', imageAlt:'Portrait alternative text'
     };
     return labels[key] || String(key).replace(/([a-z])([A-Z])/g,'$1 $2').replace(/^./,c=>c.toUpperCase());
   }
-  function renderArrayRow(keys, values={}, index=0) {
+  // Explicit upload-field schemas prevent text keys such as groupPhotoTitle,
+  // groupPhotoDescription and imageAlt from being incorrectly rendered as uploads.
+  const objectImageFields = new Set([
+    'logoImage','heroImage','comparisonLeftImage','comparisonRightImage','anthemPoster','featureImage',
+    'storyImage','missionImage','visionImage','statementImage','contactImage','groupPhotoImage'
+  ]);
+  const objectPdfFields = new Set([]);
+  const arrayImageFields = {
+    ecosystemWall:['image'], stakeholders:['logo'], frictionPoints:['image'], journey:['image'],
+    principles:['image'], milestones:['image'], workCards:['image']
+  };
+  const arrayPdfFields = {};
+
+  function renderArrayRow(keys, values={}, index=0, arrayFieldKey='') {
     const fields = keys.map(key => {
       const value = values?.[key] ?? '';
       const isVisualMode = key === 'visualMode';
       const selectedVisualMode = String(value || 'orb');
-      const isImage = /image|photo|cover|poster|logo|thumbnail/i.test(key);
-      const isPdf = /pdf|document|file/i.test(key) && !isImage;
+      const isImage = (arrayImageFields[arrayFieldKey] || []).includes(key);
+      const isPdf = (arrayPdfFields[arrayFieldKey] || []).includes(key);
       const control = isVisualMode
         ? `<select data-array-key="visualMode"><option value="orb" ${selectedVisualMode === 'orb' ? 'selected' : ''}>Original rings + step number</option><option value="image" ${selectedVisualMode === 'image' ? 'selected' : ''}>Uploaded image</option></select><div class="field-hint">Recommended: keep the original orbital rings and numbered centre. Choose Uploaded image only when you want the uploaded file to replace that graphic.</div>`
         : isImage || isPdf
@@ -265,7 +278,7 @@
       // Add the visual selector to existing D1 records too; missing values default to the original rings.
       keys = [...keys.filter(key => key !== 'visualMode' && key !== 'image'), 'visualMode', 'image'];
     }
-    const records = rows.map((row,i)=>renderArrayRow(keys,row,i)).join('') || renderArrayRow(keys,{},0);
+    const records = rows.map((row,i)=>renderArrayRow(keys,row,i,fieldKey)).join('') || renderArrayRow(keys,{},0,fieldKey);
     return `<div class="admin-field full array-editor" data-array-editor="${esc(fieldKey)}" data-array-keys="${esc(JSON.stringify(keys))}"><div class="array-editor-head"><div><label>${esc(prettyFieldName(fieldKey))}</label><span class="field-hint">Add, edit or remove individual entries below.</span></div><button class="ghost-btn" type="button" data-array-add>+ Add entry</button></div><div class="array-records">${records}</div></div>`;
   }
   const objectSectionGroups = {
@@ -281,7 +294,7 @@
   const objectLongTextFields = new Set(['description','story','mission','vision','responseNote','contactPanelText','groupPhotoDescription','groupPhotoPlaceholderText','overviewDescription','emptyTeamsDescription','defaultRosterDescription','emptyRosterDescription','emptyRosterActionText','missingTeamDescription','pageEndText','heroDescription','cardDescription','rosterDescription','megaNote','megaFooterLine','footerBrandLine','statement','finalText','ctaText','formIntro','privacyNote','reviewHint','step1Note','step2Note','step3Note']);
   function objectFieldMarkup(fieldKey, obj) {
     const value=obj[fieldKey]; const isArray=Array.isArray(value); const isKnownArray=objectArrayFields.has(fieldKey); const isJson=value && typeof value==='object' && !isArray;
-    const isPdf=/pdf|document/i.test(fieldKey); const isImage=/image|poster|photo|cover|logo/i.test(fieldKey);
+    const isPdf=objectPdfFields.has(fieldKey); const isImage=objectImageFields.has(fieldKey);
     const long=objectLongTextFields.has(fieldKey) || (typeof value==='string' && value.length>100);
     if(isArray || isKnownArray) return renderArrayEditor(fieldKey,isArray?value:[]);
     if(isJson) return `<div class="admin-field full"><label for="obj-${fieldKey}">${esc(prettyFieldName(fieldKey))}</label><textarea class="json-editor" id="obj-${fieldKey}" data-object-field="${fieldKey}" data-json="true">${esc(pretty(value))}</textarea><div class="field-hint">Structured content. Keep the JSON format valid when editing this field.</div></div>`;
@@ -293,6 +306,60 @@
     const placeholder=externalUrl?'https://…':fieldKey.toLowerCase().includes('url')?'about.html, contact.html or another relative page path':prettyFieldName(fieldKey);
     return `<div class="admin-field"><label for="obj-${fieldKey}">${esc(prettyFieldName(fieldKey))}</label><input id="obj-${fieldKey}" type="${type}" data-object-field="${fieldKey}" value="${esc(value||'')}" placeholder="${esc(placeholder)}"><div class="field-hint">${externalUrl?'Use the full https:// address for an external profile or video.':'Use a relative page path for internal navigation; it will work on localhost and after deployment.'}</div></div>`;
   }
+
+  const peopleIntroFields = [
+    ['eyebrow','People page hero small label','text'],['title','People page hero heading','text'],
+    ['description','People page hero supporting text','textarea'],['number','People page hero index / number','text'],
+    ['image','People page hero photograph','image'],['imageAlt','People page hero photograph alternative text','text']
+  ];
+  const peoplePanelFields = [
+    ['eyebrow','People page closing-section small label','text'],['title','People page closing-section heading','text'],
+    ['text','People page closing-section supporting text','textarea'],['image','People page closing-section photograph','image'],
+    ['imageAlt','People page closing photograph alternative text','text'],['buttonLabel','People page closing button label','text'],
+    ['buttonUrl','People page closing button destination','url']
+  ];
+  const peopleCardFieldKeys = ['order','cardEyebrow','cardTitle','cardDescription','cardImage','cardImageAlt','buttonLabel','cardFallbackEyebrow','cardFallbackTitle','cardFallbackMeta'];
+  const teamPageFieldKeys = [
+    'title','description','heroEyebrow','heroTitle','heroDescription','heroNumber','heroImage','heroImageAlt','heroArtMode',
+    'rosterEyebrow','rosterTitle','rosterDescription','rosterImage','rosterImageAlt','backButtonLabel','backButtonUrl',
+    'memberTagLabel','memberLinkedInLabel','memberEmailLabel','emptyRosterEyebrow','emptyRosterTitle','emptyRosterDescription','emptyRosterActionText',
+    'pageEndEyebrow','pageEndTitle','pageEndText','pageEndImage','pageEndImageAlt','pageEndButtonLabel','pageEndButtonUrl','pageEndTone'
+  ];
+  function renderLinkedPageRecord(title, description, collectionKey, pageKey, fields, prefix) {
+    const rows = Array.isArray(content?.[collectionKey]) ? content[collectionKey] : [];
+    const existing = rows.find(item => String(item.page||'').trim() === pageKey) || {page:pageKey};
+    const rendered = fields.map(field => fieldInput(field, existing?.[field[0]] ?? '', `${prefix}-`)).join('');
+    return `<section class="object-section-card"><form data-linked-page-record data-linked-collection="${esc(collectionKey)}" data-linked-page="${esc(pageKey)}" data-linked-fields="${esc(JSON.stringify(fields))}"><div class="object-section-head"><div><h3>${esc(title)}</h3><p>${esc(description)}</p></div><button class="primary-btn" type="submit">Save section ↗</button></div><div class="form-grid">${rendered}</div><div class="save-status" aria-live="polite"></div></form></section>`;
+  }
+  function renderTeamSubsection(team, index, title, description, fieldKeys, prefix) {
+    const definitions = collections.teams.fields.filter(field => field[2] !== 'section' && fieldKeys.includes(field[0]));
+    const rendered = definitions.map(field => fieldInput(field, team?.[field[0]] ?? '', `${prefix}-`)).join('');
+    const yearKey = String(team.yearKey || team.year || '');
+    return `<section class="object-section-card"><form data-team-subsection data-team-year="${esc(yearKey)}" data-team-fields="${esc(JSON.stringify(definitions))}"><div class="object-section-head"><div><h3>${esc(title)}</h3><p>${esc(description)}</p></div><button class="primary-btn" type="submit">Save section ↗</button></div><div class="form-grid">${rendered}</div><div class="save-status" aria-live="polite"></div></form></section>`;
+  }
+  function renderPeopleTeamExtensions() {
+    const teams = Array.isArray(content?.teams) ? content.teams : [];
+    const teamCards = teams.length ? teams.map((team,index)=>renderTeamSubsection(
+      team,index,`${team.year || team.title || `Academic year ${index+1}`} — People-page card`,
+      'Edit this year card only. The other year cards and the individual team page remain unchanged.',
+      peopleCardFieldKeys,`people-card-${index}`
+    )).join('') : '<div class="notice">No academic-year records exist yet. Add the first year under Publish & Manage → Academic-year teams.</div>';
+    const yearPages = teams.length ? teams.map((team,index)=>renderTeamSubsection(
+      team,index,`${team.year || team.title || `Academic year ${index+1}`} — individual team page`,
+      'Every visible heading, paragraph, image, label, button, empty state and closing-panel field on this year page is editable here.',
+      teamPageFieldKeys,`year-page-${index}`
+    )).join('') : '';
+    return `
+      <div class="content-head"><div><h2>People page hero and closing section</h2><p>These fields are stored in the same Page introductions and Page closing panels records, but are also editable here for convenience.</p></div></div>
+      ${renderLinkedPageRecord('People page hero','Edit the People page top label, heading, supporting copy, page index and optional hero image.','pageIntros','people',peopleIntroFields,'people-intro')}
+      ${renderLinkedPageRecord('People page closing section','Edit the closing section independently, including its image, alternative text and button.','pagePanels','people',peoplePanelFields,'people-panel')}
+      <div class="content-head"><div><h2>Three academic-year cards — edit individually</h2><p>Each card has its own image, alternative text, eyebrow, title, description, button, fallback artwork and display order.</p></div></div>
+      ${teamCards}
+      <div class="content-head"><div><h2>Individual academic-year pages — complete content</h2><p>These controls edit the actual year page, not just its card on the People page. All three years have independent content and images.</p></div></div>
+      ${yearPages}
+      <section class="object-section-card"><div class="object-section-head"><div><h3>Individual student profiles</h3><p>Names, designations, affiliation, portrait, photo alternative text, biography, badge, email and LinkedIn are edited as individual People records.</p></div><button class="primary-btn" type="button" data-module="people">Manage student profiles ↗</button></div></section>`;
+  }
+
   function renderObject(key) {
     const config = objects[key];
     if (!config || !Array.isArray(config.keys)) {
@@ -311,7 +378,8 @@
       const fields=actual.map(fieldKey=>objectFieldMarkup(fieldKey,obj)).join('');
       return `<section class="object-section-card"><form data-object-section="${esc(key)}" data-section-title="${esc(title)}"><div class="object-section-head"><div><h3>${esc(title)}</h3><p>Save this section independently. Other sections remain unchanged.</p></div><button class="primary-btn" type="submit">Save section ↗</button></div><div class="form-grid">${fields}</div><div class="save-status" aria-live="polite"></div></form></section>`;
     }).join('');
-    return `<div class="content-head"><div><h2>${config.title}</h2><p>${config.description}</p></div></div><div class="object-sections">${forms}</div>`;
+    const peopleTeamExtensions = key==='teamDirectory' ? renderPeopleTeamExtensions() : '';
+    return `<div class="content-head"><div><h2>${config.title}</h2><p>${config.description}</p></div></div><div class="object-sections">${forms}</div>${peopleTeamExtensions}`;
   }
   function renderInquiries() {
     return `<div class="content-head"><div><h2>Enquiry inbox</h2><p>Messages submitted through the public Reach Us form are stored in the secure online database. Email delivery to edc@kprcas.ac.in is recorded here; failed email attempts remain visible for follow-up.</p></div><button class="ghost-btn" id="refreshInquiries">Refresh inbox ↻</button></div><div class="inquiry-list">${inquiries.length?inquiries.map(item=>`<article class="inquiry-card" data-inquiry="${esc(item.id)}"><div class="inquiry-top"><div><b>${esc(item.name)}</b><div class="small muted">${esc(item.email)} ${item.subject?' · '+esc(item.subject):''}</div></div><span>${new Date(item.receivedAt).toLocaleString()}</span></div><p>${esc(item.message)}</p><div class="inquiry-actions"><select data-inquiry-status="${esc(item.id)}"><option ${item.status==='New'?'selected':''}>New</option><option ${item.status==='In progress'?'selected':''}>In progress</option><option ${item.status==='Resolved'?'selected':''}>Resolved</option></select><a class="ghost-btn" href="mailto:${esc(item.email)}?subject=${encodeURIComponent('Re: '+(item.subject||'Your enquiry'))}">Reply by email ↗</a><span class="small muted">Status: ${esc(item.status)} · Mail: ${item.emailSent?'sent to EDC':'not delivered'}</span>${item.emailError?`<span class="small muted">${esc(item.emailError)}</span>`:''}</div></article>`).join(''):'<div class="empty-state">No enquiries have been received yet.</div>'}</div>`;
@@ -394,6 +462,8 @@
         input.addEventListener('change',()=>fetchSocialPreview(input));
       });
     }
+    $$('form[data-linked-page-record]').forEach(form=>form.addEventListener('submit',saveLinkedPageRecord));
+    $$('form[data-team-subsection]').forEach(form=>form.addEventListener('submit',saveTeamSubsection));
     $$('form[data-object-section]').forEach(form=>{ form.addEventListener('submit',saveObject); form.addEventListener('click',event=>{
       const add=event.target.closest('[data-array-add]');
       const remove=event.target.closest('[data-array-remove]');
@@ -403,7 +473,7 @@
         if(parent&&!parent.querySelector('.array-record')){
           const editor=parent.closest('[data-array-editor]');
           const keys=JSON.parse(editor?.dataset.arrayKeys||'[]');
-          parent.innerHTML=renderArrayRow(keys,{},0);
+          parent.innerHTML=renderArrayRow(keys,{},0,editor?.dataset.arrayEditor||'');
         }
         return;
       }
@@ -411,7 +481,7 @@
         const editor=add.closest('[data-array-editor]'); const holder=editor?.querySelector('.array-records');
         if(!holder) return;
         const keys=JSON.parse(editor.dataset.arrayKeys||'[]');
-        holder.insertAdjacentHTML('beforeend',renderArrayRow(keys,{},holder.querySelectorAll('.array-record').length));
+        holder.insertAdjacentHTML('beforeend',renderArrayRow(keys,{},holder.querySelectorAll('.array-record').length,editor.dataset.arrayEditor||''));
       }
     }); });
     const adminRoot=$('#adminContent'); if(adminRoot) adminRoot.onchange=event=>{ const input=event.target.closest('[data-upload-for]'); if(input) uploadFile(input); };
@@ -517,6 +587,78 @@
       if(status)status.textContent=error.message;
     }finally{if(button){button.disabled=false;button.textContent=original;}}
   }
+
+  async function saveLinkedPageRecord(e) {
+    e.preventDefault();
+    const form=e.currentTarget;
+    const collectionKey=form.dataset.linkedCollection;
+    const pageKey=form.dataset.linkedPage;
+    const definitions=JSON.parse(form.dataset.linkedFields||'[]');
+    const previous=Array.isArray(content[collectionKey])?content[collectionKey]:[];
+    const backup=previous.map(item=>({...item}));
+    const index=previous.findIndex(item=>String(item.page||'').trim()===pageKey);
+    const existing=index>=0?previous[index]:{};
+    const updated={...existing,page:pageKey,id:existing.id||`item-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`};
+    for(const field of definitions){
+      const [key,,type]=field;
+      const input=form.querySelector(`[data-field="${key}"]`);
+      let value=input?.value??'';
+      if(type==='number') value=String(value).trim()===''?'':Number(value);
+      else value=String(value).trim();
+      updated[key]=value;
+    }
+    const next=[...previous];
+    if(index>=0) next[index]=updated; else next.unshift(updated);
+    content[collectionKey]=next;
+    const button=form.querySelector('button[type="submit"]');
+    const status=form.querySelector('.save-status');
+    const original=button?.textContent||'Save section ↗';
+    try{
+      if(button){button.disabled=true;button.textContent='Saving…';}
+      await saveData();
+      if(status)status.textContent='People page section saved successfully.';
+      showToast('People page section saved successfully.');
+    }catch(error){
+      content[collectionKey]=backup;
+      if(status)status.textContent=error.message;
+      showToast(error.message,true);
+    }finally{if(button){button.disabled=false;button.textContent=original;}}
+  }
+  async function saveTeamSubsection(e) {
+    e.preventDefault();
+    const form=e.currentTarget;
+    const key=String(form.dataset.teamYear||'').replace(/[^0-9]/g,'');
+    const rows=Array.isArray(content.teams)?content.teams:[];
+    const index=rows.findIndex(team=>String(team.yearKey||team.year||'').replace(/[^0-9]/g,'')===key);
+    if(index<0){showToast('This academic-year record no longer exists. Refresh the Content Manager and try again.',true);return;}
+    const backup=rows.map(item=>({...item}));
+    const updated={...rows[index]};
+    const definitions=JSON.parse(form.dataset.teamFields||'[]');
+    for(const field of definitions){
+      const [fieldKey,,type]=field;
+      const input=form.querySelector(`[data-field="${fieldKey}"]`);
+      let value=input?.value??'';
+      if(type==='number') value=String(value).trim()===''?'':Number(value);
+      else value=String(value).trim();
+      updated[fieldKey]=value;
+    }
+    content.teams=[...rows];
+    content.teams[index]=updated;
+    const button=form.querySelector('button[type="submit"]');
+    const status=form.querySelector('.save-status');
+    const original=button?.textContent||'Save section ↗';
+    try{
+      if(button){button.disabled=true;button.textContent='Saving…';}
+      await saveData();
+      if(status)status.textContent=`${updated.year || 'Academic-year'} section saved successfully.`;
+      showToast(`${updated.year || 'Academic-year'} section saved successfully.`);
+    }catch(error){
+      content.teams=backup;
+      if(status)status.textContent=error.message;
+      showToast(error.message,true);
+    }finally{if(button){button.disabled=false;button.textContent=original;}}
+  }
+
   async function uploadFile(input) {
     const file=input.files?.[0]; if(!file)return;
     if(file.size>12*1024*1024){showToast('The file is larger than 12 MB.',true);input.value='';return;}
