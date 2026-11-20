@@ -167,15 +167,40 @@
 
   function pageEndPanel() {
     const panelPage = ({ social: 'social-media', reports: 'annual-reports', 'blog-detail': 'blogs', 'team-year': 'people' })[page] || page;
-    const item = (data.pagePanels || []).find(x => x.page === panelPage);
+    let item = (data.pagePanels || []).find(x => x.page === panelPage) || null;
+    let tone = '';
+    if (page === 'team-year') {
+      const requestedYear = new URLSearchParams(location.search).get('year') || '';
+      const requestedKey = normalizeAcademicYear(requestedYear);
+      const team = (data.teams || []).find(t => normalizeAcademicYear(t.yearKey || t.year) === requestedKey);
+      if (team) {
+        const teamPanelKeys = ['pageEndEyebrow','pageEndTitle','pageEndText','pageEndImage','pageEndImageAlt','pageEndButtonLabel','pageEndButtonUrl'];
+        const hasTeamPanel = teamPanelKeys.some(key => String(team[key] ?? '').trim() !== '');
+        if (hasTeamPanel) {
+          item = {
+            eyebrow: team.pageEndEyebrow,
+            title: team.pageEndTitle,
+            text: team.pageEndText,
+            image: team.pageEndImage,
+            imageAlt: team.pageEndImageAlt,
+            buttonLabel: team.pageEndButtonLabel,
+            buttonUrl: team.pageEndButtonUrl
+          };
+          tone = team.pageEndTone || '';
+        }
+      }
+    }
     if (!item) return '';
     const tones = ['navy','mint','white','soft','green'];
-    const tone = tones[Math.max(0, (['about','people','events','startups','impact','messages','gallery','blogs','social','mentors','reports','contact','opportunities','achievements'].indexOf(panelPage === 'team-year' ? 'people' : panelPage)) % tones.length)];
+    if (!tones.includes(tone)) {
+      const tonePage = page === 'team-year' ? 'people' : panelPage;
+      tone = tones[Math.max(0, (['about','people','events','startups','impact','messages','gallery','blogs','social','mentors','reports','contact','opportunities','achievements'].indexOf(tonePage)) % tones.length)];
+    }
     const destination = safeUrl(item.buttonUrl);
     const currentFile = ({social:'social-media.html',reports:'annual-reports.html','blog-detail':'blog.html','team-year':'team.html'}[page] || `${page}.html`).toLowerCase();
     const targetFile = String(destination || '').split('?')[0].split('/').pop().toLowerCase();
     const showButton = Boolean(destination && item.buttonLabel && targetFile !== currentFile && !destination.endsWith('#'));
-    return `<section class="page-end-panel page-end-tone-${tone}"><div class="wrap page-end-inner"><div class="page-end-copy reveal"><div class="eyebrow">${textOr(item.eyebrow,'KPRCAS EDC')}</div><h2>${textOr(item.title)}</h2><p>${textOr(item.text)}</p>${showButton ? `<a class="btn" href="${esc(destination)}">${textOr(item.buttonLabel)} <span class="btn-arrow" aria-hidden="true">↗</span></a>` : ''}</div><div class="page-end-image reveal reveal-delay-1">${item.image ? img(item.image,item.title) : `<div class="media-placeholder" aria-label="EDC image area"><span>EDC-KPRCAS</span></div>`}</div></div></section>`;
+    return `<section class="page-end-panel page-end-tone-${tone}"><div class="wrap page-end-inner"><div class="page-end-copy reveal"><div class="eyebrow">${textOr(item.eyebrow,'KPRCAS EDC')}</div><h2>${textOr(item.title)}</h2><p>${textOr(item.text)}</p>${showButton ? `<a class="btn" href="${esc(destination)}">${textOr(item.buttonLabel)} <span class="btn-arrow" aria-hidden="true">↗</span></a>` : ''}</div><div class="page-end-image reveal reveal-delay-1">${item.image ? img(item.image,item.imageAlt || item.title) : `<div class="media-placeholder" aria-label="EDC image area"><span>EDC-KPRCAS</span></div>`}</div></div></section>`;
   }
 
   function socialMark(key) {
@@ -228,12 +253,14 @@
     typeLoop(tagline, 'Think Entrepreneur! Become Entrepreneur!!', 64, 30, 1500, 1000);
   }
 
-  function pageHero(kicker, title, description, number, showIntroImage = true) {
-    const pageIntro = (data.pageIntros || []).find(item => item.page === page);
+  function pageHero(kicker, title, description, number, showIntroImage = true, introOverride = null) {
+    const pageIntro = introOverride || (data.pageIntros || []).find(item => item.page === page);
     kicker = pageIntro?.eyebrow || kicker; title = pageIntro?.title || title;
     description = pageIntro?.description || description;
-    const introPhoto = showIntroImage && pageIntro?.image ? `<div class="page-hero-photo">${img(pageIntro.image,title,true)}</div>` : '';
-    return `<section class="page-hero"><div class="wrap page-hero-inner"><div class="page-hero-copy"><div class="eyebrow"><span class="eyebrow-rule"></span>${esc(kicker)}</div><h1>${esc(title)}</h1><p>${esc(description)}</p><div class="breadcrumb"><a href="index.html">Home</a><span> / </span>${esc(title)}</div></div><div class="page-hero-art">${introPhoto}${pageDiagramSvg(page)}</div></div></section>`;
+    const artMode = introOverride?.artMode || 'both';
+    const introPhoto = showIntroImage && pageIntro?.image && ['image','both'].includes(artMode) ? `<div class="page-hero-photo">${img(pageIntro.image,pageIntro.imageAlt || title,true)}</div>` : '';
+    const diagram = ['diagram','both'].includes(artMode) ? pageDiagramSvg(page) : '';
+    return `<section class="page-hero"><div class="wrap page-hero-inner"><div class="page-hero-copy"><div class="eyebrow"><span class="eyebrow-rule"></span>${esc(kicker)}</div><h1>${esc(title)}</h1><p>${esc(description)}</p><div class="breadcrumb"><a href="index.html">${textOr(data.navigation?.homeLabel,'Home')}</a><span> / </span>${esc(title)}</div></div><div class="page-hero-art">${introPhoto}${diagram}</div></div></section>`;
   }
   function sectionHead(kicker, title, description = '') {
     return `<div class="section-head"><div><div class="eyebrow">${esc(kicker)}</div><h2>${esc(title)}</h2></div>${description ? `<p>${esc(description)}</p>` : ''}</div>`;
@@ -324,61 +351,110 @@
         <div class="timeline">${(a.journey||[]).map(j=>`<div class="timeline-item reveal"><div class="timeline-image">${j.image ? img(j.image,j.title) : `<div class="media-placeholder"><span>EDC MILESTONE</span></div>`}</div><b>${esc(j.year)}</b><h3>${esc(j.title)}</h3><p>${esc(j.text)}</p></div>`).join('')}</div></div></section>`;
   }
 
-  function profileCard(item, i, mentor = false) {
+  function profileCard(item, i, mentor = false, displayOptions = {}) {
     const role = mentor ? item.expertise : item.role;
-    const meta = mentor ? item.organization : item.team;
-    const link = mentor ? item.linkedin : item.linkedin;
-    return `<article class="card profile-card reveal reveal-delay-${Math.min(i%3,3)}"><div class="card-image">${item.image ? img(item.image,item.name) : `<div class="media-placeholder"><span>${mentor?'MENTOR PORTRAIT':'EDC PROFILE'}</span></div>`}</div><div class="card-body"><div class="card-meta"><span>${esc(meta || (mentor?'Mentor network':'Team'))}</span><span class="card-tag">${mentor?'Mentor':'People'}</span></div><h3>${esc(item.name)}</h3><div class="profile-role">${esc(role)}</div><p>${esc(item.bio)}</p><div class="profile-links">${link ? `<a href="${esc(safeUrl(link))}" target="_blank" rel="noopener">LinkedIn ↗</a>` : ''}${item.email ? `<a href="mailto:${esc(item.email)}">Email ↗</a>` : ''}</div></div></article>`;
+    const meta = mentor ? item.organization : (item.team || displayOptions.metaFallback || 'Team');
+    const link = item.linkedin;
+    const badge = mentor ? (displayOptions.tagLabel || 'Mentor') : (item.cardTag || displayOptions.tagLabel || 'People');
+    const placeholder = displayOptions.placeholderLabel || (mentor ? 'MENTOR PORTRAIT' : 'EDC PROFILE');
+    const imageAlt = item.imageAlt || item.name || placeholder;
+    return `<article class="card profile-card reveal reveal-delay-${Math.min(i%3,3)}"><div class="card-image">${item.image ? img(item.image,imageAlt) : `<div class="media-placeholder"><span>${esc(placeholder)}</span></div>`}</div><div class="card-body"><div class="card-meta"><span>${esc(meta)}</span><span class="card-tag">${esc(badge)}</span></div><h3>${esc(item.name)}</h3>${role ? `<div class="profile-role">${esc(role)}</div>` : ''}${item.bio ? `<p>${esc(item.bio)}</p>` : ''}<div class="profile-links">${link ? `<a href="${esc(safeUrl(link))}" target="_blank" rel="noopener">${esc(displayOptions.linkedinLabel||'LinkedIn')} ↗</a>` : ''}${item.email ? `<a href="mailto:${esc(item.email)}">${esc(displayOptions.emailLabel||'Email')} ↗</a>` : ''}</div></div></article>`;
   }
   function normalizeAcademicYear(value) {
     const digits = String(value || '').replace(/\D/g, '');
     return digits.length === 8 ? `${digits.slice(0,4)}-${digits.slice(4)}` : String(value || '').trim().toLowerCase();
   }
 
+  // Preserve Content Manager order unless explicit display numbers are provided.
+  // Once manual ordering is used, numbered entries appear first in ascending order;
+  // unnumbered entries keep their saved Content Manager order at the end.
+  function orderByDisplayNumber(items, fallbackCompare = null) {
+    const source = [...(items || [])];
+    const hasExplicitOrder = source.some(item => item?.order !== undefined && item?.order !== null && String(item.order).trim() !== '' && Number.isFinite(Number(item.order)));
+    if (!hasExplicitOrder) return fallbackCompare ? source.sort(fallbackCompare) : source;
+    return source.map((item,index)=>({item,index,hasOrder:item?.order!==undefined && item?.order!==null && String(item.order).trim()!=='' && Number.isFinite(Number(item.order)),order:Number(item?.order)}))
+      .sort((a,b)=>{
+        if(a.hasOrder!==b.hasOrder) return a.hasOrder?-1:1;
+        if(a.hasOrder && a.order!==b.order) return a.order-b.order;
+        if(fallbackCompare){const result=fallbackCompare(a.item,b.item);if(result)return result;}
+        return a.index-b.index;
+      }).map(entry=>entry.item);
+  }
+
   function peoplePage() {
-    const teams = [...(data.teams || [])].sort((a,b) => normalizeAcademicYear(a.yearKey || a.year).localeCompare(normalizeAcademicYear(b.yearKey || b.year)));
-    const peopleIntro = (data.pageIntros || []).find(item => item.page === 'people') || {};
     const directory = data.teamDirectory || {};
-    const groupPhoto = peopleIntro.image || '';
+    const teams = orderByDisplayNumber(data.teams || [], (a,b) => normalizeAcademicYear(a.yearKey || a.year).localeCompare(normalizeAcademicYear(b.yearKey || b.year)));
+    const peopleIntro = (data.pageIntros || []).find(item => item.page === 'people') || {};
+    const groupPhoto = directory.groupPhotoImage || peopleIntro.image || '';
+    const groupPhotoAlt = directory.groupPhotoImageAlt || 'EDCKPRCAS students, leaders and collaborators together';
     const groupPhotoEyebrow = directory.groupPhotoEyebrow || 'Leadership and community';
     const groupPhotoTitle = directory.groupPhotoTitle || 'People behind the work.';
     const groupPhotoDescription = directory.groupPhotoDescription || 'A shared photograph of the people who contribute to the EDCKPRCAS community.';
+    const groupPhotoPlaceholderText = directory.groupPhotoPlaceholderText || 'A shared photograph of the EDCKPRCAS community will appear here.';
     const overviewEyebrow = directory.overviewEyebrow || 'Student teams by academic year';
     const overviewTitle = directory.overviewTitle || 'Three academic years. One EDC community.';
     const overviewDescription = directory.overviewDescription || 'Choose an academic year to open its own roster page, with individual member photographs and profiles.';
     const defaultCardEyebrow = directory.cardEyebrow || 'ACADEMIC YEAR';
     const defaultCardButton = directory.cardButtonLabel || 'View team roster';
+    const emptyTeamsTitle = directory.emptyTeamsTitle || 'Student teams will appear here.';
+    const emptyTeamsDescription = directory.emptyTeamsDescription || 'Academic-year team details will be displayed here when they are added in the Content Manager.';
 
     return `${pageHero(peopleIntro.eyebrow || 'People and student teams',peopleIntro.title || 'The people who contribute to EDC activity.',peopleIntro.description || 'Meet the people, student teams and collaborators who build the KPRCAS entrepreneurship ecosystem.',peopleIntro.number || '02',false)}
       <section class="section people-directory-section"><div class="wrap">${sectionHead(groupPhotoEyebrow,groupPhotoTitle,groupPhotoDescription)}
-      ${groupPhoto ? `<figure class="people-group-photo">${img(groupPhoto,'EDCKPRCAS people behind the work — common team photograph')}</figure>` : `<div class="people-group-photo people-group-photo-empty"><div class="people-group-photo-placeholder"><span class="eyebrow">${esc(groupPhotoEyebrow)}</span><strong>${esc(groupPhotoTitle)}</strong><p>Upload the shared photograph in Content Manager → Page introductions → People → Page image.</p></div></div>`}</div></section>
+      ${groupPhoto ? `<figure class="people-group-photo">${img(groupPhoto,groupPhotoAlt)}</figure>` : `<div class="people-group-photo people-group-photo-empty"><div class="people-group-photo-placeholder"><span class="eyebrow">${esc(groupPhotoEyebrow)}</span><strong>${esc(groupPhotoTitle)}</strong><p>${esc(groupPhotoPlaceholderText)}</p></div></div>`}</div></section>
       <section class="section section-soft"><div class="wrap">${sectionHead(overviewEyebrow,overviewTitle,overviewDescription)}
-      ${teams.length ? `<div class="team-year-grid">${teams.map((team,i)=>{const yearKey=team.yearKey || normalizeAcademicYear(team.year);const cardEyebrow=team.cardEyebrow || defaultCardEyebrow;const buttonLabel=team.buttonLabel || defaultCardButton;return `<a class="team-year-card reveal reveal-delay-${i%3}" href="team.html?year=${encodeURIComponent(yearKey)}" aria-label="View ${esc(team.title || team.year)} team roster"><div class="team-year-image">${team.image ? img(team.image,`${team.year || team.title} team photograph`) : `<div class="team-year-art"><span>EDC STUDENT TEAM</span><strong>${esc(team.year || 'Academic year')}</strong><small>MEMBERS · ROLES · ACTIVITIES</small></div>`}</div><div class="team-year-copy"><span class="eyebrow">${esc(cardEyebrow)}</span><h3>${esc(team.title || `EDC Student Team ${team.year || ''}`)}</h3><p>${esc(team.description || 'Open this academic-year roster to view individual team member profiles.')}</p><span class="team-year-link text-link">${esc(buttonLabel)} <span class="btn-arrow" aria-hidden="true">↗</span></span></div></a>`;}).join('')}</div>` : `<div class="empty-state">Academic-year teams will appear here when they are added through the Content Manager.</div>`}</div></section>`;
+      ${teams.length ? `<div class="team-year-grid">${teams.map((team,i)=>{
+        const yearKey=team.yearKey || normalizeAcademicYear(team.year);
+        const cardEyebrow=team.cardEyebrow || defaultCardEyebrow;
+        const buttonLabel=team.buttonLabel || defaultCardButton;
+        const cardTitle=team.cardTitle || team.title || `EDC Student Team ${team.year || ''}`;
+        const cardDescription=team.cardDescription || team.description || 'Open this academic-year roster to view individual team member profiles.';
+        const cardImage=team.cardImage || team.image || '';
+        const cardImageAlt=team.cardImageAlt || `${team.year || cardTitle} student team photograph`;
+        const fallbackEyebrow=team.cardFallbackEyebrow || directory.cardFallbackEyebrow || 'EDC STUDENT TEAM';
+        const fallbackTitle=team.cardFallbackTitle || team.year || 'Academic year';
+        const fallbackMeta=team.cardFallbackMeta || directory.cardFallbackMeta || 'MEMBERS · ROLES · ACTIVITIES';
+        return `<a class="team-year-card reveal reveal-delay-${i%3}" href="team.html?year=${encodeURIComponent(yearKey)}" aria-label="View ${esc(cardTitle)} team roster"><div class="team-year-image">${cardImage ? img(cardImage,cardImageAlt) : `<div class="team-year-art"><span>${esc(fallbackEyebrow)}</span><strong>${esc(fallbackTitle)}</strong><small>${esc(fallbackMeta)}</small></div>`}</div><div class="team-year-copy"><span class="eyebrow">${esc(cardEyebrow)}</span><h3>${esc(cardTitle)}</h3><p>${esc(cardDescription)}</p><span class="team-year-link text-link">${esc(buttonLabel)} <span class="btn-arrow" aria-hidden="true">↗</span></span></div></a>`;
+      }).join('')}</div>` : `<div class="empty-state"><h3>${esc(emptyTeamsTitle)}</h3><p>${esc(emptyTeamsDescription)}</p></div>`}</div></section>`;
   }
 
   function teamYearPage() {
     const requestedYear = new URLSearchParams(location.search).get('year') || '2026-2027';
     const requestedKey = normalizeAcademicYear(requestedYear);
     const team = (data.teams || []).find(t => normalizeAcademicYear(t.yearKey || t.year) === requestedKey);
-    if (!team) return `${pageHero('Student teams','Academic-year team not found.','Choose an academic year from the People page.','03')}<section class="section"><div class="wrap"><a class="btn" href="people.html">Back to People <span class="btn-arrow">↗</span></a></div></section>`;
+    if (!team) { const directory=data.teamDirectory||{}; const missingEyebrow=directory.missingTeamEyebrow||'Student teams'; const missingTitle=directory.missingTeamTitle||'Academic-year team not found.'; const missingDescription=directory.missingTeamDescription||'Choose an academic year from the People page.'; const missingBackLabel=directory.missingTeamBackLabel||'Back to People'; const missingBackUrl=safeUrl(directory.missingTeamBackUrl)||'people.html'; return `${pageHero(missingEyebrow,missingTitle,missingDescription,'03')}<section class="section"><div class="wrap"><a class="btn" href="${esc(missingBackUrl)}">${esc(missingBackLabel)} <span class="btn-arrow">↗</span></a></div></section>`; }
 
-    // Match the leadership-message ordering model: an optional numeric display order.
-    // With no order values, the original Content Manager array order is preserved.
-    const members = (data.people || []).filter(person => normalizeAcademicYear(person.teamYear) === requestedKey)
-      .sort((a,b) => Number(a.order || 0) - Number(b.order || 0));
+    const members = orderByDisplayNumber((data.people || []).filter(person => normalizeAcademicYear(person.teamYear) === requestedKey));
     const directory = data.teamDirectory || {};
     const rosterEyebrow = team.rosterEyebrow || directory.defaultRosterEyebrow || 'Individual team members';
     const rosterHeading = team.rosterTitle || `EDC student team · ${team.year || requestedYear}`;
     const rosterDescription = team.rosterDescription || directory.defaultRosterDescription || 'Each card contains one member photograph, name, role and concise profile details.';
     const backLabel = team.backButtonLabel || directory.defaultBackButtonLabel || 'All academic years';
-    const backUrl = safeUrl(team.backButtonUrl) || 'people.html';
+    const backUrl = safeUrl(team.backButtonUrl || directory.defaultBackButtonUrl) || 'people.html';
+    const emptyEyebrow = team.emptyRosterEyebrow || directory.emptyRosterEyebrow || team.year || 'Academic-year team';
     const emptyTitle = team.emptyRosterTitle || directory.emptyRosterTitle || 'Team profiles will appear here.';
-    const emptyDescription = team.emptyRosterDescription || directory.emptyRosterDescription || 'Add each student separately in Content Manager → People. Upload the member’s own portrait and assign the correct academic year.';
+    const emptyDescription = team.emptyRosterDescription || directory.emptyRosterDescription || 'Student profiles for this academic year have not been added yet.';
+    const emptyActionText = team.emptyRosterActionText || directory.emptyRosterActionText || '';
+    const rosterImage = team.rosterImage || team.image || '';
+    const rosterImageAlt = team.rosterImageAlt || `${team.year || requestedYear} EDC student team group photograph`;
+    const heroEyebrow = team.heroEyebrow || team.year || requestedYear;
+    const heroTitle = team.heroTitle || team.title || `EDC Student Team ${team.year || ''}`;
+    const heroDescription = team.heroDescription || team.description || 'Meet the individual members and their roles in this academic-year team.';
+    const heroImage = team.heroImage || '';
+    const heroIntro = {eyebrow:heroEyebrow,title:heroTitle,description:heroDescription,image:heroImage,imageAlt:team.heroImageAlt || heroTitle,artMode:team.heroArtMode || 'both'};
+    const hero = pageHero(heroEyebrow,heroTitle,heroDescription,team.heroNumber || '03',Boolean(heroImage),heroIntro);
+    const memberDisplay = {
+      tagLabel:team.memberTagLabel || directory.memberTagLabel || 'People',
+      metaFallback:directory.memberMetaFallback || 'Team',
+      placeholderLabel:directory.memberPlaceholderLabel || 'EDC PROFILE',
+      linkedinLabel:team.memberLinkedInLabel || directory.memberLinkedInLabel || 'LinkedIn',
+      emailLabel:team.memberEmailLabel || directory.memberEmailLabel || 'Email'
+    };
 
-    return `${pageHero(team.heroEyebrow || team.year,team.title || `EDC Student Team ${team.year || ''}`,team.description || 'Meet the individual members and their roles in this academic-year team.','03')}
+    return `${hero}
       <section class="section team-roster-section"><div class="wrap"><div class="team-roster-topline"><div>${sectionHead(rosterEyebrow,rosterHeading,rosterDescription)}</div><a class="text-link team-roster-back" href="${esc(backUrl)}">${esc(backLabel)} <span class="btn-arrow" aria-hidden="true">↗</span></a></div>
-      ${team.image ? `<figure class="team-roster-group-photo">${img(team.image,`${team.year} EDC student team group photograph`)}</figure>` : ''}
-      ${members.length ? `<div class="card-grid team-member-grid">${members.map((person,i)=>`<div class="team-member-card">${profileCard(person,i)}</div>`).join('')}</div>` : `<div class="team-roster-empty"><div class="eyebrow">${esc(team.year)}</div><h2>${esc(emptyTitle)}</h2><p>${esc(emptyDescription)} Set the Academic year to <strong>${esc(team.yearKey || requestedKey)}</strong>.</p><a class="btn btn-outline" href="${esc(backUrl)}">${esc(backLabel)} <span class="btn-arrow">↗</span></a></div>`}</div></section>`;
+      ${rosterImage ? `<figure class="team-roster-group-photo">${img(rosterImage,rosterImageAlt)}</figure>` : ''}
+      ${members.length ? `<div class="card-grid team-member-grid">${members.map((person,i)=>`<div class="team-member-card">${profileCard(person,i,false,memberDisplay)}</div>`).join('')}</div>` : `<div class="team-roster-empty"><div class="eyebrow">${esc(emptyEyebrow)}</div><h2>${esc(emptyTitle)}</h2><p>${esc(emptyDescription)}${emptyActionText ? ` ${esc(emptyActionText)}` : ''}</p><a class="btn btn-outline" href="${esc(backUrl)}">${esc(backLabel)} <span class="btn-arrow">↗</span></a></div>`}</div></section>`;
   }
 
   function eventRow(e,i) {
@@ -1020,8 +1096,8 @@
     const article = page === 'blog-detail' ? publishedBlogs().find(item=>item.id===blogId) : null;
     const team = page === 'team-year' ? (data.teams||[]).find(item=>item.yearKey===yearKey) : null;
     const intro = (data.pageIntros||[]).find(item=>item.page===page);
-    const title = article ? article.title : team ? `${team.title || 'EDC student team'} ${team.year || ''}`.trim() : (page==='home' ? 'Entrepreneurship Development Cell at KPRCAS, Coimbatore' : (intro?.title || pageNames[page] || 'EDCKPRCAS'));
-    const description = article ? (article.excerpt || '') : team ? `Explore the ${team.year || ''} student team at EDCKPRCAS, the Entrepreneurship Development Cell at KPRCAS, Coimbatore. ${team.description || ''}`.trim() : (page==='home' ? 'EDCKPRCAS is the Entrepreneurship Development Cell at KPRCAS, Coimbatore, supporting student entrepreneurship, innovation, startup development, mentoring and campus programmes.' : page==='people' ? 'Meet EDCKPRCAS student teams, coordinators and people supporting entrepreneurship development at KPRCAS, Coimbatore.' : (intro?.description || 'Entrepreneurship Development Cell at KPRCAS, Coimbatore.'));
+    const title = article ? article.title : team ? `${team.heroTitle || team.title || 'EDC student team'} ${team.year || ''}`.trim() : (page==='home' ? 'Entrepreneurship Development Cell at KPRCAS, Coimbatore' : (intro?.title || pageNames[page] || 'EDCKPRCAS'));
+    const description = article ? (article.excerpt || '') : team ? `Explore the ${team.year || ''} student team at EDCKPRCAS, the Entrepreneurship Development Cell at KPRCAS, Coimbatore. ${team.heroDescription || team.description || ''}`.trim() : (page==='home' ? 'EDCKPRCAS is the Entrepreneurship Development Cell at KPRCAS, Coimbatore, supporting student entrepreneurship, innovation, startup development, mentoring and campus programmes.' : page==='people' ? 'Meet EDCKPRCAS student teams, coordinators and people supporting entrepreneurship development at KPRCAS, Coimbatore.' : (intro?.description || 'Entrepreneurship Development Cell at KPRCAS, Coimbatore.'));
     const base = String(data.site?.website || document.querySelector('meta[name="site-url"]')?.content || location.origin).replace(/\/$/,'');
     const queryString = page==='blog-detail' && blogId ? `?id=${encodeURIComponent(blogId)}` : page==='team-year' && yearKey ? `?year=${encodeURIComponent(yearKey)}` : '';
     const canonical = `${base}${location.pathname}${queryString}`;
@@ -1031,7 +1107,7 @@
     setMeta('robots','index,follow,max-image-preview:large');
     let link = $('link[rel=canonical]'); if(!link){link=document.createElement('link');link.rel='canonical';document.head.appendChild(link);} link.href=canonical;
     setMeta('og:title',seoTitle,true); setMeta('og:description',description,true); setMeta('og:type',article?'article':'website',true); setMeta('og:url',canonical,true);
-    const socialImage = article?.image || team?.image || intro?.image || data.home?.heroImage || data.site?.logoImage || '';
+    const socialImage = article?.image || team?.heroImage || team?.rosterImage || team?.cardImage || team?.image || intro?.image || data.home?.heroImage || data.site?.logoImage || '';
     const resolvedSocialImage = socialImage ? assetUrl(socialImage) : '';
     const imageUrl = resolvedSocialImage ? (/^https:\/\//i.test(resolvedSocialImage) ? resolvedSocialImage : new URL(resolvedSocialImage,base).href) : '';
     if(imageUrl) { setMeta('og:image',imageUrl,true); setMeta('og:image:alt',title,true); }
