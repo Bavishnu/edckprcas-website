@@ -1311,3 +1311,8 @@ body[data-page="events"] #main > .section{border-top:0!important}
   .team-roster-back{justify-self:end;margin:0 0 2px auto}
   .team-year-copy{align-items:stretch!important}
 }
+
+/* Content Manager navigation fields: show only the newly managed footer CTA. */
+#edcMegaMenu .mega-menu-foot a.mega-menu-foot-cta{display:inline-flex!important;align-items:center;gap:6px;color:#008c60;font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:none}
+#edcMegaMenu .mega-menu-foot .mega-menu-foot-cta-label{display:inline-flex;color:#53647a;font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:none}
+.contact-response-note{margin-top:12px;padding-left:12px;border-left:2px solid rgba(21,169,112,.65);font-size:11px;line-height:1.7;color:rgba(255,255,255,.72)}
