@@ -9,7 +9,7 @@
   let toastTimer = null;
 
   const collections = {
-    people:{title:'People', singular:'profile', collection:'people', primary:'name', secondary:'role', fields:[['name','Full name','text'],['role','Designation / role','text'],['team','Team / department','text'],['teamYear','Academic year','teamYear'],['bio','Biography','textarea'],['image','Individual member portrait photo (upload one image per student)','image'],['linkedin','LinkedIn URL','url'],['email','Email address','email']]},
+    people:{title:'People', singular:'profile', collection:'people', primary:'name', secondary:'role', fields:[['name','Full name','text'],['role','Designation / role','text'],['team','Team / department','text'],['teamYear','Academic year','teamYear'],['order','Display order (same as leadership messages; lower number appears first)','number'],['bio','Biography','textarea'],['image','Individual member portrait photo (upload one image per student)','image'],['linkedin','LinkedIn URL','url'],['email','Email address','email']]},
     events:{title:'Events',singular:'event',collection:'events',primary:'title',secondary:'date',fields:[['title','Event title','text'],['date','Event date','date'],['category','Category','text'],['status','Status','text'],['location','Venue / location','text'],['summary','Description','textarea'],['image','Event image','image'],['link','Registration / event URL','url']]},
     startups:{title:'Startups',singular:'startup',collection:'startups',primary:'name',secondary:'sector',fields:[['name','Venture name','text'],['sector','Sector','text'],['stage','Stage / status','text'],['founders','Founder names','text'],['year','Year','text'],['summary','Venture overview','textarea'],['image','Venture image','image'],['website','Website URL','url']]},
     messages:{title:'Messages from heads',singular:'message',collection:'messages',primary:'name',secondary:'designation',fields:[['name','Name','text'],['designation','Designation','text'],['heading','Message heading','text'],['quote','Message / quote','textarea'],['image','Portrait image','image'],['order','Display order','text']]},
@@ -161,9 +161,9 @@
       return `<div class="admin-field"><label for="${name}">${label}</label><select id="${name}" data-field="${key}"><option value="">Not assigned to an academic year</option>${options.map(option=>`<option value="${esc(option.value)}" ${normalizeYear(option.value)===selected?'selected':''}>${esc(option.label)}</option>`).join('')}</select><div class="field-hint">Choose the matching Academic-year team record. This controls which roster page displays this student.</div></div>`;
     }
     if (type==='select') { const options=field[3]||[]; return `<div class="admin-field"><label for="${name}">${label}</label><select id="${name}" data-field="${key}">${options.map(option=>`<option value="${esc(option)}" ${String(value||'')===String(option)?'selected':''}>${esc(option)}</option>`).join('')}</select></div>`; }
-    const tag = full ? 'textarea' : 'input'; const inputType = type==='date'?'date':type==='datetime-local'?'datetime-local':type==='url'?'url':type==='email'?'email':'text';
+    const tag = full ? 'textarea' : 'input'; const inputType = type==='date'?'date':type==='datetime-local'?'datetime-local':type==='url'?'url':type==='email'?'email':type==='number'?'number':'text';
     if(tag==='textarea') return `<div class="admin-field full"><label for="${name}">${label}</label><textarea id="${name}" data-field="${key}" placeholder="${esc(label)}">${esc(value||'')}</textarea></div>`;
-    const hint = type==='datetime-local' ? '<div class="field-hint">Use your local time. A Scheduled article remains private until this date and time; the website publishes it automatically when the time arrives.</div>' : '';
+    const hint = type==='datetime-local' ? '<div class="field-hint">Use your local time. A Scheduled article remains private until this date and time; the website publishes it automatically when the time arrives.</div>' : (current==='people' && key==='order' ? '<div class="field-hint">Optional. Enter 1, 2, 3… to control the designation-based roster sequence, just like leadership messages. Leave blank to preserve the existing Content Manager order. Assign an order to every member when using a custom sequence.</div>' : '');
     const socialHint = current==='social' && (key==='link' || key==='videoUrl') ? '<div class="field-hint">Paste a public post or video URL. The Content Manager will try to fetch and save its thumbnail automatically. Some platforms restrict previews; upload an image manually if the platform blocks access.</div>' : '';
     let valueForInput = value || '';
     if (type==='datetime-local' && value) {
@@ -173,7 +173,8 @@
         valueForInput = localDate.toISOString().slice(0,16);
       } else valueForInput = String(value).slice(0,16);
     }
-    return `<div class="admin-field"><label for="${name}">${label}</label><input id="${name}" data-field="${key}" type="${inputType}" value="${esc(valueForInput)}" placeholder="${esc(label)}">${hint}${socialHint}</div>`;
+    const numericAttributes = type==='number' ? ' min="1" step="1" inputmode="numeric"' : '';
+    return `<div class="admin-field"><label for="${name}">${label}</label><input id="${name}" data-field="${key}" type="${inputType}"${numericAttributes} value="${esc(valueForInput)}" placeholder="${esc(label)}">${hint}${socialHint}</div>`;
   }
   function renderCollection(key) {
     const config=collections[key]; const rows=content[config.collection]||[]; const selected=currentIndex>=0?rows[currentIndex]:null;
@@ -375,6 +376,7 @@
     for(const field of config.fields){
       const [key,,type]=field; const input=form.querySelector(`[data-field="${key}"]`); let value=input?.value??'';
       if(type==='pages') value=value.split(/\n\s*===PAGE===\s*\n/g).map(x=>x.trim()).filter(Boolean);
+      if(current==='people' && key==='order') value=String(value).trim()==='' ? '' : Number(value);
       if(current==='blogs' && key==='publishAt' && value){
         const publicationDate = new Date(value);
         if(Number.isNaN(publicationDate.getTime())){showToast('Choose a valid publication date and time.',true);input?.focus();return;}
