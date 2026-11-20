@@ -362,8 +362,10 @@
     const team = (data.teams || []).find(t => normalizeAcademicYear(t.yearKey || t.year) === requestedKey);
     if (!team) return `${pageHero('Student teams','Academic-year team not found.','Choose an academic year from the People page.','03')}<section class="section"><div class="wrap"><a class="btn" href="people.html">Back to People <span class="btn-arrow">↗</span></a></div></section>`;
 
+    // Match the leadership-message ordering model: an optional numeric display order.
+    // With no order values, the original Content Manager array order is preserved.
     const members = (data.people || []).filter(person => normalizeAcademicYear(person.teamYear) === requestedKey)
-      .sort((a,b) => String(a.name || '').localeCompare(String(b.name || '')));
+      .sort((a,b) => Number(a.order || 0) - Number(b.order || 0));
     const directory = data.teamDirectory || {};
     const rosterEyebrow = team.rosterEyebrow || directory.defaultRosterEyebrow || 'Individual team members';
     const rosterHeading = team.rosterTitle || `EDC student team · ${team.year || requestedYear}`;
