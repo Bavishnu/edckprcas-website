@@ -71,3 +71,8 @@
   .admin-field label{font-size:11px!important}
   .admin-field input,.admin-field textarea,.admin-field select{font-size:14px!important;min-height:42px}
 }
+
+/* Structured editor headings for the expanded People and academic-year team modules. */
+.admin-form-section{grid-column:1/-1;margin:20px 0 8px;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--green);background:#f5f8fb}
+.admin-form-section h4{margin:0;color:var(--navy);font:800 11px/1.4 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.admin-form-section:first-child{margin-top:0}
