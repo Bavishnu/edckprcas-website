@@ -379,31 +379,37 @@
   function profileCard(item, i, mentor = false, displayOptions = {}) {
     const role = mentor ? item.expertise : item.role;
     const meta = mentor ? item.organization : (item.team || displayOptions.metaFallback || 'Team');
-    const link = item.linkedin;
     const badge = mentor ? (displayOptions.tagLabel || 'Mentor') : (item.cardTag || displayOptions.tagLabel || 'People');
     const placeholder = displayOptions.placeholderLabel || (mentor ? 'MENTOR PORTRAIT' : 'EDC PROFILE');
     const imageAlt = item.imageAlt || item.name || placeholder;
-    return `<article class="card profile-card reveal reveal-delay-${Math.min(i%3,3)}"><div class="card-image">${item.image ? img(item.image,imageAlt) : `<div class="media-placeholder"><span>${esc(placeholder)}</span></div>`}</div><div class="card-body"><div class="card-meta"><span>${esc(meta)}</span><span class="card-tag">${esc(badge)}</span></div><h3>${esc(item.name)}</h3>${role ? `<div class="profile-role">${esc(role)}</div>` : ''}${item.bio ? `<p>${esc(item.bio)}</p>` : ''}<div class="profile-links">${link ? `<a href="${esc(safeUrl(link))}" target="_blank" rel="noopener">${esc(displayOptions.linkedinLabel||'LinkedIn')} ↗</a>` : ''}${item.email ? `<a href="mailto:${esc(item.email)}">${esc(displayOptions.emailLabel||'Email')} ↗</a>` : ''}</div></div></article>`;
+    const contactLinks = contactIconLinks(item);
+    return `<article class="card profile-card reveal reveal-delay-${Math.min(i%3,3)}"><div class="card-image">${item.image ? img(item.image,imageAlt) : `<div class="media-placeholder"><span>${esc(placeholder)}</span></div>`}</div><div class="card-body"><div class="card-meta"><span>${esc(meta)}</span><span class="card-tag">${esc(badge)}</span></div><h3>${esc(item.name)}</h3>${role ? `<div class="profile-role">${esc(role)}</div>` : ''}${item.bio ? `<p>${esc(item.bio)}</p>` : ''}${contactLinks ? `<div class="profile-card-contact">${contactLinks}</div>` : ''}</div></article>`;
   }
   function normalizeAcademicYear(value) {
     const digits = String(value || '').replace(/\D/g, '');
     return digits.length === 8 ? `${digits.slice(0,4)}-${digits.slice(4)}` : String(value || '').trim().toLowerCase();
   }
 
-  // Preserve Content Manager order unless explicit display numbers are provided.
-  // Once manual ordering is used, numbered entries appear first in ascending order;
-  // unnumbered entries keep their saved Content Manager order at the end.
+  // Numeric order is authoritative for People/team rosters. Accept the current
+  // CMS key (order) and legacy aliases, keep ties stable, and never alphabetize members.
+  function manualOrderValue(item) {
+    const raw = item?.order ?? item?.displayOrder ?? item?.manualDisplayOrder;
+    if (raw === undefined || raw === null || String(raw).trim() === '') return null;
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) && Number.isInteger(parsed) && parsed >= 1 ? parsed : null;
+  }
   function orderByDisplayNumber(items, fallbackCompare = null) {
     const source = [...(items || [])];
-    const hasExplicitOrder = source.some(item => item?.order !== undefined && item?.order !== null && String(item.order).trim() !== '' && Number.isFinite(Number(item.order)));
+    const decorated = source.map((item,index)=>({item,index,order:manualOrderValue(item)}));
+    const hasExplicitOrder = decorated.some(entry => entry.order !== null);
     if (!hasExplicitOrder) return fallbackCompare ? source.sort(fallbackCompare) : source;
-    return source.map((item,index)=>({item,index,hasOrder:item?.order!==undefined && item?.order!==null && String(item.order).trim()!=='' && Number.isFinite(Number(item.order)),order:Number(item?.order)}))
-      .sort((a,b)=>{
-        if(a.hasOrder!==b.hasOrder) return a.hasOrder?-1:1;
-        if(a.hasOrder && a.order!==b.order) return a.order-b.order;
-        if(fallbackCompare){const result=fallbackCompare(a.item,b.item);if(result)return result;}
-        return a.index-b.index;
-      }).map(entry=>entry.item);
+    return decorated.sort((a,b)=>{
+      if (a.order !== null && b.order === null) return -1;
+      if (a.order === null && b.order !== null) return 1;
+      if (a.order !== null && b.order !== null && a.order !== b.order) return a.order - b.order;
+      // Stable ties and blank values retain their saved Content Manager sequence.
+      return a.index - b.index;
+    }).map(entry=>entry.item);
   }
 
   function peoplePage() {
@@ -558,13 +564,19 @@
 
   function contactIconLinks(item) {
     const links = [];
-    const linkedin = safeUrl(item?.linkedin);
-    if (linkedin && /^https?:\/\//i.test(linkedin)) {
-      links.push(`<a class="profile-contact-icon is-linkedin" href="${esc(linkedin)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(item.name || 'profile')} on LinkedIn" title="LinkedIn">${socialMark('linkedin')}</a>`);
+    const rawLinkedIn = String(item?.linkedin || '').trim();
+    const linkedinCandidate = rawLinkedIn && !/^[a-z][a-z0-9+.-]*:/i.test(rawLinkedIn) ? `https://${rawLinkedIn.replace(/^\/+/, '')}` : rawLinkedIn;
+    let linkedin = '';
+    try {
+      const parsed = new URL(linkedinCandidate);
+      if (['http:','https:'].includes(parsed.protocol)) linkedin = parsed.href;
+    } catch { linkedin = ''; }
+    if (linkedin) {
+      links.push(`<a class="profile-contact-icon is-linkedin" href="${esc(linkedin)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(item.name || 'profile')} on LinkedIn" title="LinkedIn">${socialMark('linkedin')}<span class="sr-only">LinkedIn</span></a>`);
     }
     const email = String(item?.email || '').trim();
     if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      links.push(`<a class="profile-contact-icon is-email" href="mailto:${esc(email)}" aria-label="Email ${esc(item.name || 'contact')}" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`);
+      links.push(`<a class="profile-contact-email" href="mailto:${esc(email)}" aria-label="Email ${esc(item.name || 'contact')} at ${esc(email)}" title="Email ${esc(email)}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="#4285F4" d="M3.2 6.4v11.2c0 .9.7 1.6 1.6 1.6h2.4V9.5z"/><path fill="#34A853" d="M16.8 19.2h2.4c.9 0 1.6-.7 1.6-1.6V6.4l-4 3.1z"/><path fill="#EA4335" d="M4.8 4.8c-.9 0-1.6.7-1.6 1.6v.1L12 13l8.8-6.5v-.1c0-.9-.7-1.6-1.6-1.6H4.8z"/><path fill="#FBBC04" d="M7.2 19.2h9.6V9.5L12 13 7.2 9.5z"/></svg><span>${esc(email)}</span></a>`);
     }
     return links.length ? `<span class="profile-contact-icons">${links.join('')}</span>` : '';
   }
