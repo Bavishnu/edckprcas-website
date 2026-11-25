@@ -11,12 +11,12 @@
   const collections = {
     people:{title:'People', singular:'profile', collection:'people', primary:'name', secondary:'role', fields:[['name','Full name','text'],['role','Designation / role shown on the roster card','text'],['team','Affiliation / department line shown on the card','text'],['teamYear','Academic year','teamYear'],['order','Manual display order (lower number appears first)','number'],['cardTag','Small card badge label (optional)','text'],['bio','Profile biography','textarea'],['image','Individual member portrait photograph','image'],['imageAlt','Portrait alternative text (accessibility)','text'],['linkedin','LinkedIn URL','url'],['email','Email address','email']]},
     events:{title:'Events',singular:'event',collection:'events',primary:'title',secondary:'date',fields:[['title','Event title','text'],['date','Event date','date'],['category','Category','text'],['status','Status','text'],['location','Venue / location','text'],['summary','Description','textarea'],['image','Event image','image'],['link','Registration / event URL','url']]},
-    startups:{title:'Startups',singular:'startup',collection:'startups',primary:'name',secondary:'sector',fields:[['name','Venture name','text'],['sector','Sector','text'],['stage','Stage / status','text'],['founders','Founder names','text'],['year','Year','text'],['summary','Venture overview','textarea'],['image','Venture image','image'],['website','Website URL','url']]},
+    startups:{title:'Startups',singular:'startup',collection:'startups',primary:'name',secondary:'sector',fields:[['name','Venture name','text'],['sector','Sector','text'],['stage','Stage / status','text'],['founders','Founder names','text'],['year','Year','text'],['summary','Venture overview','textarea'],['logo','Venture logo (left side of card)','image'],['logoAlt','Venture logo alternative text','text'],['founderImage','Founder / person portrait (right side of card)','image'],['founderImageAlt','Founder portrait alternative text','text'],['image','Legacy image (used as portrait if no founder portrait is supplied)','image'],['imageAlt','Legacy image alternative text','text'],['linkedin','LinkedIn URL','url'],['email','Founder contact email','email'],['website','Website URL','url']]},
     messages:{title:'Messages from heads',singular:'message',collection:'messages',primary:'name',secondary:'designation',fields:[['name','Name','text'],['designation','Designation','text'],['heading','Message heading','text'],['quote','Message / quote','textarea'],['image','Portrait image','image'],['order','Display order','number']]},
     gallery:{title:'Gallery',singular:'photo',collection:'gallery',primary:'title',secondary:'category',fields:[['title','Photo title','text'],['category','Category','text'],['date','Year / date','text'],['caption','Caption','textarea'],['image','Photo image','image']]},
     blogs:{title:'Blogs',singular:'blog article',collection:'blogs',primary:'title',secondary:'author',fields:[['title','Article title','text'],['category','Category','text'],['author','Author','text'],['date','Display date','date'],['status','Publication status','select',['Draft','Scheduled','Published']],['publishAt','Schedule publish date and time','datetime-local'],['readTime','Reading time','text'],['excerpt','Short summary','textarea'],['image','Cover image','image'],['body','Article body','textarea']]},
     social:{title:'Social media',singular:'social post',collection:'social',primary:'platform',secondary:'date',fields:[['platform','Platform','text'],['date','Post date','date'],['caption','Post caption','textarea'],['image','Post image / thumbnail (upload file)','image'],['videoUrl','Video URL (YouTube or public video post)','url'],['link','Original post URL','url']]},
-    mentors:{title:'Mentors',singular:'mentor',collection:'mentors',primary:'name',secondary:'expertise',fields:[['name','Mentor name','text'],['expertise','Area of expertise','text'],['organization','Organisation','text'],['bio','Biography','textarea'],['image','Portrait image','image'],['linkedin','LinkedIn URL','url']]},
+    mentors:{title:'Mentors',singular:'mentor',collection:'mentors',primary:'name',secondary:'expertise',fields:[['name','Mentor name','text'],['expertise','Area of expertise','text'],['organization','Organisation','text'],['bio','Biography','textarea'],['organizationLogo','Organisation / company logo (left side of card)','image'],['organizationLogoAlt','Organisation logo alternative text','text'],['image','Mentor portrait photograph (right side of card)','image'],['imageAlt','Mentor portrait alternative text','text'],['linkedin','LinkedIn URL','url'],['email','Email address','email']]},
     reports:{title:'Annual reports',singular:'annual report',collection:'reports',primary:'title',secondary:'year',fields:[['title','Report title','text'],['year','Report year','text'],['summary','Report summary','textarea'],['cover','Cover image','image'],['pdfUrl','Annual report PDF (upload file)','pdf'],['pages','Flipbook preview pages','pages']]},
     opportunities:{title:'Opportunities',singular:'opportunity',collection:'opportunities',primary:'title',secondary:'type',fields:[['title','Opportunity title','text'],['type','Opportunity type','text'],['deadline','Deadline / timeline','text'],['status','Status','text'],['summary','Description','textarea'],['eligibility','Who can participate','textarea'],['image','Opportunity image','image'],['link','Application / information URL','url']]},
     achievements:{title:'Achievements',singular:'achievement',collection:'achievements',primary:'title',secondary:'year',fields:[['title','Achievement title','text'],['year','Year','text'],['category','Category / competition','text'],['distinction','Position / recognition','text'],['description','Achievement description','textarea'],['image','Achievement photograph','image']]},
@@ -39,12 +39,12 @@
   };
   const objects = {
     site:{title:'Site identity',description:'Update the EDC name, official logo, establishment year, contact details and social links.',keys:['brand','name','shortName','established','logoImage','email','phone','address','website','linkedin','instagram','youtube','facebook']},
-    navigation:{title:'Navigation & footer copy',description:'Edit the centred establishment strip, main navigation, mega-menu links, footer columns and small navigation labels shown throughout the website.',keys:['topLinePrefix','topLineBrand','homeLabel','mainAbout','mainPeople','mainProgrammes','mainVentures','mainImpact','mainSocial','mainGallery','exploreLabel','reachOutLabel','megaTitle','megaNote','megaLinks','megaFooterLine','megaFooterCta','megaFooterCtaUrl','footerBrandLine','footerGroups','copyrightPrefix','copyrightSuffix']},
+    navigation:{title:'Navigation & footer copy',description:'Edit the centred establishment strip, main navigation, mega-menu links, footer columns and small navigation labels shown throughout the website.',keys:['topLinePrefix','topLineBrand','homeLabel','mainAbout','mainPeople','mainProgrammes','mainVentures','mainImpact','mainSocial','mainGallery','exploreLabel','reachOutLabel','reachOutUrl','megaTitle','megaNote','megaLinks','megaFooterLine','megaFooterCta','megaFooterCtaUrl','footerBrandLine','footerGroups','copyrightPrefix','copyrightSuffix']},
     home:{title:'Home page',description:'Edit homepage headings, supporting copy, every image slot, the anthem video, ecosystem tiles, focus cards, six practical steps, comparison content, activity cards, blog and leadership labels, page CTA and small interface labels.',keys:['eyebrow','title','description','primaryLabel','primaryUrl','secondaryLabel','secondaryUrl','heroImage','diagramEyebrow','diagramTitle','diagramText','diagramLinkLabel','diagramLinkUrl','statsTitle','statsDescription','stats','ecosystemEyebrow','ecosystemTitle','ecosystemDescription','ecosystemWall','stakeholderEyebrow','stakeholderTitle','stakeholderDescription','stakeholders','wallFootLabel','wallFootLinkLabel','wallFootLinkUrl','focusEyebrow','focusTitle','focusDescription','frictionPoints','pathwayEyebrow','pathwayTitle','pathwayDescription','journeyOutputLabel','journeyHint','journeyExitLabel','journey','comparisonEyebrow','comparisonTitle','comparisonDescription','comparisonLeftLabel','comparisonLeftTitle','comparisonLeftImage','comparisonLeftPoints','comparisonRightLabel','comparisonRightTitle','comparisonRightImage','comparisonRightPoints','comparisonLinkLabel','comparisonLinkUrl','anthemEyebrow','anthemTitle','anthemDescription','anthemVideoUrl','anthemPoster','anthemPlaceholderTitle','anthemPlaceholderText','featureEyebrow','featureTitle','featureText','featureImage','featureButtonLabel','featureButtonUrl','workEyebrow','workTitle','workDescription','workCards','blogEyebrow','blogTitle','blogDescription','blogLinkLabel','blogLinkUrl','messagesEyebrow','messagesTitle','messagesDescription','messagesLinkLabel','messagesLinkUrl','finalTitle','finalText','finalButtonLabel','finalButtonUrl','ctaEyebrow','ctaTitle','ctaText','ctaButtonLabel','ctaButtonUrl']},
     about:{title:'About page',description:'Edit the story, mission, vision, section labels, image holders, principles and institutional journey.',keys:['eyebrow','title','description','storyEyebrow','storyTitle','story','storyFootnote','storyImage','missionLabel','missionTitle','missionImage','mission','visionLabel','visionTitle','visionImage','vision','principlesEyebrow','principlesTitle','principles','journeyEyebrow','journeyTitle','journey']},
     impact:{title:'Impact page',description:'Maintain impact numbers, explanatory copy, section headings, supporting image and milestone records. Keep figures current and verifiable.',keys:['eyebrow','title','description','stats','statement','statementImage','milestonesEyebrow','milestonesTitle','milestones']},
     contact:{title:'Contact page',description:'Edit the contact image, contact panel, every enquiry step, field label, placeholder, privacy note, enquiry categories and goals.',keys:['eyebrow','title','description','contactImage','contactPanelEyebrow','contactPanelTitle','contactPanelText','formTitle','formIntro','step1Title','step1Note','step2Title','step2Note','step3Title','step3Note','nameLabel','emailLabel','subjectLabel','messageLabel','namePlaceholder','emailPlaceholder','subjectPlaceholder','messagePlaceholder','continueLabel','submitLabel','backLabel','privacyNote','reviewHint','locationLabel','emailDetailLabel','phoneDetailLabel','responseNote','directionsUrl','enquiryChoices','goals']},
-    teamDirectory:{title:'People page & team-page content',description:'Edit the People page photograph and section copy, shared year-card defaults, roster defaults and member-card labels. Edit the People hero under Page introductions → people and the People closing section under Page closing panels → people. Each Academic-year team record separately controls its own card, hero visual, roster, photographs, member labels and closing panel.',keys:['groupPhotoImage','groupPhotoImageAlt','groupPhotoEyebrow','groupPhotoTitle','groupPhotoDescription','groupPhotoPlaceholderText','overviewEyebrow','overviewTitle','overviewDescription','emptyTeamsTitle','emptyTeamsDescription','cardEyebrow','cardButtonLabel','cardFallbackEyebrow','cardFallbackMeta','defaultRosterEyebrow','defaultRosterDescription','defaultBackButtonLabel','defaultBackButtonUrl','emptyRosterEyebrow','emptyRosterTitle','emptyRosterDescription','emptyRosterActionText','memberTagLabel','memberMetaFallback','memberPlaceholderLabel','memberLinkedInLabel','memberEmailLabel','missingTeamEyebrow','missingTeamTitle','missingTeamDescription','missingTeamBackLabel','missingTeamBackUrl']}
+    teamDirectory:{title:'People page & team-page content',description:'Edit the People page photograph and section copy, shared year-card defaults, roster defaults and member-card labels. Edit the People hero under Page introductions → people and the People closing section under Page closing panels → people. Each Academic-year team record separately controls its own card, hero visual, roster, photographs, member labels and closing panel.',keys:['groupPhotoImage','groupPhotoImageAlt','groupPhotoEyebrow','groupPhotoTitle','groupPhotoDescription','groupPhotoPlaceholderText','overviewEyebrow','overviewTitle','overviewDescription','emptyTeamsTitle','emptyTeamsDescription','cardEyebrow','cardButtonLabel','cardFallbackEyebrow','cardFallbackTitle','cardFallbackMeta','defaultRosterEyebrow','defaultRosterDescription','defaultBackButtonLabel','defaultBackButtonUrl','emptyRosterEyebrow','emptyRosterTitle','emptyRosterDescription','emptyRosterActionText','memberTagLabel','memberMetaFallback','memberPlaceholderLabel','memberLinkedInLabel','memberEmailLabel','missingTeamEyebrow','missingTeamTitle','missingTeamDescription','missingTeamBackLabel','missingTeamBackUrl']}
   };
   const teamDirectoryDefaults = {
     groupPhotoImage:'',
@@ -58,9 +58,10 @@
     overviewDescription:'Choose an academic year to open its own roster page, with individual member photographs and profiles.',
     emptyTeamsTitle:'Student teams will appear here.',
     emptyTeamsDescription:'Academic-year team details will be displayed here when they are added in the Content Manager.',
-    cardEyebrow:'ACADEMIC YEAR',
-    cardButtonLabel:'View team roster',
+    cardEyebrow:'TEAM',
+    cardButtonLabel:'VIEW TEAM ROSTER',
     cardFallbackEyebrow:'EDC STUDENT TEAM',
+    cardFallbackTitle:'Academic year',
     cardFallbackMeta:'MEMBERS · ROLES · ACTIVITIES',
     defaultRosterEyebrow:'Individual team members',
     defaultRosterDescription:'Each card contains one member photograph, name, role and concise profile details.',
@@ -260,7 +261,7 @@
           ? uploadFieldMarkup(key,value,isPdf?'pdf':'image','array-')
           : arrayLongKeys.has(key.toLowerCase())
             ? `<textarea data-array-key="${esc(key)}" placeholder="${esc(prettyFieldName(key))}">${esc(value)}</textarea>`
-            : `<input data-array-key="${esc(key)}" type="text" value="${esc(value)}" placeholder="${esc(prettyFieldName(key))}">`;
+            : `<input data-array-key="${esc(key)}" type="${key==='url'?'url':key==='email'?'email':'text'}" value="${esc(value)}" placeholder="${esc(prettyFieldName(key))}">${arrayFieldKey==='workCards' && (key==='url'||key==='buttonLabel') ? `<div class="field-hint">Optional action. Leave its label or destination blank to hide the card link on the homepage.</div>` : ''}`;
       return `<div class="admin-field ${arrayLongKeys.has(key.toLowerCase())||isImage||isPdf?'full':''}">${isImage||isPdf?'':`<label>${esc(prettyFieldName(key))}</label>`}${control}</div>`;
     }).join('');
     return `<div class="array-record"><div class="array-record-head"><b>Entry ${index+1}</b><button type="button" class="danger-btn" data-array-remove>Remove entry</button></div><div class="form-grid">${fields}</div></div>`;
@@ -283,12 +284,12 @@
   }
   const objectSectionGroups = {
     site:[['Institution identity',['brand','name','shortName','established','logoImage']],['Contact details',['email','phone','address','website']],['Social media profiles',['linkedin','instagram','youtube','facebook']]],
-    navigation:[['Top navigation',['topLinePrefix','topLineBrand','mainAbout','mainPeople','mainProgrammes','mainVentures','mainImpact','exploreLabel','reachOutLabel']],['Explore menu',['megaTitle','megaNote','megaLinks','megaFooterLine','megaFooterCta','megaFooterCtaUrl']],['Footer content',['footerBrandLine','footerGroups','copyrightPrefix','copyrightSuffix']]],
+    navigation:[['Top navigation',['topLinePrefix','topLineBrand','mainAbout','mainPeople','mainProgrammes','mainVentures','mainImpact','exploreLabel','reachOutLabel','reachOutUrl']],['Explore menu',['megaTitle','megaNote','megaLinks','megaFooterLine','megaFooterCta','megaFooterCtaUrl']],['Footer content',['footerBrandLine','footerGroups','copyrightPrefix','copyrightSuffix']]],
     home:[['Homepage hero',['eyebrow','title','description','primaryLabel','primaryUrl','secondaryLabel','secondaryUrl','heroImage']],['EDC ecosystem diagram',['diagramEyebrow','diagramTitle','diagramText','diagramLinkLabel','diagramLinkUrl']],['Impact statistics',['statsTitle','statsDescription','stats']],['EDC ecosystem cards',['ecosystemEyebrow','ecosystemTitle','ecosystemDescription','ecosystemWall','wallFootLabel','wallFootLinkLabel','wallFootLinkUrl']],['Our stakeholders',['stakeholderEyebrow','stakeholderTitle','stakeholderDescription','stakeholders']],['Focus cards',['focusEyebrow','focusTitle','focusDescription','frictionPoints']],['Entrepreneurial pathway',['pathwayEyebrow','pathwayTitle','pathwayDescription','journeyOutputLabel','journeyHint','journeyExitLabel','journey']],['Comparison section',['comparisonEyebrow','comparisonTitle','comparisonDescription','comparisonLeftLabel','comparisonLeftTitle','comparisonLeftImage','comparisonLeftPoints','comparisonRightLabel','comparisonRightTitle','comparisonRightImage','comparisonRightPoints','comparisonLinkLabel','comparisonLinkUrl']],['EDC anthem video',['anthemEyebrow','anthemTitle','anthemDescription','anthemVideoUrl','anthemPoster','anthemPlaceholderTitle','anthemPlaceholderText']],['Featured EDC activity',['featureEyebrow','featureTitle','featureText','featureImage','featureButtonLabel','featureButtonUrl']],['Explore activity cards',['workEyebrow','workTitle','workDescription','workCards']],['EDC articles',['blogEyebrow','blogTitle','blogDescription','blogLinkLabel','blogLinkUrl']],['Leadership messages',['messagesEyebrow','messagesTitle','messagesDescription','messagesLinkLabel','messagesLinkUrl']],['Homepage closing section',['finalTitle','finalText','finalButtonLabel','finalButtonUrl','ctaEyebrow','ctaTitle','ctaText','ctaButtonLabel','ctaButtonUrl']]],
     about:[['Page introduction',['eyebrow','title','description']],['Institutional story',['storyEyebrow','storyTitle','story','storyFootnote','storyImage']],['Mission and vision',['missionLabel','missionTitle','missionImage','mission','visionLabel','visionTitle','visionImage','vision']],['Guiding principles',['principlesEyebrow','principlesTitle','principles']],['Institutional journey',['journeyEyebrow','journeyTitle','journey']]],
     impact:[['Page introduction',['eyebrow','title','description']],['Impact statistics',['stats']],['Impact statement',['statement','statementImage']],['Milestones',['milestonesEyebrow','milestonesTitle','milestones']]],
     contact:[['Page introduction',['eyebrow','title','description']],['Contact information panel',['contactImage','contactPanelEyebrow','contactPanelTitle','contactPanelText','locationLabel','emailDetailLabel','phoneDetailLabel','responseNote','directionsUrl']],['Enquiry form introduction',['formTitle','formIntro','privacyNote','reviewHint']],['Step 1 – Enquiry type',['step1Title','step1Note','enquiryChoices']],['Step 2 – Enquiry goal',['step2Title','step2Note','goals']],['Step 3 – Contact details',['step3Title','step3Note','nameLabel','emailLabel','subjectLabel','messageLabel','namePlaceholder','emailPlaceholder','subjectPlaceholder','messagePlaceholder','continueLabel','submitLabel','backLabel']]],
-    teamDirectory:[['People photograph section',['groupPhotoImage','groupPhotoImageAlt','groupPhotoEyebrow','groupPhotoTitle','groupPhotoDescription','groupPhotoPlaceholderText']],['Academic-year overview on the People page',['overviewEyebrow','overviewTitle','overviewDescription','emptyTeamsTitle','emptyTeamsDescription','cardEyebrow','cardButtonLabel','cardFallbackEyebrow','cardFallbackMeta']],['Shared roster and member-card defaults',['defaultRosterEyebrow','defaultRosterDescription','defaultBackButtonLabel','defaultBackButtonUrl','emptyRosterEyebrow','emptyRosterTitle','emptyRosterDescription','emptyRosterActionText','memberTagLabel','memberMetaFallback','memberPlaceholderLabel','memberLinkedInLabel','memberEmailLabel']],['Invalid or missing academic-year page',['missingTeamEyebrow','missingTeamTitle','missingTeamDescription','missingTeamBackLabel','missingTeamBackUrl']]]
+    teamDirectory:[['People photograph section',['groupPhotoImage','groupPhotoImageAlt','groupPhotoEyebrow','groupPhotoTitle','groupPhotoDescription','groupPhotoPlaceholderText']],['Academic-year overview on the People page',['overviewEyebrow','overviewTitle','overviewDescription','emptyTeamsTitle','emptyTeamsDescription','cardEyebrow','cardButtonLabel','cardFallbackEyebrow','cardFallbackTitle','cardFallbackMeta']],['Shared roster and member-card defaults',['defaultRosterEyebrow','defaultRosterDescription','defaultBackButtonLabel','defaultBackButtonUrl','emptyRosterEyebrow','emptyRosterTitle','emptyRosterDescription','emptyRosterActionText','memberTagLabel','memberMetaFallback','memberPlaceholderLabel','memberLinkedInLabel','memberEmailLabel']],['Invalid or missing academic-year page',['missingTeamEyebrow','missingTeamTitle','missingTeamDescription','missingTeamBackLabel','missingTeamBackUrl']]]
   };
   const objectArrayFields = new Set(['stats','ecosystemWall','stakeholders','frictionPoints','journey','comparisonLeftPoints','comparisonRightPoints','principles','milestones','workCards','megaLinks','footerGroups','enquiryChoices','goals']);
   const objectLongTextFields = new Set(['description','story','mission','vision','responseNote','contactPanelText','groupPhotoDescription','groupPhotoPlaceholderText','overviewDescription','emptyTeamsDescription','defaultRosterDescription','emptyRosterDescription','emptyRosterActionText','missingTeamDescription','pageEndText','heroDescription','cardDescription','rosterDescription','megaNote','megaFooterLine','footerBrandLine','statement','finalText','ctaText','formIntro','privacyNote','reviewHint','step1Note','step2Note','step3Note']);
@@ -301,10 +302,14 @@
     if(isImage||isPdf) return uploadFieldMarkup(fieldKey,value,isPdf?'pdf':'image');
     if(fieldKey==='website') return `<div class="admin-field"><label for="obj-${fieldKey}">${esc(prettyFieldName(fieldKey))}</label><input id="obj-${fieldKey}" type="url" value="${esc(value||'')}" readonly aria-readonly="true"><div class="field-hint">Managed automatically from the active Cloudflare Pages domain so canonical URLs remain correct. Other contact and identity fields in this section are editable.</div></div>`;
     if(long) return `<div class="admin-field full"><label for="obj-${fieldKey}">${esc(prettyFieldName(fieldKey))}</label><textarea id="obj-${fieldKey}" data-object-field="${fieldKey}">${esc(value||'')}</textarea></div>`;
-    const externalUrl=['website','linkedin','instagram','youtube','facebook','videoUrl'].includes(fieldKey);
+    const externalUrl=['website','linkedin','instagram','youtube','facebook','videoUrl','reachOutUrl','megaFooterCtaUrl'].includes(fieldKey);
     const type=externalUrl?'url':fieldKey==='email'?'email':'text';
     const placeholder=externalUrl?'https://…':fieldKey.toLowerCase().includes('url')?'about.html, contact.html or another relative page path':prettyFieldName(fieldKey);
-    return `<div class="admin-field"><label for="obj-${fieldKey}">${esc(prettyFieldName(fieldKey))}</label><input id="obj-${fieldKey}" type="${type}" data-object-field="${fieldKey}" value="${esc(value||'')}" placeholder="${esc(placeholder)}"><div class="field-hint">${externalUrl?'Use the full https:// address for an external profile or video.':'Use a relative page path for internal navigation; it will work on localhost and after deployment.'}</div></div>`;
+    const optionalActionLabels=new Set(['primaryLabel','secondaryLabel','diagramLinkLabel','wallFootLinkLabel','comparisonLinkLabel','featureButtonLabel','blogLinkLabel','messagesLinkLabel','finalButtonLabel','ctaButtonLabel','reachOutLabel','megaFooterCta']);
+    const optionalActionUrls=new Set(['primaryUrl','secondaryUrl','diagramLinkUrl','wallFootLinkUrl','comparisonLinkUrl','featureButtonUrl','blogLinkUrl','messagesLinkUrl','finalButtonUrl','ctaButtonUrl','reachOutUrl','megaFooterCtaUrl']);
+    const actionHint=optionalActionLabels.has(fieldKey) ? 'Optional button/link label. Clear this label or its matching destination to hide the action on the website.' : optionalActionUrls.has(fieldKey) ? 'Optional destination. If this URL is blank or invalid, the matching button/link will not be displayed.' : '';
+    const regularHint=externalUrl?'Use the full https:// address for an external profile or video.':'Use a relative page path for internal navigation; it will work on localhost and after deployment.';
+    return `<div class="admin-field"><label for="obj-${fieldKey}">${esc(prettyFieldName(fieldKey))}</label><input id="obj-${fieldKey}" type="${type}" data-object-field="${fieldKey}" value="${esc(value||'')}" placeholder="${esc(placeholder)}"><div class="field-hint">${actionHint || regularHint}</div></div>`;
   }
 
   const peopleIntroFields = [
@@ -327,13 +332,73 @@
   ];
   function renderLinkedPageRecord(title, description, collectionKey, pageKey, fields, prefix) {
     const rows = Array.isArray(content?.[collectionKey]) ? content[collectionKey] : [];
-    const existing = rows.find(item => String(item.page||'').trim() === pageKey) || {page:pageKey};
+    const found = rows.find(item => String(item.page||'').trim() === pageKey) || {};
+    const defaults = collectionKey==='pageIntros' && pageKey==='people'
+      ? {eyebrow:'People and student teams',title:'The people who contribute to EDC activity.',description:'Meet the people, student teams and collaborators who build the KPRCAS entrepreneurship ecosystem.',number:'02',image:'',imageAlt:'People and student teams at EDCKPRCAS'}
+      : collectionKey==='pagePanels' && pageKey==='people'
+        ? {eyebrow:'PEOPLE & TEAMS',title:'Meet the student teams',text:'Explore the EDC teams across the academic years and the people who contribute to their work.',image:'',imageAlt:'',buttonLabel:'View team years',buttonUrl:'team.html?year=2026-2027'}
+        : {};
+    const existing = {...defaults,...found,page:pageKey};
     const rendered = fields.map(field => fieldInput(field, existing?.[field[0]] ?? '', `${prefix}-`)).join('');
     return `<section class="object-section-card"><form data-linked-page-record data-linked-collection="${esc(collectionKey)}" data-linked-page="${esc(pageKey)}" data-linked-fields="${esc(JSON.stringify(fields))}"><div class="object-section-head"><div><h3>${esc(title)}</h3><p>${esc(description)}</p></div><button class="primary-btn" type="submit">Save section ↗</button></div><div class="form-grid">${rendered}</div><div class="save-status" aria-live="polite"></div></form></section>`;
   }
+  function resolvedTeamEditorValues(team, index, scope) {
+    const directory = {...teamDirectoryDefaults,...(content?.teamDirectory || {})};
+    const year = String(team.year || team.yearKey || `Academic year ${index+1}`);
+    const fallbackTitle = team.title || `EDC Student Team ${year}`;
+    const fallbackDescription = team.description || 'Meet the student members, roles and activities for this academic year.';
+    const sharedPanel = (Array.isArray(content?.pagePanels)?content.pagePanels:[]).find(item=>item.page==='people') || {};
+    const values = {...team};
+    if (scope==='card') {
+      values.order = team.order ?? index + 1;
+      values.cardEyebrow = team.cardEyebrow || directory.cardEyebrow || 'TEAM';
+      values.cardTitle = team.cardTitle || team.title || fallbackTitle;
+      values.cardDescription = team.cardDescription || team.description || fallbackDescription;
+      values.cardImage = team.cardImage || team.image || '';
+      values.cardImageAlt = team.cardImageAlt || `${year} student team photograph`;
+      values.buttonLabel = team.buttonLabel === undefined ? (directory.cardButtonLabel || 'VIEW TEAM ROSTER') : String(team.buttonLabel || '');
+      values.cardFallbackEyebrow = team.cardFallbackEyebrow || directory.cardFallbackEyebrow || 'EDC STUDENT TEAM';
+      values.cardFallbackTitle = team.cardFallbackTitle || team.year || year;
+      values.cardFallbackMeta = team.cardFallbackMeta || directory.cardFallbackMeta || 'MEMBERS · ROLES · ACTIVITIES';
+      return values;
+    }
+    values.title = team.title || fallbackTitle;
+    values.description = team.description || fallbackDescription;
+    values.heroEyebrow = team.heroEyebrow || team.year || year;
+    values.heroTitle = team.heroTitle || fallbackTitle;
+    values.heroDescription = team.heroDescription || fallbackDescription;
+    values.heroNumber = team.heroNumber || '03';
+    values.heroImageAlt = team.heroImageAlt || values.heroTitle;
+    values.heroArtMode = team.heroArtMode || 'both';
+    values.rosterEyebrow = team.rosterEyebrow || directory.defaultRosterEyebrow || 'Individual team members';
+    values.rosterTitle = team.rosterTitle || `EDC student team · ${year}`;
+    values.rosterDescription = team.rosterDescription || directory.defaultRosterDescription || 'Each card contains one member photograph, name, role and concise profile details.';
+    values.rosterImage = team.rosterImage || team.image || '';
+    values.rosterImageAlt = team.rosterImageAlt || `${year} EDC student team group photograph`;
+    values.backButtonLabel = team.backButtonLabel === undefined ? (directory.defaultBackButtonLabel || 'All academic years') : String(team.backButtonLabel || '');
+    values.backButtonUrl = team.backButtonUrl === undefined ? (directory.defaultBackButtonUrl || 'people.html') : String(team.backButtonUrl || '');
+    values.memberTagLabel = team.memberTagLabel || directory.memberTagLabel || 'People';
+    values.memberLinkedInLabel = team.memberLinkedInLabel || directory.memberLinkedInLabel || 'LinkedIn';
+    values.memberEmailLabel = team.memberEmailLabel || directory.memberEmailLabel || 'Email';
+    values.emptyRosterEyebrow = team.emptyRosterEyebrow || directory.emptyRosterEyebrow || year;
+    values.emptyRosterTitle = team.emptyRosterTitle || directory.emptyRosterTitle || 'Team profiles will appear here.';
+    values.emptyRosterDescription = team.emptyRosterDescription || directory.emptyRosterDescription || 'Student profiles for this academic year have not been added yet.';
+    values.emptyRosterActionText = team.emptyRosterActionText || directory.emptyRosterActionText || '';
+    values.pageEndEyebrow = team.pageEndEyebrow || sharedPanel.eyebrow || 'PEOPLE & TEAMS';
+    values.pageEndTitle = team.pageEndTitle || sharedPanel.title || 'Meet the student teams';
+    values.pageEndText = team.pageEndText || sharedPanel.text || 'Explore the EDC teams across the academic years and the people who contribute to their work.';
+    values.pageEndImage = team.pageEndImage || sharedPanel.image || '';
+    values.pageEndImageAlt = team.pageEndImageAlt || sharedPanel.imageAlt || values.pageEndTitle;
+    values.pageEndButtonLabel = team.pageEndButtonLabel || sharedPanel.buttonLabel || 'View team years';
+    values.pageEndButtonUrl = team.pageEndButtonUrl || sharedPanel.buttonUrl || 'team.html?year=2026-2027';
+    values.pageEndTone = team.pageEndTone || 'navy';
+    return values;
+  }
   function renderTeamSubsection(team, index, title, description, fieldKeys, prefix) {
     const definitions = collections.teams.fields.filter(field => field[2] !== 'section' && fieldKeys.includes(field[0]));
-    const rendered = definitions.map(field => fieldInput(field, team?.[field[0]] ?? '', `${prefix}-`)).join('');
+    const scope = prefix.startsWith('people-card-') ? 'card' : 'page';
+    const values = resolvedTeamEditorValues(team,index,scope);
+    const rendered = definitions.map(field => fieldInput(field, values?.[field[0]] ?? '', `${prefix}-`)).join('');
     const yearKey = String(team.yearKey || team.year || '');
     return `<section class="object-section-card"><form data-team-subsection data-team-year="${esc(yearKey)}" data-team-fields="${esc(JSON.stringify(definitions))}"><div class="object-section-head"><div><h3>${esc(title)}</h3><p>${esc(description)}</p></div><button class="primary-btn" type="submit">Save section ↗</button></div><div class="form-grid">${rendered}</div><div class="save-status" aria-live="polite"></div></form></section>`;
   }
@@ -367,7 +432,12 @@
       return `<div class="content-head"><div><h2>Section unavailable</h2><p>This CMS section is not configured. Refresh the Content Manager or contact the site administrator.</p></div></div>`;
     }
     const source = content && typeof content[key] === 'object' && !Array.isArray(content[key]) ? content[key] : {};
-    const obj=key==='teamDirectory'?{...teamDirectoryDefaults,...source}:source;
+    const peopleIntroFallback = (Array.isArray(content?.pageIntros)?content.pageIntros:[]).find(item=>item.page==='people') || {};
+    const obj=key==='teamDirectory'
+      ? {...teamDirectoryDefaults,...source,groupPhotoImage:source.groupPhotoImage || peopleIntroFallback.image || ''}
+      : key==='navigation'
+        ? {reachOutLabel:'Reach out',reachOutUrl:'contact.html',...source}
+        : source;
     const groups=objectSectionGroups[key] || [['Website content',config.keys]];
     const used=new Set(groups.flatMap(g=>g[1]));
     const extras=config.keys.filter(k=>!used.has(k));
