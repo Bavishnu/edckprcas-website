@@ -1088,6 +1088,9 @@ body{font-size:16px;line-height:1.7;color:#182b49}
 @media(max-width:900px){.team-year-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}}
 @media(max-width:700px){.edc-hero-copy .hero-actions{align-self:stretch;justify-content:flex-end}.home-diagram-copy .text-link{align-self:flex-end}.home-insights-link{justify-content:flex-end}.team-year-grid{grid-template-columns:1fr;gap:16px}.team-year-image{aspect-ratio:16/8}.team-year-copy{padding:20px}.team-year-art{padding:22px}.team-year-art>strong{font-size:32px}}
 
+/* Mentor directory: visually separate Mentors, Speakers and Engaged With groups. */
+.mentor-category-block + .mentor-category-block{margin-top:58px}
+
 /* EDCKPRCAS interactive events calendar: animated, accessible and connected to published event records. */
 .event-calendar-section{position:relative;overflow:hidden;background:linear-gradient(180deg,#f7f9fc 0%,#eef4f8 100%)}
 .event-calendar-section:before{content:"";position:absolute;inset:-18% -8% auto auto;width:min(620px,58vw);aspect-ratio:1;border:1px solid rgba(0,168,107,.11);border-radius:50%;box-shadow:0 0 0 32px rgba(16,42,86,.025),0 0 0 74px rgba(0,168,107,.025);pointer-events:none}
