@@ -325,7 +325,7 @@
   }
 
   function voiceCarousel(items) {
-    const ordered = [...items].sort((a,b) => Number(a.order || 0) - Number(b.order || 0));
+    const ordered = orderByDisplayNumber(items);
     return `<div class="voice-carousel voice-carousel-leadership" data-voice-autoplay data-voice-interval="5000"><div class="voice-slides">${ordered.map((m,i)=>`<article class="voice-slide ${i===0?'active':''}" data-voice-slide="${i}"><div class="voice-leader-photo">${m.image ? img(m.image,`${m.name} – ${m.designation||'EDCKPRCAS leadership'}`) : `<span class="voice-author-placeholder">${esc(String(m.name||'EDC').split(/\s+/).map(x=>x[0]).join('').slice(0,2))}</span>`}</div><div class="voice-leader-copy"><div class="voice-slide-top"><span class="voice-index">${String(i+1).padStart(2,'0')} / ${String(ordered.length).padStart(2,'0')}</span><span class="voice-slide-label">Message from leadership</span></div><h3 class="voice-leader-name">${esc(m.name || 'EDCKPRCAS Leadership')}</h3>${m.designation ? `<p class="voice-leader-designation">${esc(m.designation)}</p>` : ''}${m.heading ? `<h4 class="voice-message-heading">${esc(m.heading)}</h4>` : ''}<p class="voice-message-body">${esc(m.quote || '')}</p></div></article>`).join('')}</div><div class="voice-controls"><div class="voice-dots">${ordered.map((m,i)=>`<span class="voice-dot ${i===0?'active':''}" data-voice-dot="${i}" aria-hidden="true"></span>`).join('')}</div></div></div>`;
   }
 
@@ -597,11 +597,12 @@
     return `<article class="card dual-profile-card reveal reveal-delay-${Math.min(i%3,3)}">${dualProfileMedia(logo,s.logoAlt || s.ventureLogoAlt || `${s.name || 'Venture'} logo`,founderPortrait,s.founderImageAlt || s.imageAlt || `${s.founders || s.name || 'Founder'} portrait`,s.name || 'Venture logo',s.founders || 'Founder portrait')}<div class="card-body"><div class="card-meta"><span>${esc(s.sector || 'Student venture')}</span><span class="card-tag">${esc(s.stage || 'Venture')}</span></div><h3>${esc(s.name || 'Student venture')}</h3>${s.founders ? `<div class="venture-founder-name">${esc(s.founders)}</div>` : ''}${s.summary ? `<p>${esc(s.summary)}</p>` : ''}<div class="dual-profile-card-foot">${s.year ? `<span class="dual-profile-year">${esc(s.year)}</span>` : '<span class="dual-profile-year">Student venture</span>'}${actions}${website ? `<a class="venture-website-link" href="${esc(website)}" target="_blank" rel="noopener noreferrer" aria-label="Visit ${esc(s.name || 'venture')} website" title="Website">↗</a>` : ''}</div></div></article>`;
   }
   function startupsPage() {
-    const sectors = ['All',...new Set((data.startups||[]).map(s=>s.sector).filter(Boolean))];
+    const startups = orderByDisplayNumber(data.startups || []);
+    const sectors = ['All',...new Set(startups.map(s=>s.sector).filter(Boolean))];
     return `${pageHero('Venture portfolio','Meet the teams making ideas real.','Discover the startups and student ventures connected to the EDC.','04')}
       <section class="section"><div class="wrap">${sectionHead('The venture community','Different ideas. A shared drive to build.','Portfolio information is managed through the admin panel. Add verified founder details, venture links and progress updates.')}
       <div class="filter-row" data-filter-container="startups">${sectors.map((c,i)=>`<button class="filter-chip ${i===0?'active':''}" data-filter="${esc(c)}" type="button">${esc(c)}</button>`).join('')}</div>
-      ${(data.startups||[]).length ? `<div class="card-grid">${(data.startups||[]).map(startupCard).join('')}</div>` : `<div class="empty-state">No student venture profiles are currently published.</div>`}</div></section>`;
+      ${startups.length ? `<div class="card-grid">${startups.map(startupCard).join('')}</div>` : `<div class="empty-state">No student venture profiles are currently published.</div>`}</div></section>`;
   }
 
   function impactPage() {
@@ -621,14 +622,14 @@
   }
 
   function galleryPage() {
-    const items = data.gallery || [];
+    const items = orderByDisplayNumber(data.gallery || []);
     return `${pageHero('EDC photo archive','Programmes, people and campus moments.','Explore photographs from entrepreneurship programmes, student teams, events and venture activities.','07')}
       <section class="section gallery-section"><div class="wrap">${sectionHead('Gallery archive','Scroll through the EDC photographs.','On desktop, scroll vertically to move through the horizontal collection. On mobile, swipe the gallery strip.')}</div>
       ${items.length ? `<div class="horiz-gallery-wrapper" id="portfolio"><div class="horiz-gallery-strip">${items.map((g,i)=>`<button class="project-wrap gallery-project reveal" type="button" data-gallery="${i}" aria-label="View ${esc(g.title)}"><div class="project-media">${g.image ? img(g.image,g.title) : '<div class="media-placeholder"><span>EDC GALLERY</span></div>'}</div><span class="project-meta">${esc(g.category)} · ${esc(g.date)}</span><b>${esc(g.title)}</b><span class="project-caption">${esc(g.caption || '')}</span></button>`).join('')}</div></div>` : `<div class="gallery-empty"><div class="eyebrow">EDC PHOTO ARCHIVE</div><h3>Programme photographs will appear here.</h3><p>Approved EDC images can be added from Admin → Gallery.</p></div>`}</section>`;
   }
 
   function achievementsPage() {
-    const items = data.achievements || [];
+    const items = orderByDisplayNumber(data.achievements || []);
     return `${pageHero('Achievements','Recognition earned through student initiative.','A record of EDC teams, student ventures and institutional participation across entrepreneurship challenges and programmes.','15')}
       <section class="section achievements-section"><div class="wrap">${sectionHead('EDC achievements','Milestones and recognitions.','Scroll through the achievement archive. Each entry includes the approved photograph and the context behind the recognition.')}</div>
       ${items.length ? `<div class="horiz-gallery-wrapper achievement-gallery-wrapper"><div class="horiz-gallery-strip achievement-gallery-strip">${items.map((a,i)=>`<article class="project-wrap achievement-project reveal reveal-delay-${i%3}"><div class="project-media">${a.image ? img(a.image,a.title) : `<div class="media-placeholder"><span>EDC ACHIEVEMENT</span></div>`}</div><div class="achievement-caption"><div class="achievement-meta"><span>${esc(a.year||'')}</span><span>${esc(a.category||'Recognition')}</span></div><h3>${esc(a.title)}</h3>${a.distinction ? `<b class="achievement-distinction">${esc(a.distinction)}</b>` : ''}<p>${esc(a.description||'')}</p></div></article>`).join('')}</div></div>` : `<div class="wrap"><div class="empty-state">Approved EDC achievements will appear here when they are added through the CMS.</div></div>`}</section>`;
@@ -652,9 +653,10 @@
   }
 
   function socialPage() {
+    const posts = orderByDisplayNumber(data.social || []);
     return `${pageHero('Across our channels','Stay close to what is happening.','A curated stream of announcements, programme moments and stories from the KPRCAS entrepreneurship ecosystem.','09')}
       <section class="section"><div class="wrap">${sectionHead('Social updates','The conversation continues beyond campus.')}
-      ${(data.social||[]).length ? `<div class="social-grid">${(data.social||[]).map((p,i)=>{const preview=p.image || youtubeThumbnail(p.videoUrl || p.link);return `<article class="social-card reveal reveal-delay-${Math.min(i%3,3)}"><div class="social-image">${preview ? img(preview,p.platform+' video or post thumbnail') : '<div class="media-placeholder"><span>UPLOAD POST THUMBNAIL</span></div>'}</div><div class="social-copy"><div class="platform">${esc(p.platform)} · ${esc(p.date)}</div><p>${esc(p.caption)}</p>${p.link && safeUrl(p.link) ? `<a href="${esc(safeUrl(p.link))}" target="_blank" rel="noopener">View original post ↗</a>` : ''}</div></article>`;}).join('')}</div>` : `<div class="empty-state">No social media posts are currently published.</div>`}</div></section>`;
+      ${posts.length ? `<div class="social-grid">${posts.map((p,i)=>{const preview=p.image || youtubeThumbnail(p.videoUrl || p.link);return `<article class="social-card reveal reveal-delay-${Math.min(i%3,3)}"><div class="social-image">${preview ? img(preview,p.platform+' video or post thumbnail') : '<div class="media-placeholder"><span>UPLOAD POST THUMBNAIL</span></div>'}</div><div class="social-copy"><div class="platform">${esc(p.platform)} · ${esc(p.date)}</div><p>${esc(p.caption)}</p>${p.link && safeUrl(p.link) ? `<a href="${esc(safeUrl(p.link))}" target="_blank" rel="noopener">View original post ↗</a>` : ''}</div></article>`;}).join('')}</div>` : `<div class="empty-state">No social media posts are currently published.</div>`}</div></section>`;
   }
 
   function mentorCard(m,i) {
@@ -662,18 +664,49 @@
     const logo = m.organizationLogo || m.logo || '';
     return `<article class="card dual-profile-card reveal reveal-delay-${Math.min(i%3,3)}">${dualProfileMedia(logo,m.organizationLogoAlt || m.logoAlt || `${m.organization || m.name || 'Mentor'} organisation logo`,m.image,m.imageAlt || `${m.name || 'Mentor'} portrait`,m.organization || 'Mentor organisation',m.name || 'Mentor portrait')}<div class="card-body"><div class="card-meta"><span>${esc(m.organization || 'EDC mentor network')}</span><span class="card-tag">${esc(m.expertise || 'Mentor')}</span></div><h3>${esc(m.name || 'Mentor')}</h3>${m.bio ? `<p>${esc(m.bio)}</p>` : ''}<div class="dual-profile-card-foot"><span class="dual-profile-year">${esc(m.organization || 'Mentor network')}</span>${actions}</div></div></article>`;
   }
+  function mentorCategoryKey(item) {
+    const value = String(item?.category || 'Mentors').trim().toLowerCase();
+    if (value === 'speaker' || value === 'speakers') return 'Speakers';
+    if (value === 'engaged with' || value === 'engagement' || value === 'engaged') return 'Engaged With';
+    return 'Mentors';
+  }
   function mentorsPage() {
-    return `${pageHero('Mentor network','Experience shared. Ambition strengthened.','A network of founders, professionals and specialists who help teams pressure-test ideas, sharpen decisions and navigate the next stage.','10')}
-      <section class="section"><div class="wrap">${sectionHead('Our mentor community','The right question can change the next step.','Add verified mentor profiles, organisation logos, portraits and contact links in the Content Manager.')}
-      ${(data.mentors||[]).length ? `<div class="card-grid">${(data.mentors||[]).map(mentorCard).join('')}</div>` : `<div class="empty-state">Mentor profiles will appear here as the EDC network is confirmed.</div>`}</div></section>`;
+    const allMentors = data.mentors || [];
+    const categories = [
+      { key:'Mentors', eyebrow:'Mentor network', title:'Mentors', description:'Experienced mentors who guide student founders and developing ventures.' },
+      { key:'Speakers', eyebrow:'Knowledge & perspectives', title:'Speakers', description:'Speakers who share practical experience, specialist knowledge and entrepreneurial perspectives.' },
+      { key:'Engaged With', eyebrow:'Industry & ecosystem', title:'Engaged With', description:'People and organisations engaged with the EDC through programmes, collaborations and ecosystem activities.' }
+    ];
+    const categorySections = categories.map(group=>{
+      const members = orderByDisplayNumber(allMentors.filter(item=>mentorCategoryKey(item)===group.key));
+      return members.length ? `<div class="mentor-category-block">${sectionHead(group.eyebrow,group.title,group.description)}<div class="card-grid">${members.map(mentorCard).join('')}</div></div>` : '';
+    }).join('');
+    return `${pageHero('Mentor network','Experience shared. Ambition strengthened.','A network of founders, professionals, speakers and ecosystem partners who help teams pressure-test ideas, sharpen decisions and navigate the next stage.','10')}
+      <section class="section"><div class="wrap">${allMentors.length ? categorySections : `<div class="empty-state">Mentor, speaker and ecosystem profiles will appear here as the EDC network is confirmed.</div>`}</div></section>`;
   }
 
+  function reportCard(r,i) {
+    return `<article class="report-card reveal reveal-delay-${Math.min(i%3,3)}"><div class="report-cover ${r.cover ? 'has-report-cover' : 'has-pdf-cover'}" ${!r.cover ? `data-report-thumbnail data-pdf-url="${esc(assetUrl(r.pdfUrl))}"` : ''}>${r.cover ? img(r.cover,r.title+' cover') : `<canvas class="report-cover-canvas" aria-label="First page preview of ${esc(r.title)}"></canvas>`}<div class="report-cover-overlay"><small>${textOr(data.site.shortName,'EDCKPRCAS')}</small>${r.year ? `<strong>${esc(r.year)}</strong>` : ''}<span>${esc(r.title)}</span></div></div><div class="report-info"><h3>${esc(r.title)}</h3>${r.summary ? `<p>${esc(r.summary)}</p>` : ''}<button type="button" class="btn" data-report="${esc(r.id)}">View flipbook <span class="btn-arrow">↗</span></button></div></article>`;
+  }
   function reportsPage() {
-    const reports = (data.reports || []).filter(r => safeUrl(r.pdfUrl)).sort((a,b) => String(b.year||'').localeCompare(String(a.year||'')));
-    const years = [...new Set(reports.map(r => String(r.year || 'Other years')))];
+    const reports = orderByDisplayNumber((data.reports || []).filter(r => safeUrl(r.pdfUrl)),(a,b)=>String(b.year||'').localeCompare(String(a.year||'')));
+    const yearGroups = new Map();
+    const unassignedYear = [];
+    reports.forEach(report=>{
+      const year = String(report.year || '').trim();
+      if (!year) { unassignedYear.push(report); return; }
+      if (!yearGroups.has(year)) yearGroups.set(year,[]);
+      yearGroups.get(year).push(report);
+    });
+    const groupedMarkup = [...yearGroups.entries()].map(([year,items])=>{
+      const countLabel = `${items.length} ${items.length===1?'report':'reports'}`;
+      return `<section class="report-year-group"><div class="report-year-heading"><h3>${esc(year)}</h3><span>${countLabel}</span></div><div class="report-grid">${items.map(reportCard).join('')}</div></section>`;
+    }).join('');
+    // Reports without a year remain visible, but no artificial “Other years” heading is shown.
+    const unassignedMarkup = unassignedYear.length ? `<div class="report-grid report-grid-ungrouped">${unassignedYear.map(reportCard).join('')}</div>` : '';
     return `${pageHero('Knowledge & accountability','Annual reports, year by year.','Open each approved annual report in a full-window digital flipbook.','11')}
       <section class="section annual-reports-section"><div class="wrap">${sectionHead('Annual reports','Browse the EDC record by year.')}
-      ${reports.length ? years.map(year=>`<section class="report-year-group"><div class="report-year-heading"><h3>${esc(year)}</h3><span>${reports.filter(r=>String(r.year||'Other years')===year).length} report(s)</span></div><div class="report-grid">${reports.filter(r=>String(r.year||'Other years')===year).map((r,i)=>`<article class="report-card reveal reveal-delay-${Math.min(i%3,3)}"><div class="report-cover ${r.cover ? 'has-report-cover' : 'has-pdf-cover'}" ${!r.cover ? `data-report-thumbnail data-pdf-url="${esc(assetUrl(r.pdfUrl))}"` : ''}>${r.cover ? img(r.cover,r.title+' cover') : `<canvas class="report-cover-canvas" aria-label="First page preview of ${esc(r.title)}"></canvas>`}<div class="report-cover-overlay"><small>${textOr(data.site.shortName,'EDCKPRCAS')}</small><strong>${esc(r.year)}</strong><span>${esc(r.title)}</span></div></div><div class="report-info"><h3>${esc(r.title)}</h3>${r.summary ? `<p>${esc(r.summary)}</p>` : ''}<button type="button" class="btn" data-report="${esc(r.id)}">View flipbook <span class="btn-arrow">↗</span></button></div></article>`).join('')}</div></section>`).join('') : `<div class="empty-state">Annual reports will appear here when a year and approved PDF are uploaded through the Content Manager.</div>`}</div></section>`;
+      ${reports.length ? `${groupedMarkup}${unassignedMarkup}` : `<div class="empty-state">Annual reports will appear here when a year and approved PDF are uploaded through the Content Manager.</div>`}</div></section>`;
   }
 
   async function renderReportCoverThumbnails() {
@@ -1024,7 +1057,7 @@
         if (frame && /^[A-Za-z0-9_-]{11}$/.test(id||'')) frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&autoplay=1" title="EDC-KPRCAS anthem" loading="eager" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
       }
       const galleryBtn = e.target.closest('[data-gallery]');
-      if (galleryBtn) { const item = (data.gallery||[])[Number(galleryBtn.dataset.gallery)]; if (item) openLightbox(item); }
+      if (galleryBtn) { const item = orderByDisplayNumber(data.gallery||[])[Number(galleryBtn.dataset.gallery)]; if (item) openLightbox(item); }
       const reportBtn = e.target.closest('[data-report]');
       if (reportBtn) { const item = (data.reports||[]).find(x=>x.id===reportBtn.dataset.report); if (item) openReport(item); }
       const turnPdfPage = direction => {
